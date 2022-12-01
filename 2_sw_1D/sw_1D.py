@@ -73,7 +73,7 @@ for i in range(nt):
 # finalize and check plot
 # u(t,x) =  c/2*sin(k*(x - sqrt(gH)*t)) + c/2*sin(k*(x + sqrt(gH)*t))
 # h(t,x) = -(c/2*cos(k*(x - sqrt(gH)*t)) + c/2*cos(k*(x + sqrt(gH)*t))) * sqrt(gH)/g
-usol = c/2*np.sin(k*(x[:] - np.)
+usol = c/2*np.sin(k*(x[:] - np.sqrt(g*H))) + c/2*np.sin(k*(x + np.sqrt(g*H)*tnew))
 hsol =-c*np.cos(k*x[:])*np.sin(np.sqrt(g*H)*k*tnew) * np.sqrt(H/g)
 plt.plot(x,u0,'k')
 plt.plot(x,unew,'b')
