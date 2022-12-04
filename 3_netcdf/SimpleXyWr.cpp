@@ -37,7 +37,7 @@ int main()
   // with a progression of numbers for this example.
   int dataOut[NX][NY];
   
-  // Create some pretend data. If this wasn't an example program, we
+  // Create some pretend data. If this was not an example program, we
   // would have some real data to write, for example, model output.
   for(int i = 0; i < NX; i++)
     for(int j = 0; j < NY; j++)
