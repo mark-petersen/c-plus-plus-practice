@@ -1,3 +1,5 @@
+https://docs.olcf.ornl.gov/systems/summit_user_guide.html#interactive-jobs
+
 pwd
 /ccs/home/mpetersen/repos/c-plus-plus-practice/4_mpi
 batch5:4_mpi$ make
