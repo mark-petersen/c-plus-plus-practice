@@ -1,0 +1,11 @@
+pwd
+/ccs/home/mpetersen/repos/c-plus-plus-practice/4_mpi
+batch5:4_mpi$ make
+mpicc -o mpi_hello_world mpi_hello_world.c
+
+bsub -W 2:00 -nnodes 1 -P CLI115 -Is /bin/bash
+batch5:4_mpi$ jsrun -n4 ./mpi_hello_world
+Hello world from processor c05n09, rank 2 out of 4 processors
+Hello world from processor c05n09, rank 0 out of 4 processors
+Hello world from processor c05n09, rank 1 out of 4 processors
+Hello world from processor c05n09, rank 3 out of 4 processors
