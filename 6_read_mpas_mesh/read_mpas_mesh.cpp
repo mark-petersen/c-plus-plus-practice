@@ -18,11 +18,14 @@ using namespace netCDF::exceptions;
 static const int NC_ERR = 2;
 
 template <typename varType>
-void readVar(NcFile& dataFile, string varName, varType var[]);
+void printArray(string varName, varType var[], int varSize);
+
+template <typename varType>
+void readArray(NcFile& dataFile, string varName, varType var[]);
 
 // does not work. Try again later
 // template <typename varType, size_t row, size_t column>
-// void readVar(NcFile& dataFile, string varName, varType (var)[row][column]);
+// void readArray(NcFile& dataFile, string varName, varType (var)[row][column]);
 
 int main()
 {
@@ -30,7 +33,7 @@ int main()
    try
    {
    // Open the file.
-     NcFile dataFile("mpas_mesh_16x16.nc", NcFile::read);
+   NcFile dataFile("mdpas_mesh_16x16.nc", NcFile::read);
 
    int nCells = dataFile.getDim("nCells").getSize();
    int nEdges = dataFile.getDim("nEdges").getSize();
@@ -39,41 +42,39 @@ int main()
    int maxEdges2 = dataFile.getDim("maxEdges2").getSize();
    int vertexDegree = dataFile.getDim("vertexDegree").getSize();
    
-   double latCell[nCells]; readVar(dataFile, "latCell", latCell);
-   double lonCell[nCells]; readVar(dataFile, "lonCell", lonCell);
-   double xCell[nCells]; readVar(dataFile, "xCell", xCell);
-   double yCell[nCells]; readVar(dataFile, "yCell", yCell);
-   double zCell[nCells]; readVar(dataFile, "zCell", zCell);
-   double latEdge[nEdges]; readVar(dataFile, "latEdge", latEdge);
-   double lonEdge[nEdges]; readVar(dataFile, "lonEdge", lonEdge);
-   double xEdge[nEdges]; readVar(dataFile, "xEdge", xEdge);
-   double yEdge[nEdges]; readVar(dataFile, "yEdge", yEdge);
-   double zEdge[nEdges]; readVar(dataFile, "zEdge", zEdge);
-   double latVertex[nVertices]; readVar(dataFile, "latVertex", latVertex);
-   double lonVertex[nVertices]; readVar(dataFile, "lonVertex", lonVertex);
-   double xVertex[nVertices]; readVar(dataFile, "xVertex", xVertex);
-   double yVertex[nVertices]; readVar(dataFile, "yVertex", yVertex);
-   double zVertex[nVertices]; readVar(dataFile, "zVertex", zVertex);
-   double areaCell[nCells]; readVar(dataFile, "areaCell", areaCell);
-   double angleEdge[nEdges]; readVar(dataFile, "angleEdge", angleEdge);
-   double dcEdge[nEdges]; readVar(dataFile, "dcEdge", dcEdge);
-   double dvEdge[nEdges]; readVar(dataFile, "dvEdge", dvEdge);
-   double areaTriangle[nVertices]; readVar(dataFile, "areaTriangle", areaTriangle);
-   double cellQuality[nCells]; readVar(dataFile, "cellQuality", cellQuality);
-   double gridSpacing[nCells]; readVar(dataFile, "gridSpacing", gridSpacing);
-   double triangleQuality[nVertices]; readVar(dataFile, "triangleQuality", triangleQuality);
-   double triangleAngleQuality[nVertices]; readVar(dataFile, "triangleAngleQuality", triangleAngleQuality);
-   double meshDensity[nCells]; readVar(dataFile, "meshDensity", meshDensity);
+   double latCell[nCells]; readArray(dataFile, "latCell", latCell);
+   double lonCell[nCells]; readArray(dataFile, "lonCell", lonCell);
+   double xCell[nCells]; readArray(dataFile, "xCell", xCell);
+   double yCell[nCells]; readArray(dataFile, "yCell", yCell);
+   double zCell[nCells]; readArray(dataFile, "zCell", zCell);
+   double latEdge[nEdges]; readArray(dataFile, "latEdge", latEdge);
+   double lonEdge[nEdges]; readArray(dataFile, "lonEdge", lonEdge);
+   double xEdge[nEdges]; readArray(dataFile, "xEdge", xEdge);
+   double yEdge[nEdges]; readArray(dataFile, "yEdge", yEdge);
+   double zEdge[nEdges]; readArray(dataFile, "zEdge", zEdge);
+   double latVertex[nVertices]; readArray(dataFile, "latVertex", latVertex);
+   double lonVertex[nVertices]; readArray(dataFile, "lonVertex", lonVertex);
+   double xVertex[nVertices]; readArray(dataFile, "xVertex", xVertex);
+   double yVertex[nVertices]; readArray(dataFile, "yVertex", yVertex);
+   double zVertex[nVertices]; readArray(dataFile, "zVertex", zVertex);
+   double areaCell[nCells]; readArray(dataFile, "areaCell", areaCell);
+   double angleEdge[nEdges]; readArray(dataFile, "angleEdge", angleEdge);
+   double dcEdge[nEdges]; readArray(dataFile, "dcEdge", dcEdge);
+   double dvEdge[nEdges]; readArray(dataFile, "dvEdge", dvEdge);
+   double areaTriangle[nVertices]; readArray(dataFile, "areaTriangle", areaTriangle);
+   double cellQuality[nCells]; readArray(dataFile, "cellQuality", cellQuality);
+   double gridSpacing[nCells]; readArray(dataFile, "gridSpacing", gridSpacing);
+   double triangleQuality[nVertices]; readArray(dataFile, "triangleQuality", triangleQuality);
+   double triangleAngleQuality[nVertices]; readArray(dataFile, "triangleAngleQuality", triangleAngleQuality);
+   double meshDensity[nCells]; readArray(dataFile, "meshDensity", meshDensity);
 
-
-
-   int indexToCellID[nCells]; readVar(dataFile, "indexToCellID", indexToCellID);
-   int indexToEdgeID[nEdges]; readVar(dataFile, "indexToEdgeID", indexToEdgeID);
-   int indexToVertexID[nVertices]; readVar(dataFile, "indexToVertexID", indexToVertexID);
-   int nEdgesOnCell[nCells]; readVar(dataFile, "nEdgesOnCell", nEdgesOnCell);
-   int nEdgesOnEdge[nEdges]; readVar(dataFile, "nEdgesOnEdge", nEdgesOnEdge);
-   int boundaryVertex[nVertices]; readVar(dataFile, "boundaryVertex", boundaryVertex);
-   int obtuseTriangle[nVertices]; readVar(dataFile, "obtuseTriangle", obtuseTriangle);
+   int indexToCellID[nCells]; readArray(dataFile, "indexToCellID", indexToCellID);
+   int indexToEdgeID[nEdges]; readArray(dataFile, "indexToEdgeID", indexToEdgeID);
+   int indexToVertexID[nVertices]; readArray(dataFile, "indexToVertexID", indexToVertexID);
+   int nEdgesOnCell[nCells]; readArray(dataFile, "nEdgesOnCell", nEdgesOnCell);
+   int nEdgesOnEdge[nEdges]; readArray(dataFile, "nEdgesOnEdge", nEdgesOnEdge);
+   int boundaryVertex[nVertices]; readArray(dataFile, "boundaryVertex", boundaryVertex);
+   int obtuseTriangle[nVertices]; readArray(dataFile, "obtuseTriangle", obtuseTriangle);
 
    // using this format for 2D arrays because I couldn't get template to work. This produces no error message if variable is missing.
    double weightsOnEdge[nEdges][maxEdges2]; dataFile.getVar("weightsOnEdge").getVar(weightsOnEdge);
@@ -87,20 +88,10 @@ int main()
    int cellsOnVertex[nVertices][vertexDegree]; dataFile.getVar("cellsOnVertex").getVar(cellsOnVertex);
    int edgesOnVertex[nVertices][vertexDegree]; dataFile.getVar("edgesOnVertex").getVar(edgesOnVertex);
 
-   cout << "yCell" << endl;
-   for (int iCell = 0; iCell < nCells; iCell++)
-      cout << yCell[iCell]<< ", ";
-   cout << endl;
-
-/*
-   // Check the coordinate variable data. 
-       if (xCell[xCell] != START_LAT + 5. * xCell)
-	 return NC_ERR;
-
-   for (int yCell = 0; yCell < NLON; yCell++)
-      if (yCell[yCell] != START_LON + 5. * yCell)
- 	return NC_ERR;
+   printArray("yCell",yCell,nCells);
+   printArray("areaCell",areaCell,nCells);
   
+  /*
    // Get the pressure and temperature variables and read data one time step at a time
    NcVar presVar, tempVar;
    presVar = dataFile.getVar("pressure");
@@ -154,7 +145,15 @@ int main()
 }
 
 template <typename varType>
-void readVar(NcFile& dataFile, string varName, varType var[]) {
+void printArray(string varName, varType var[], int varSize) {
+   cout << varName << endl;
+   for (int j = 0; j < varSize; j++)
+      cout << var[j]<< ", ";
+   cout << endl;
+}
+
+template <typename varType>
+void readArray(NcFile& dataFile, string varName, varType var[]) {
    NcVar tempVar;
    tempVar = dataFile.getVar(varName);
    if(tempVar.isNull()) {
@@ -166,7 +165,7 @@ void readVar(NcFile& dataFile, string varName, varType var[]) {
 
 // does not work. Try later
 //template <typename varType, int row, int column>
-//void readVar(NcFile& dataFile, string varName, varType (var)[row][column]) {
+//void readArray(NcFile& dataFile, string varName, varType (var)[row][column]) {
 //   NcVar tempVar;
 //   tempVar = dataFile.getVar(varName);
 //   if(tempVar.isNull()) {
