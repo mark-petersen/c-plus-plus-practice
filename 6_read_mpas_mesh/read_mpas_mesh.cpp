@@ -5,6 +5,7 @@
 */
 
 #include <iostream>
+#include <string>
 #include <netcdf>
 using namespace std;
 using namespace netCDF;
@@ -30,20 +31,24 @@ int main()
    // Open the file.
      NcFile dataFile("mpas_mesh_16x16.nc", NcFile::read);
 
-   NcDim nCellsDim;
-   nCellsDim = dataFile.getDim("nCells");
-   int nCells = nCellsDim.getSize();
+   int nCells = dataFile.getDim("nCells").getSize();
+   int nEdges = dataFile.getDim("nEdges").getSize();
+   int nVertices = dataFile.getDim("nVertices").getSize();
    
-   float xCell[nCells], yCell[nCells];
+   float xCell[nCells]; dataFile.getVar("xCell").getVar(xCell);
 
-   // Get the xCell and yCell variables and read data.
-   NcVar xCellVar, yCellVar;
-   xCellVar = dataFile.getVar("xCell");
-   if(xCellVar.isNull()) return NC_ERR;
-   yCellVar = dataFile.getVar("yCell");
-   if(yCellVar.isNull()) return NC_ERR;
-   yCellVar.getVar(yCell);
-   xCellVar.getVar(xCell);
+   float yCell[nCells];
+   string varName = "yCellxxx";
+   tempVar = dataFile.getVar(varName);
+   if(tempVar.isNull()) {
+       cout << varName << " not found in file" << endl;
+       return NC_ERR;
+   } else {
+       tempVar.getVar(yCell);
+   }
+
+   tempVar = dataFile.getVar(varName);
+   if(tempVar.isNull()) { return NC_ERR; } else { tempVar.getVar(yCell); }
 
    cout << "xCell" << endl;
    for (int iCell = 0; iCell < nCells; iCell++)
@@ -109,4 +114,14 @@ int main()
       return NC_ERR;
    }
   
+}
+
+void readVar(string varName, float *var) {
+   NcVar tempVar;
+   tempVar = dataFile.getVar(varName);
+   if(tempVar.isNull()) {
+       cout << "Warning: " <<  varName << " not found in file" << endl;
+   } else {
+       tempVar.getVar(var);
+   }
 }
