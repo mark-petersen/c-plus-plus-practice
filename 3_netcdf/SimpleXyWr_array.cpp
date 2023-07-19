@@ -18,6 +18,7 @@
 #include <iostream>
 #include <netcdf>
 #include <vector>
+#include <array>
 using namespace std;
 using namespace netCDF;
 using namespace netCDF::exceptions;
@@ -35,7 +36,9 @@ int main()
 {
   // This is the data array we will write. It will just be filled
   // with a progression of numbers for this example.
-  int dataOut[NX][NY];
+  //int dataOut[NX][NY];
+  array<array<int, NX>, NY> dataOut;
+
   
   // Create some pretend data. If this was not an example program, we
   // would have some real data to write, for example, model output.
