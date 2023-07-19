@@ -17,14 +17,16 @@ using namespace netCDF::exceptions;
 // Return this code to the OS in case of failure.
 static const int NC_ERR = 2;
 
+void readVar(NcFile& dataFile, string varName, double var[]);
+
 int main()
 {
    // These arrays will store coordinates
-   //float xCell[nCells], yCell[nCells];
+   //double xCell[nCells], yCell[nCells];
    
    // These arrays will hold the data we will read in. We will only
    // need enough space to hold one timestep of data; one record.
-   //float temperature[nVertLevels][nCells];
+   //double temperature[nVertLevels][nCells];
    
    try
    {
@@ -35,24 +37,38 @@ int main()
    int nEdges = dataFile.getDim("nEdges").getSize();
    int nVertices = dataFile.getDim("nVertices").getSize();
    
-   float xCell[nCells]; dataFile.getVar("xCell").getVar(xCell);
+   double latCell[nCells]; readVar(dataFile, "latCell", latCell);
+   double lonCell[nCells]; readVar(dataFile, "lonCell", lonCell);
+   double xCell[nCells]; readVar(dataFile, "xCell", xCell);
+   double yCell[nCells]; readVar(dataFile, "yCell", yCell);
+   double zCell[nCells]; readVar(dataFile, "zCell", zCell);
+   double latEdge[nEdges]; readVar(dataFile, "latEdge", latEdge);
+   double lonEdge[nEdges]; readVar(dataFile, "lonEdge", lonEdge);
+   double xEdge[nEdges]; readVar(dataFile, "xEdge", xEdge);
+   double yEdge[nEdges]; readVar(dataFile, "yEdge", yEdge);
+   double zEdge[nEdges]; readVar(dataFile, "zEdge", zEdge);
+   double latVertex[nVertices]; readVar(dataFile, "latVertex", latVertex);
+   double lonVertex[nVertices]; readVar(dataFile, "lonVertex", lonVertex);
+   double xVertex[nVertices]; readVar(dataFile, "xVertex", xVertex);
+   double yVertex[nVertices]; readVar(dataFile, "yVertex", yVertex);
+   double zVertex[nVertices]; readVar(dataFile, "zVertex", zVertex);
+   double areaCell[nCells]; readVar(dataFile, "areaCell", areaCell);
+   double angleEdge[nEdges]; readVar(dataFile, "angleEdge", angleEdge);
+   double dcEdge[nEdges]; readVar(dataFile, "dcEdge", dcEdge);
+   double dvEdge[nEdges]; readVar(dataFile, "dvEdge", dvEdge);
+   double areaTriangle[nVertices]; readVar(dataFile, "areaTriangle", areaTriangle);
+   double cellQuality[nCells]; readVar(dataFile, "cellQuality", cellQuality);
+   double gridSpacing[nCells]; readVar(dataFile, "gridSpacing", gridSpacing);
+   double triangleQuality[nVertices]; readVar(dataFile, "triangleQuality", triangleQuality);
+   double triangleAngleQuality[nVertices]; readVar(dataFile, "triangleAngleQuality", triangleAngleQuality);
+   double meshDensity[nCells]; readVar(dataFile, "meshDensity", meshDensity);
+   // mrp need 2D array call for these
+//   double weightsOnEdge[nEdges][maxEdges2]; readVar(dataFile, "weightsOnEdge", weightsOnEdge);
+//   double kiteAreasOnVertex[nVertices][vertexDegree]; readVar(dataFile, "kiteAreasOnVertex", kiteAreasOnVertex);
 
-   float yCell[nCells];
-   string varName = "yCellxxx";
-   tempVar = dataFile.getVar(varName);
-   if(tempVar.isNull()) {
-       cout << varName << " not found in file" << endl;
-       return NC_ERR;
-   } else {
-       tempVar.getVar(yCell);
-   }
-
-   tempVar = dataFile.getVar(varName);
-   if(tempVar.isNull()) { return NC_ERR; } else { tempVar.getVar(yCell); }
-
-   cout << "xCell" << endl;
+   cout << "yCell" << endl;
    for (int iCell = 0; iCell < nCells; iCell++)
-      cout << xCell[iCell]<< ", ";
+      cout << yCell[iCell]<< ", ";
    cout << endl;
 
 /*
@@ -92,8 +108,8 @@ int main()
        for (int xCell = 0; xCell < NLAT; xCell++)
 	 for (int yCell = 0; yCell < NLON; yCell++)
 	   {
-	     if(pres_in[lvl][xCell][yCell] != (float) (SAMPLE_PRESSURE + i)) return NC_ERR;
-	     if(temp_in[lvl][xCell][yCell] != (float)(SAMPLE_TEMP + i++)) return NC_ERR;
+	     if(pres_in[lvl][xCell][yCell] != (double) (SAMPLE_PRESSURE + i)) return NC_ERR;
+	     if(temp_in[lvl][xCell][yCell] != (double)(SAMPLE_TEMP + i++)) return NC_ERR;
 	   }
      
    } // next record 
@@ -116,11 +132,11 @@ int main()
   
 }
 
-void readVar(string varName, float *var) {
+void readVar(NcFile& dataFile, string varName, double var[]) {
    NcVar tempVar;
    tempVar = dataFile.getVar(varName);
    if(tempVar.isNull()) {
-       cout << "Warning: " <<  varName << " not found in file" << endl;
+       cout << "Warning: " <<  varName << " was not found in file" << endl;
    } else {
        tempVar.getVar(var);
    }
