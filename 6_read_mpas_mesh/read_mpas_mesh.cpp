@@ -20,8 +20,9 @@ static const int NC_ERR = 2;
 template <typename varType>
 void readVar(NcFile& dataFile, string varName, varType var[]);
 
-template <typename varType, size_t row, size_t column>
-void readVar(NcFile& dataFile, string varName, varType var[row][column]);
+// does not work. Try again later
+// template <typename varType, size_t row, size_t column>
+// void readVar(NcFile& dataFile, string varName, varType (var)[row][column]);
 
 int main()
 {
@@ -63,8 +64,8 @@ int main()
    double triangleQuality[nVertices]; readVar(dataFile, "triangleQuality", triangleQuality);
    double triangleAngleQuality[nVertices]; readVar(dataFile, "triangleAngleQuality", triangleAngleQuality);
    double meshDensity[nCells]; readVar(dataFile, "meshDensity", meshDensity);
-   //double weightsOnEdge[nEdges][maxEdges2]; readVar(dataFile, "weightsOnEdge", &weightsOnEdge);
-   //double kiteAreasOnVertex[nVertices][vertexDegree]; readVar(dataFile, "kiteAreasOnVertex", &kiteAreasOnVertex);
+
+
 
    int indexToCellID[nCells]; readVar(dataFile, "indexToCellID", indexToCellID);
    int indexToEdgeID[nEdges]; readVar(dataFile, "indexToEdgeID", indexToEdgeID);
@@ -74,14 +75,17 @@ int main()
    int boundaryVertex[nVertices]; readVar(dataFile, "boundaryVertex", boundaryVertex);
    int obtuseTriangle[nVertices]; readVar(dataFile, "obtuseTriangle", obtuseTriangle);
 
-   //int cellsOnCell[nCells][maxEdges]; readVar(dataFile, "cellsOnCell", cellsOnCell);
-   //int edgesOnCell[nCells][maxEdges]; readVar(dataFile, "edgesOnCell", edgesOnCell);
-   //int verticesOnCell[nCells][maxEdges]; readVar(dataFile, "verticesOnCell", verticesOnCell);
-   //int edgesOnEdge[nEdges][maxEdges2]; readVar(dataFile, "edgesOnEdge", edgesOnEdge);
-   //int cellsOnEdge[nEdges][2]; readVar(dataFile, "cellsOnEdge", cellsOnEdge);
-   //int verticesOnEdge[nEdges][2]; readVar(dataFile, "verticesOnEdge", verticesOnEdge);
-   //int cellsOnVertex[nVertices][vertexDegree]; readVar(dataFile, "cellsOnVertex", cellsOnVertex);
-   //int edgesOnVertex[nVertices][vertexDegree]; readVar(dataFile, "edgesOnVertex", edgesOnVertex);
+   // using this format for 2D arrays because I couldn't get template to work. This produces no error message if variable is missing.
+   double weightsOnEdge[nEdges][maxEdges2]; dataFile.getVar("weightsOnEdge").getVar(weightsOnEdge);
+   double kiteAreasOnVertex[nEdges][maxEdges2]; dataFile.getVar("kiteAreasOnVertex").getVar(kiteAreasOnVertex);
+   int cellsOnCell[nCells][maxEdges]; dataFile.getVar("cellsOnCell").getVar(cellsOnCell);
+   int edgesOnCell[nCells][maxEdges]; dataFile.getVar("edgesOnCell").getVar(edgesOnCell);
+   int verticesOnCell[nCells][maxEdges]; dataFile.getVar("verticesOnCell").getVar(verticesOnCell);
+   int edgesOnEdge[nEdges][maxEdges2]; dataFile.getVar("edgesOnEdge").getVar(edgesOnEdge);
+   int cellsOnEdge[nEdges][2]; dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge);
+   int verticesOnEdge[nEdges][2]; dataFile.getVar("verticesOnEdge").getVar(verticesOnEdge);
+   int cellsOnVertex[nVertices][vertexDegree]; dataFile.getVar("cellsOnVertex").getVar(cellsOnVertex);
+   int edgesOnVertex[nVertices][vertexDegree]; dataFile.getVar("edgesOnVertex").getVar(edgesOnVertex);
 
    cout << "yCell" << endl;
    for (int iCell = 0; iCell < nCells; iCell++)
@@ -160,13 +164,14 @@ void readVar(NcFile& dataFile, string varName, varType var[]) {
    }
 }
 
-template <typename varType, size_t row, size_t column>
-void readVar(NcFile& dataFile, string varName, varType var[row][column]) {
-   NcVar tempVar;
-   tempVar = dataFile.getVar(varName);
-   if(tempVar.isNull()) {
-       cout << "Warning: " <<  varName << " was not found in file" << endl;
-   } else {
-       tempVar.getVar(var);
-   }
-}
+// does not work. Try later
+//template <typename varType, int row, int column>
+//void readVar(NcFile& dataFile, string varName, varType (var)[row][column]) {
+//   NcVar tempVar;
+//   tempVar = dataFile.getVar(varName);
+//   if(tempVar.isNull()) {
+//       cout << "Warning: " <<  varName << " was not found in file" << endl;
+//   } else {
+//       tempVar.getVar(var);
+//   }
+//}
