@@ -17,16 +17,11 @@ using namespace netCDF::exceptions;
 // Return this code to the OS in case of failure.
 static const int NC_ERR = 2;
 
-void readVar(NcFile& dataFile, string varName, double var[]);
+template <typename varType>
+void readVar(NcFile& dataFile, string varName, varType var[]);
 
 int main()
 {
-   // These arrays will store coordinates
-   //double xCell[nCells], yCell[nCells];
-   
-   // These arrays will hold the data we will read in. We will only
-   // need enough space to hold one timestep of data; one record.
-   //double temperature[nVertLevels][nCells];
    
    try
    {
@@ -36,6 +31,9 @@ int main()
    int nCells = dataFile.getDim("nCells").getSize();
    int nEdges = dataFile.getDim("nEdges").getSize();
    int nVertices = dataFile.getDim("nVertices").getSize();
+   int maxEdges = dataFile.getDim("maxEdges").getSize();
+   int maxEdges2 = dataFile.getDim("maxEdges2").getSize();
+   int vertexDegree = dataFile.getDim("vertexDegree").getSize();
    
    double latCell[nCells]; readVar(dataFile, "latCell", latCell);
    double lonCell[nCells]; readVar(dataFile, "lonCell", lonCell);
@@ -62,9 +60,25 @@ int main()
    double triangleQuality[nVertices]; readVar(dataFile, "triangleQuality", triangleQuality);
    double triangleAngleQuality[nVertices]; readVar(dataFile, "triangleAngleQuality", triangleAngleQuality);
    double meshDensity[nCells]; readVar(dataFile, "meshDensity", meshDensity);
-   // mrp need 2D array call for these
-//   double weightsOnEdge[nEdges][maxEdges2]; readVar(dataFile, "weightsOnEdge", weightsOnEdge);
-//   double kiteAreasOnVertex[nVertices][vertexDegree]; readVar(dataFile, "kiteAreasOnVertex", kiteAreasOnVertex);
+   //double weightsOnEdge[nEdges][maxEdges2]; readVar(dataFile, "weightsOnEdge", &weightsOnEdge);
+   //double kiteAreasOnVertex[nVertices][vertexDegree]; readVar(dataFile, "kiteAreasOnVertex", &kiteAreasOnVertex);
+
+   int indexToCellID[nCells]; readVar(dataFile, "indexToCellID", indexToCellID);
+   int indexToEdgeID[nEdges]; readVar(dataFile, "indexToEdgeID", indexToEdgeID);
+   int indexToVertexID[nVertices]; readVar(dataFile, "indexToVertexID", indexToVertexID);
+   int nEdgesOnCell[nCells]; readVar(dataFile, "nEdgesOnCell", nEdgesOnCell);
+   int nEdgesOnEdge[nEdges]; readVar(dataFile, "nEdgesOnEdge", nEdgesOnEdge);
+   int boundaryVertex[nVertices]; readVar(dataFile, "boundaryVertex", boundaryVertex);
+   int obtuseTriangle[nVertices]; readVar(dataFile, "obtuseTriangle", obtuseTriangle);
+
+   //int cellsOnCell[nCells][maxEdges]; readVar(dataFile, "cellsOnCell", cellsOnCell);
+   //int edgesOnCell[nCells][maxEdges]; readVar(dataFile, "edgesOnCell", edgesOnCell);
+   //int verticesOnCell[nCells][maxEdges]; readVar(dataFile, "verticesOnCell", verticesOnCell);
+   //int edgesOnEdge[nEdges][maxEdges2]; readVar(dataFile, "edgesOnEdge", edgesOnEdge);
+   //int cellsOnEdge[nEdges][2]; readVar(dataFile, "cellsOnEdge", cellsOnEdge);
+   //int verticesOnEdge[nEdges][2]; readVar(dataFile, "verticesOnEdge", verticesOnEdge);
+   //int cellsOnVertex[nVertices][vertexDegree]; readVar(dataFile, "cellsOnVertex", cellsOnVertex);
+   //int edgesOnVertex[nVertices][vertexDegree]; readVar(dataFile, "edgesOnVertex", edgesOnVertex);
 
    cout << "yCell" << endl;
    for (int iCell = 0; iCell < nCells; iCell++)
@@ -132,7 +146,8 @@ int main()
   
 }
 
-void readVar(NcFile& dataFile, string varName, double var[]) {
+template <typename varType>
+void readVar(NcFile& dataFile, string varName, varType var[]) {
    NcVar tempVar;
    tempVar = dataFile.getVar(varName);
    if(tempVar.isNull()) {
