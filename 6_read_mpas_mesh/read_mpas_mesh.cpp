@@ -11,7 +11,7 @@ using namespace netCDF;
 using namespace netCDF::exceptions;
 
 // Dimensions
-static const int nCells = 256;
+//static const int nCells = 256;
 
 // Return this code to the OS in case of failure.
 static const int NC_ERR = 2;
@@ -19,7 +19,7 @@ static const int NC_ERR = 2;
 int main()
 {
    // These arrays will store coordinates
-   float xCell[nCells], yCell[nCells];
+   //float xCell[nCells], yCell[nCells];
    
    // These arrays will hold the data we will read in. We will only
    // need enough space to hold one timestep of data; one record.
@@ -29,6 +29,12 @@ int main()
    {
    // Open the file.
      NcFile dataFile("mpas_mesh_16x16.nc", NcFile::read);
+
+   NcDim nCellsDim;
+   nCellsDim = dataFile.getDim("nCells");
+   int nCells = nCellsDim.getSize();
+   
+   float xCell[nCells], yCell[nCells];
 
    // Get the xCell and yCell variables and read data.
    NcVar xCellVar, yCellVar;
