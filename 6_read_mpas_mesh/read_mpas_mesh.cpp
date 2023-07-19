@@ -20,6 +20,9 @@ static const int NC_ERR = 2;
 template <typename varType>
 void readVar(NcFile& dataFile, string varName, varType var[]);
 
+template <typename varType, size_t row, size_t column>
+void readVar(NcFile& dataFile, string varName, varType var[row][column]);
+
 int main()
 {
    
@@ -148,6 +151,17 @@ int main()
 
 template <typename varType>
 void readVar(NcFile& dataFile, string varName, varType var[]) {
+   NcVar tempVar;
+   tempVar = dataFile.getVar(varName);
+   if(tempVar.isNull()) {
+       cout << "Warning: " <<  varName << " was not found in file" << endl;
+   } else {
+       tempVar.getVar(var);
+   }
+}
+
+template <typename varType, size_t row, size_t column>
+void readVar(NcFile& dataFile, string varName, varType var[row][column]) {
    NcVar tempVar;
    tempVar = dataFile.getVar(varName);
    if(tempVar.isNull()) {
