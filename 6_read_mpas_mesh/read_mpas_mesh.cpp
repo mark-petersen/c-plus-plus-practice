@@ -11,6 +11,8 @@ using namespace std;
 using namespace netCDF;
 using namespace netCDF::exceptions;
 
+static const bool verbose = true;
+
 // Dimensions
 //static const int nCells = 256;
 
@@ -24,7 +26,7 @@ template <typename varType>
 void read1DArray(NcFile& dataFile, string varName, varType var[]);
 
 void read2DArrayInt(NcFile& dataFile, string varName, int**& var, int dim1, int dim2);
-void read2DArrayDouble(NcFile& dataFile, string varName, int**& var, int dim1, int dim2);
+void read2DArrayDouble(NcFile& dataFile, string varName, double**& var, int dim1, int dim2);
 
 class MpasMesh {
   public:
@@ -79,7 +81,7 @@ class MpasMesh {
     int** cellsOnVertex;
     int** edgesOnVertex;
     double** weightsOnEdge;
-    double* kiteAreasOnVertex;
+    double** kiteAreasOnVertex;
 
     // constructor
     MpasMesh(string meshFileName) {
@@ -133,6 +135,7 @@ class MpasMesh {
    read2DArrayInt(dataFile, "edgesOnCell", edgesOnCell, nCells, maxEdges);
    read2DArrayInt(dataFile, "verticesOnCell", verticesOnCell, nCells, maxEdges);
    read2DArrayInt(dataFile, "edgesOnEdge", edgesOnEdge, nEdges, maxEdges2);
+   read2DArrayInt(dataFile, "cellsOnEdge", cellsOnEdge, nEdges, 2);
    read2DArrayInt(dataFile, "verticesOnEdge", verticesOnEdge, nEdges, 2);
    read2DArrayInt(dataFile, "cellsOnVertex", cellsOnVertex, nVertices, vertexDegree);
    read2DArrayInt(dataFile, "edgesOnVertex", edgesOnVertex, nVertices, vertexDegree);
@@ -149,8 +152,8 @@ int main()
   MpasMesh m("mpas_mesh_16x16.nc");
   cout << "xCell[0]: " << m.xCell[0] << endl;
   cout << "cellsOnEdge[0]: " << m.cellsOnEdge[0][0] << endl;
- for (int i = 0; i < m.nEdges; i++) {
-    cout << m.cellsOnEdge[i][0] << "  " << m.cellsOnEdge[i][1] << endl;
+ for (int i = 0; i < 3; i++) {
+    cout << m.weightsOnEdge[i][0] << "  " << m.weightsOnEdge[i][1] << endl;
  }
   // NcFile dataFile("mdpas_mesh_16x16.nc", NcFile::read);
 
@@ -230,9 +233,10 @@ void read1DArray(NcFile& dataFile, string varName, varType var[]) {
    }
 }
 
-void read2DArrayDouble(NcFile& dataFile, string varName, int**& var, int dim1, int dim2) {
-  var = new int*[dim1];
-  for (int i=0; i<dim1; i++) var[i] = new int[dim2];
+void read2DArrayDouble(NcFile& dataFile, string varName, double**& var, int dim1, int dim2) {
+  if (verbose) cout << "read2DArrayDouble: var=" << varName << endl;
+  var = new double*[dim1];
+  for (int i=0; i<dim1; i++) var[i] = new double[dim2];
   NcVar tempVar;
   tempVar = dataFile.getVar(varName);
   if(tempVar.isNull()) {
@@ -249,6 +253,7 @@ void read2DArrayDouble(NcFile& dataFile, string varName, int**& var, int dim1, i
 }
 
 void read2DArrayInt(NcFile& dataFile, string varName, int**& var, int dim1, int dim2) {
+  if (verbose) cout << "read2DArrayInt: var=" << varName << endl;
   var = new int*[dim1];
   for (int i=0; i<dim1; i++) var[i] = new int[dim2];
   NcVar tempVar;
