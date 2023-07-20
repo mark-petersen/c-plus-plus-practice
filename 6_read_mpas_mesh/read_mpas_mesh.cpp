@@ -75,14 +75,14 @@ class MpasMesh {
     int* obtuseTriangle;
 
     // using this format for 2D arrays because I couldn't get template to work. This produces no error message if variable is missing.
-    int* cellsOnCell;
-    int* edgesOnCell;
-    int* verticesOnCell;
-    int* edgesOnEdge;
+    int** cellsOnCell;
+    int** edgesOnCell;
+    int** verticesOnCell;
+    int** edgesOnEdge;
     int** cellsOnEdge;
-    int* verticesOnEdge;
-    int* cellsOnVertex;
-    int* edgesOnVertex;
+    int** verticesOnEdge;
+    int** cellsOnVertex;
+    int** edgesOnVertex;
     double* weightsOnEdge;
     double* kiteAreasOnVertex;
 
@@ -123,7 +123,10 @@ class MpasMesh {
    triangleAngleQuality = new double[nVertices]; read1DArray(dataFile, "triangleAngleQuality", triangleAngleQuality);
    meshDensity = new double[nCells]; read1DArray(dataFile, "meshDensity", meshDensity);
    //weightsOnEdge = new double[nEdges][maxEdges2]; dataFile.getVar("weightsOnEdge").getVar(weightsOnEdge);
+//   read2DArrayInt(dataFile, "weightsOnEdge", weightsOnEdge, nEdges, maxEdges2);
    //kiteAreasOnVertex = new double[nEdges][maxEdges2]; dataFile.getVar("kiteAreasOnVertex").getVar(kiteAreasOnVertex);
+//   read2DArrayInt(dataFile, "kiteAreasOnVertex", kiteAreasOnVertex, nEdges, maxEdges2);
+   //read2DArrayInt(dataFile, "", , , );
 
    indexToCellID = new int[nCells]; read1DArray(dataFile, "indexToCellID", indexToCellID);
    indexToEdgeID = new int[nEdges]; read1DArray(dataFile, "indexToEdgeID", indexToEdgeID);
@@ -133,53 +136,22 @@ class MpasMesh {
    boundaryVertex = new int[nVertices]; read1DArray(dataFile, "boundaryVertex", boundaryVertex);
    obtuseTriangle = new int[nVertices]; read1DArray(dataFile, "obtuseTriangle", obtuseTriangle);
 
-   int i1;
-   int i2;
    // using this format for 2D arrays because I couldn't get template to work. This produces no error message if variable is missing.
    //cellsOnCell = new int[nCells][maxEdges]; dataFile.getVar("cellsOnCell").getVar(cellsOnCell);
+   read2DArrayInt(dataFile, "cellsOnCell", cellsOnCell, nCells, maxEdges);
    //edgesOnCell = new int[nCells][maxEdges]; dataFile.getVar("edgesOnCell").getVar(edgesOnCell);
+   read2DArrayInt(dataFile, "edgesOnCell", edgesOnCell, nCells, maxEdges);
    //verticesOnCell = new int[nCells][maxEdges]; dataFile.getVar("verticesOnCell").getVar(verticesOnCell);
+   read2DArrayInt(dataFile, "verticesOnCell", verticesOnCell, nCells, maxEdges);
    //edgesOnEdge = new int[nEdges][maxEdges2]; dataFile.getVar("edgesOnEdge").getVar(edgesOnEdge);
+   read2DArrayInt(dataFile, "edgesOnEdge", edgesOnEdge, nEdges, maxEdges2);
    read2DArrayInt(dataFile, "cellsOnEdge", cellsOnEdge, nEdges, 2);
-//string varName = "cellsOnEdge";
-//int dim1 = nEdges;
-//int dim2 = 2;
-//    cout << "1" << endl;
-////    int cellsOnEdge2[nEdges][2]; dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge2);
-//   cellsOnEdge = new int*[dim1];
-//    cout << "2" << endl;
-//   for (int i=0; i<dim1; i++) cellsOnEdge[i] = new int[dim2];
-//    cout << "3" << endl;
-//   //dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge);
-//   NcVar tempVar;
-//    cout << "4" << endl;
-//   tempVar = dataFile.getVar(varName);
-//    cout << "5" << endl;
-//   if(tempVar.isNull()) {
-//       cout << "Warning: " <<  varName << " was not found in file" << endl;
-//   } else {
-//    cout << "6" << endl;
-//    //   tempVar.getVar(cellsOnEdge);
-//    int tempArray[dim1][dim2];
-//    tempVar.getVar(tempArray);
-//    cout << "6.5" << endl;
-//    for (int i = 0; i < dim1; i++) {
-//        for (int j = 0; j < dim2; j++) {
-//            // Assign values to the
-//            // memory blocks created
-//            cellsOnEdge[i][j] = tempArray[i][j];
-//        }
-//    }
-//    cout << "7" << endl;
-//   }
-   //i1=nEdges;
-   //i2=2;
-   //cellsOnEdge = new int*[i2];
-   //for (int i=0; i<i2; i++) cellsOnEdge[i] = new int[i1];
-   //dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge);
    //verticesOnEdge = new int[nEdges][2]; dataFile.getVar("verticesOnEdge").getVar(verticesOnEdge);
+   read2DArrayInt(dataFile, "verticesOnEdge", verticesOnEdge, nEdges, 2);
    //cellsOnVertex = new int[nVertices][vertexDegree]; dataFile.getVar("cellsOnVertex").getVar(cellsOnVertex);
+   read2DArrayInt(dataFile, "cellsOnVertex", cellsOnVertex, nVertices, vertexDegree);
    //edgesOnVertex = new int[nVertices][vertexDegree]; dataFile.getVar("edgesOnVertex").getVar(edgesOnVertex);
+   read2DArrayInt(dataFile, "edgesOnVertex", edgesOnVertex, nVertices, vertexDegree);
 
    }
 };
