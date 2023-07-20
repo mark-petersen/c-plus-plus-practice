@@ -23,8 +23,9 @@ void printArray(string varName, varType var[], int varSize);
 template <typename varType>
 void read1DArray(NcFile& dataFile, string varName, varType var[]);
 
-template <typename varType>
-void read2DArray(NcFile& dataFile, string varName, varType var, int dim1, int dim2);
+//template <typename varType>
+//void read2DArray(NcFile& dataFile, string varName, varType& var, int dim1, int dim2);
+void read2DArrayInt(NcFile& dataFile, string varName, int**& var, int dim1, int dim2);
 
 // does not work. Try again later
 // template <typename varType, size_t row, size_t column>
@@ -139,38 +140,38 @@ class MpasMesh {
    //edgesOnCell = new int[nCells][maxEdges]; dataFile.getVar("edgesOnCell").getVar(edgesOnCell);
    //verticesOnCell = new int[nCells][maxEdges]; dataFile.getVar("verticesOnCell").getVar(verticesOnCell);
    //edgesOnEdge = new int[nEdges][maxEdges2]; dataFile.getVar("edgesOnEdge").getVar(edgesOnEdge);
-//   read2DArray(dataFile, "cellsOnEdge", cellsOnEdge, nEdges, 2);
-string varName = "cellsOnEdge";
-int dim1 = nEdges;
-int dim2 = 2;
-    cout << "1" << endl;
-//    int cellsOnEdge2[nEdges][2]; dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge2);
-   cellsOnEdge = new int*[dim1];
-    cout << "2" << endl;
-   for (int i=0; i<dim1; i++) cellsOnEdge[i] = new int[dim2];
-    cout << "3" << endl;
-   //dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge);
-   NcVar tempVar;
-    cout << "4" << endl;
-   tempVar = dataFile.getVar(varName);
-    cout << "5" << endl;
-   if(tempVar.isNull()) {
-       cout << "Warning: " <<  varName << " was not found in file" << endl;
-   } else {
-    cout << "6" << endl;
-    //   tempVar.getVar(cellsOnEdge);
-    int tempArray[dim1][dim2];
-    tempVar.getVar(tempArray);
-    cout << "6.5" << endl;
-    for (int i = 0; i < dim1; i++) {
-        for (int j = 0; j < dim2; j++) {
-            // Assign values to the
-            // memory blocks created
-            cellsOnEdge[i][j] = tempArray[i][j];
-        }
-    }
-    cout << "7" << endl;
-   }
+   read2DArrayInt(dataFile, "cellsOnEdge", cellsOnEdge, nEdges, 2);
+//string varName = "cellsOnEdge";
+//int dim1 = nEdges;
+//int dim2 = 2;
+//    cout << "1" << endl;
+////    int cellsOnEdge2[nEdges][2]; dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge2);
+//   cellsOnEdge = new int*[dim1];
+//    cout << "2" << endl;
+//   for (int i=0; i<dim1; i++) cellsOnEdge[i] = new int[dim2];
+//    cout << "3" << endl;
+//   //dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge);
+//   NcVar tempVar;
+//    cout << "4" << endl;
+//   tempVar = dataFile.getVar(varName);
+//    cout << "5" << endl;
+//   if(tempVar.isNull()) {
+//       cout << "Warning: " <<  varName << " was not found in file" << endl;
+//   } else {
+//    cout << "6" << endl;
+//    //   tempVar.getVar(cellsOnEdge);
+//    int tempArray[dim1][dim2];
+//    tempVar.getVar(tempArray);
+//    cout << "6.5" << endl;
+//    for (int i = 0; i < dim1; i++) {
+//        for (int j = 0; j < dim2; j++) {
+//            // Assign values to the
+//            // memory blocks created
+//            cellsOnEdge[i][j] = tempArray[i][j];
+//        }
+//    }
+//    cout << "7" << endl;
+//   }
    //i1=nEdges;
    //i2=2;
    //cellsOnEdge = new int*[i2];
@@ -273,24 +274,24 @@ void read1DArray(NcFile& dataFile, string varName, varType var[]) {
    }
 }
 
-template <typename varType>
-void read2DArray(NcFile& dataFile, string varName, varType var, int dim1, int dim2) {
-    cout << "1" << endl;
+void read2DArrayInt(NcFile& dataFile, string varName, int**& var, int dim1, int dim2) {
    var = new int*[dim1];
-    cout << "2" << endl;
    for (int i=0; i<dim1; i++) var[i] = new int[dim2];
-    cout << "3" << endl;
    //dataFile.getVar("cellsOnEdge").getVar(cellsOnEdge);
    NcVar tempVar;
-    cout << "4" << endl;
    tempVar = dataFile.getVar(varName);
-    cout << "5" << endl;
    if(tempVar.isNull()) {
-       cout << "Warning: " <<  varName << " was not found in file" << endl;
+     cout << "Warning: " <<  varName << " was not found in file" << endl;
    } else {
     cout << "6" << endl;
-       tempVar.getVar(var);
+    int tempArray[dim1][dim2];
+    tempVar.getVar(tempArray);
     cout << "7" << endl;
+    for (int i = 0; i < dim1; i++) {
+        for (int j = 0; j < dim2; j++) {
+            var[i][j] = tempArray[i][j];
+        }
+    }
    }
 }
 
