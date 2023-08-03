@@ -1,0 +1,1 @@
+/lustre/scratch5/mpeterse/E3SM/inputdata/ocn/mpas-o/EC30to60E2r3/mpaso.EC30to60E2r3.230313.nc
