@@ -3,13 +3,7 @@
 module load gcc
 module load cray-netcdf-hdf5parallel
 
-# to make meshes:
-# planar_hex --nx 16 --ny 16 --dc 64000 -o base_mesh_16x16.nc
-# MpasMeshConverter.x base_mesh_16x16.nc mpas_mesh_16x16.nc
-
-#   export file=read_mpas_mesh.cpp
-
-for file in read_mpas_mesh.cpp
+for file in pres_temp_4D_wr.c pres_temp_4D_rd.c sfc_pres_temp_wr.c sfc_pres_temp_rd.c  simple_xy_wr.c simple_xy_rd.c 
 do
   echo "Processing $file"
   g++ -I/opt/cray/pe/netcdf-hdf5parallel/4.9.0.1/gnu/9.1/include \

@@ -7,6 +7,8 @@
 #include <iostream>
 #include <string>
 #include <netcdf>
+#include <vector>
+#include <array>
 using namespace std;
 using namespace netCDF;
 using namespace netCDF::exceptions;
@@ -27,6 +29,7 @@ void read1DArray(NcFile& dataFile, string varName, varType var[]);
 
 void read2DArrayInt(NcFile& dataFile, string varName, int**& var, int dim1, int dim2);
 void read2DArrayDouble(NcFile& dataFile, string varName, double**& var, int dim1, int dim2);
+void read2DArrayVector(NcFile& dataFile, string varName, std::vector<std::vector<int>>& var, int dim1, int dim2);
 
 class MpasMesh {
   public:
@@ -71,7 +74,9 @@ class MpasMesh {
     int* boundaryVertex;
     int* obtuseTriangle;
 
-    // using this format for 2D arrays because I couldn't get template to work. This produces no error message if variable is missing.
+    std::vector<std::vector<int>>
+    //std::vector<std::vector<int>> cellsOnCellVector(nCells,std::vector<int>(maxEdges));
+    // ha! Use the first version above. Then use vector.assign to create the size of the vector in the subroutine.
     int** cellsOnCell;
     int** edgesOnCell;
     int** verticesOnCell;
@@ -80,6 +85,8 @@ class MpasMesh {
     int** verticesOnEdge;
     int** cellsOnVertex;
     int** edgesOnVertex;
+
+    // using this format for 2D arrays because I couldn't get template to work. This produces no error message if variable is missing.
     double** weightsOnEdge;
     double** kiteAreasOnVertex;
 
@@ -131,6 +138,7 @@ class MpasMesh {
    boundaryVertex = new int[nVertices]; read1DArray(dataFile, "boundaryVertex", boundaryVertex);
    obtuseTriangle = new int[nVertices]; read1DArray(dataFile, "obtuseTriangle", obtuseTriangle);
 
+   read2DArrayVector(dataFile, "cellsOnCell", cellsOnCellVector, nCells, maxEdges);
    read2DArrayInt(dataFile, "cellsOnCell", cellsOnCell, nCells, maxEdges);
    read2DArrayInt(dataFile, "edgesOnCell", edgesOnCell, nCells, maxEdges);
    read2DArrayInt(dataFile, "verticesOnCell", verticesOnCell, nCells, maxEdges);
@@ -151,9 +159,10 @@ int main()
    // Open the file.
   MpasMesh m("mpas_mesh_16x16.nc");
   cout << "xCell[0]: " << m.xCell[0] << endl;
-  cout << "cellsOnEdge[0]: " << m.cellsOnEdge[0][0] << endl;
+//  cout << "cellsOnEdge[0]: " << m.cellsOnEdge[0][0] << endl;
  for (int i = 0; i < 3; i++) {
-    cout << m.weightsOnEdge[i][0] << "  " << m.weightsOnEdge[i][1] << endl;
+    //cout << m.weightsOnEdge[i][0] << "  " << m.weightsOnEdge[i][1] << endl;
+    cout << m.cellsOnCellVector[i][0] << "  " << m.cellsOnCellVector[i][1] << endl;
  }
   // NcFile dataFile("mdpas_mesh_16x16.nc", NcFile::read);
 
@@ -282,3 +291,20 @@ void read2DArrayInt(NcFile& dataFile, string varName, int**& var, int dim1, int 
 //       tempVar.getVar(var);
 //   }
 //}
+
+void read2DArrayVector(NcFile& dataFile, string varName, std::vector<std::vector<int>>& var, int dim1, int dim2) {
+  if (verbose) cout << "read2DArrayInt: var=" << varName << endl;
+  NcVar tempVar;
+  tempVar = dataFile.getVar(varName);
+  if(tempVar.isNull()) {
+    cout << "Warning: " <<  varName << " was not found in file" << endl;
+  } else {
+    int tempArray[dim1][dim2];
+    tempVar.getVar(tempArray);
+    for (int i = 0; i < dim1; i++) {
+      for (int j = 0; j < dim2; j++) {
+        var[i][j] = tempArray[i][j];
+      }
+    }
+  }
+}
