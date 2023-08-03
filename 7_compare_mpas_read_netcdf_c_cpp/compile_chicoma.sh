@@ -7,9 +7,9 @@ module load cray-netcdf-hdf5parallel
 # planar_hex --nx 16 --ny 16 --dc 64000 -o base_mesh_16x16.nc
 # MpasMeshConverter.x base_mesh_16x16.nc mpas_mesh_16x16.nc
 
-#   export file=read_mpas_mesh.cpp
+#   export file=read_mpas_netcdf_cpp.cpp
 
-for file in read_mpas_mesh.cpp
+for file in read_mpas_netcdf_cpp.cpp
 do
   echo "Processing $file"
   g++ -I/opt/cray/pe/netcdf-hdf5parallel/4.9.0.1/gnu/9.1/include \
