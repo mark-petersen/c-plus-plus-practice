@@ -12,8 +12,10 @@
 using namespace std;
 using namespace netCDF;
 
-// QU240
-static constexpr auto fileName = "init_QU240.nc";
+string dirName = "links_su/";
+string fileName = "ocean.QU.240km.151209.nc";
+//string fileName = "EC30to60E2r3_mocBasinsAndTransects20210623.nc";
+//string fileName = "oRRS18to6v3.171116.nc.nc";
 static constexpr size_t nVertLevels = 60 ;
 static constexpr size_t nEdges = 22403 ;
 static constexpr size_t nCells = 7153 ;
@@ -31,7 +33,7 @@ static constexpr size_t maxEdges2 = 12 ;
 
 int main()
 {
-  NcFile dataFile(fileName, NcFile::read);
+  NcFile dataFile(dirName + fileName, NcFile::read);
 
   //int nCells = dataFile.getDim("nCells").getSize();
   double xCell[nCells];
