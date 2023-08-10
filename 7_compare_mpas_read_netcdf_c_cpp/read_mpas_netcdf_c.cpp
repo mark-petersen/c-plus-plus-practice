@@ -8,6 +8,7 @@
 #include <string>
 #include <netcdf>
 #include <array>
+#include <vector>
 
 using namespace std;
 using namespace netCDF;
@@ -31,76 +32,100 @@ static constexpr size_t maxEdges2 = 12 ;
 // 5. c++ vector of vectors for 2D.
 // 6. YAKL arrays
 
+/* Handle errors by printing an error message and exiting with a
+ * non-zero status. */
+#define ERRCODE 2
+#define ERR(e) {printf("Error: %s\n", nc_strerror(e)); exit(ERRCODE);}
+
 int main()
 {
+  /* Open the file */
+  // netcdf-c version:
+  int ncid, varid, retval;
+  if ((retval = nc_open((dirName + fileName).c_str(), NC_NOWRITE, &ncid)))
+      ERR(retval);
+  // netcdf c++ version:
   NcFile dataFile(dirName + fileName, NcFile::read);
 
   //int nCells = dataFile.getDim("nCells").getSize();
   double xCell[nCells];
-  dataFile.getVar("xCell").getVar(xCell);
+
+  /* Read the data. */
+  // netcdf-c version:
+  /* Get the varid of the data variable, based on its name. */
+   if ((retval = nc_inq_varid(ncid, "xCell", &varid))) ERR(retval);
+   if ((retval = nc_get_var_double(ncid, varid, &xCell[0]))) ERR(retval);
+  // netcdf c++ version:
+  //dataFile.getVar("xCell").getVar(xCell);
+
   cout << "xCell[0]: " << xCell[0] << endl;
 
-// 1. C arrays with fixed size
+  constexpr size_t dim1=nCells;
+  constexpr size_t dim2=nVertLevels;
+  string varName = "temperature";
   {
     cout << "1. C arrays with fixed size   ";
     double temperature[nCells][nVertLevels];
-    dataFile.getVar("temperature").getVar(temperature);
-    cout << "temperature[0][0] " << temperature[0][0] << endl;
+    // netcdf-c version:
+    if ((retval = nc_inq_varid(ncid, "temperature", &varid))) ERR(retval);
+    if ((retval = nc_get_var_double(ncid, varid, &temperature[0][0]))) ERR(retval);
+    // netcdf c++ version:
+    //  dataFile.getVar("temperature").getVar(temperature);
+    cout << "temperature[200][20] " << temperature[200][20] << endl;
   }
-
-// 2. C arrays with ** and new
   {
     cout << "2. C arrays with ** and new (variable dim)  ";
     double** var;
-    constexpr size_t dim1=nCells;
-    constexpr size_t dim2=nVertLevels;
-    auto varName = "temperature";
-
     var = new double*[dim1];
     for (int i=0; i<dim1; i++) var[i] = new double[dim2];
-    NcVar tempVar;
-    tempVar = dataFile.getVar(varName);
-    if(tempVar.isNull()) {
-      cout << "Warning: " <<  varName << " was not found in file" << endl;
-    } else {
-      double tempArray[dim1][dim2];
-      tempVar.getVar(tempArray);
-      //dataFile.getVar("temperature").getVar(tempArray);
-      for (int i = 0; i < dim1; i++) {
-        for (int j = 0; j < dim2; j++) {
-          var[i][j] = tempArray[i][j];
-        }
+
+    double tempArray[dim1][dim2];
+    if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
+    if ((retval = nc_get_var_double(ncid, varid, &tempArray[0][0]))) ERR(retval);
+    for (int i = 0; i < dim1; i++) {
+      for (int j = 0; j < dim2; j++) {
+        var[i][j] = tempArray[i][j];
       }
     }
-    cout << "temperature[0][0] " << var[0][0] << endl;
+    cout << "temperature[200][20] " << var[200][20] << endl;
   }
-
-// 3. c++ array object (dimensioned to a number)
   {
     cout << "3. c++ array object (fixed dim)    var";
-    constexpr size_t dim1=nCells;
-    constexpr size_t dim2=nVertLevels;
     array < array<double, dim2>, dim1 > var;
-    auto varName = "temperature";
 
-    NcVar tempVar;
-    tempVar = dataFile.getVar(varName);
-    if(tempVar.isNull()) {
-      cout << "Warning: " <<  varName << " was not found in file" << endl;
-    } else {
-      double tempArray[dim1][dim2];
-      tempVar.getVar(tempArray);
-      for (int i = 0; i < dim1; i++) {
-        for (int j = 0; j < dim2; j++) {
-          var[i][j] = tempArray[i][j];
-        }
+    double tempArray[dim1][dim2];
+    if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
+    if ((retval = nc_get_var_double(ncid, varid, &tempArray[0][0]))) ERR(retval);
+    for (int i = 0; i < dim1; i++) {
+      for (int j = 0; j < dim2; j++) {
+        var[i][j] = tempArray[i][j];
       }
     }
-    cout << "temperature[0][0] " << var[0][0] << endl;
+    cout << "temperature[200][20] " << var[200][20] << endl;
   }
+  {
+    cout << "4. c++ vector, single length and computed index offset";
+    vector <double> var;
+    var.resize(dim1*dim2);
 
-// 4. c++ vector, single length and computed index offset
-// 5. c++ vector of vectors for 2D.
-// 6. YAKL arrays
+    if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
+    if ((retval = nc_get_var_double(ncid, varid, &var[0]))) ERR(retval);
+    cout << "temperature[200*d2+20] " << var[200*dim2+20] << endl;
+  }
+  {
+    cout << "5. c++ vector of vectors for 2D";
+    vector <double> var;
+    var.resize(dim1*dim2);
+
+    double tempArray[dim1][dim2];
+    if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
+    if ((retval = nc_get_var_double(ncid, varid, &tempArray[0][0]))) ERR(retval);
+    for (int i = 0; i < dim1; i++) {
+      for (int j = 0; j < dim2; j++) {
+        var[i*dim2 + j] = tempArray[i][j];
+      }
+    }
+    cout << "temperature[200*d2+20] " << var[200*dim2+20] << endl;
+  }
 
 }
