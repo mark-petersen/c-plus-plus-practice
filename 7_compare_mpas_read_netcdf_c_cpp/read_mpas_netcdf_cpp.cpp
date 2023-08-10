@@ -8,6 +8,7 @@
 #include <string>
 #include <netcdf>
 #include <array>
+#include <vector>
 
 using namespace std;
 using namespace netCDF;
@@ -100,7 +101,56 @@ int main()
   }
 
 // 4. c++ vector, single length and computed index offset
+  {
+    cout << "4. c++ vector, single length and computed index offset ";
+    constexpr size_t dim1=nCells;
+    constexpr size_t dim2=nVertLevels;
+    vector<double> var;
+    var.resize(dim1*dim2);
+    auto varName = "temperature";
+
+    NcVar tempVar;
+    tempVar = dataFile.getVar(varName);
+    if(tempVar.isNull()) {
+      cout << "Warning: " <<  varName << " was not found in file" << endl;
+    } else {
+      double tempArray[dim1][dim2];
+      tempVar.getVar(tempArray);
+      for (int i = 0; i < dim1; i++) {
+        for (int j = 0; j < dim2; j++) {
+          var[i*dim2 + j] = tempArray[i][j];
+        }
+      }
+    }
+    cout << "temperature[0][0] " << var[0] << endl;
+  }
+
 // 5. c++ vector of vectors for 2D.
+  {
+    cout << "5. c++ vector of vectors for 2D ";
+    constexpr size_t dim1=nCells;
+    constexpr size_t dim2=nVertLevels;
+    vector<vector<double>> var;
+    auto varName = "temperature";
+
+    NcVar tempVar;
+    tempVar = dataFile.getVar(varName);
+    if(tempVar.isNull()) {
+      cout << "Warning: " <<  varName << " was not found in file" << endl;
+    } else {
+      double tempArray[dim1][dim2];
+      tempVar.getVar(tempArray);
+      var.resize(dim1);
+      for (int i = 0; i < dim1; i++) {
+        var[i].resize(dim2);
+        for (int j = 0; j < dim2; j++) {
+          var[i][j] = tempArray[i][j];
+        }
+      }
+    }
+    cout << "temperature[0][0] " << var[0][0] << endl;
+  }
+
 // 6. YAKL arrays
 
 }
