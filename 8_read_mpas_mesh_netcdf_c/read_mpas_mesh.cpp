@@ -20,7 +20,7 @@ string fileName = "ocean.QU.240km.151209.nc";
 bool verbose = true;
 
 size_t readNCDim(int ncid, string dimName);
-vector <int> readNCVarInt(int ncid, string varName, size_t dim);
+vector <int> readNCInt(int ncid, string varName, size_t dim);
 vector <double> readNCDouble(int ncid, string varName, size_t dim);
 
 int main()
@@ -37,9 +37,8 @@ int main()
   size_t nVertices = readNCDim(ncid, "nVertices");
   size_t maxEdges = readNCDim(ncid, "maxEdges");
   size_t maxEdges2 = readNCDim(ncid, "maxEdges2");
-  int dimid;
-
-  cout << "nCells " << nCells << endl;
+  size_t vertexDegree = readNCDim(ncid, "vertexDegree");
+  if (verbose) cout << endl;
 
   if (verbose) cout << "** Read in mesh variables **" << endl;
   vector <double> latCell = readNCDouble(ncid, "latCell", nCells);
@@ -62,45 +61,43 @@ int main()
   vector <double> dcEdge = readNCDouble(ncid, "dcEdge", nEdges);
   vector <double> dvEdge = readNCDouble(ncid, "dvEdge", nEdges);
   vector <double> areaTriangle = readNCDouble(ncid, "areaTriangle", nVertices);
+  vector <double> meshDensity = readNCDouble(ncid, "meshDensity", nCells);
+  vector <int> indexToCellID = readNCInt(ncid, "indexToCellID", nCells);
+  vector <int> indexToEdgeID = readNCInt(ncid, "indexToEdgeID", nEdges);
+  vector <int> indexToVertexID = readNCInt(ncid, "indexToVertexID", nVertices);
+  vector <int> nEdgesOnCell = readNCInt(ncid, "nEdgesOnCell", nCells);
+  vector <int> nEdgesOnEdge = readNCInt(ncid, "nEdgesOnEdge", nEdges);
+  vector <int> cellsOnCell = readNCInt(ncid, "cellsOnCell", nCells*maxEdges);
+  vector <int> edgesOnCell = readNCInt(ncid, "edgesOnCell", nCells*maxEdges);
+  vector <int> verticesOnCell = readNCInt(ncid, "verticesOnCell", nCells*maxEdges);
+  vector <int> edgesOnEdge = readNCInt(ncid, "edgesOnEdge", nEdges*maxEdges2);
+  vector <int> cellsOnEdge = readNCInt(ncid, "cellsOnEdge", nEdges*2.0);
+  vector <int> verticesOnEdge = readNCInt(ncid, "verticesOnEdge", nEdges*2.0);
+  vector <int> cellsOnVertex = readNCInt(ncid, "cellsOnVertex", nVertices*vertexDegree);
+  vector <int> edgesOnVertex = readNCInt(ncid, "edgesOnVertex", nVertices*vertexDegree);
+  // mesh quality variables. Not in init file.
   //vector <double> cellQuality = readNCDouble(ncid, "cellQuality", nCells);
   //vector <double> gridSpacing = readNCDouble(ncid, "gridSpacing", nCells);
   //vector <double> triangleQuality = readNCDouble(ncid, "triangleQuality", nCells);
   //vector <double> triangleAngleQuality = readNCDouble(ncid, "triangleAngleQuality", nCells);
-  vector <double> meshDensity = readNCDouble(ncid, "meshDensity", nCells);
-
-  vector <int> indexToCellID = readNCInt(ncid, "indexToCellID", nCells);
-  vector <int> indexToEdgeID = readNCInt(ncid, "indexToEdgeID", nEdge);
-  vector <int> indexToVertexID = readNCInt(ncid, "indexToVertexID", nCells);
-  vector <int> nEdgesOnCell = readNCInt(ncid, "nEdgesOnCell", nCells);
-  vector <int> nEdgesOnEdge = readNCInt(ncid, "nEdgesOnEdge", Edge);
-  vector <int> boundaryVertex = readNCInt(ncid, "boundaryVertex", nCells);
-  vector <int> obtuseTriangle = readNCInt(ncid, "obtuseTriangle", nCells);
-
-//    std::vector<std::vector<int>>
-    //std::vector<std::vector<int>> cellsOnCellVector(nCells,std::vector<int>(maxEdges));
-    // ha! Use the first version above. Then use vector.assign to create the size of the vector in the subroutine.
-  vector <int> cellsOnCell = readNCInt(ncid, "cellsOnCell", nCells);
-  vector <int> edgesOnCell = readNCInt(ncid, "edgesOnCell", nCells);
-  vector <int> verticesOnCell = readNCInt(ncid, "verticesOnCell", nCells);
-  vector <int> edgesOnEdge = readNCInt(ncid, "edgesOnEdge", nCells);
-  vector <int> cellsOnEdge = readNCInt(ncid, "cellsOnEdge", nCells);
-  vector <int> verticesOnEdge = readNCInt(ncid, "verticesOnEdge", nCells);
-  vector <int> cellsOnVertex = readNCInt(ncid, "cellsOnVertex", nCells);
-  vector <int> edgesOnVertex = readNCInt(ncid, "edgesOnVertex", nCells);
-
+  //vector <int> boundaryVertex = readNCInt(ncid, "boundaryVertex", nVertices);
+  //vector <int> obtuseTriangle = readNCInt(ncid, "obtuseTriangle", nCells);
+  if (verbose) cout << endl;
 
   if (verbose) cout << "** Read in state variables **" << endl;
   vector <double> temperature = readNCDouble(ncid, "temperature", nCells*nVertLevels);
+  vector <double> salinity = readNCDouble(ncid, "salinity", nCells*nVertLevels);
+  vector <double> layerThickness = readNCDouble(ncid, "layerThickness", nCells*nVertLevels);
 }
 
 vector <int> readNCInt(int ncid, string varName, size_t dim) {
   int varid, retval;
   vector <int> var;
   var.resize(dim);
-  /* Get the varid of the data variable, based on its name. */
+  if (verbose) cout << varName << ": ";
   if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
   if ((retval = nc_get_var_int(ncid, varid, &var[0]))) ERR(retval);
-  if (verbose) cout << varName << "[0]: " << var[0] << endl;
+  if (verbose) cout << var[0] << ", " << var[dim-1] << endl;
   return var;
 }
 
@@ -108,18 +105,19 @@ vector <double> readNCDouble(int ncid, string varName, size_t dim) {
   int varid, retval;
   vector <double> var;
   var.resize(dim);
-  /* Get the varid of the data variable, based on its name. */
+  if (verbose) cout << varName << ": ";
   if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
   if ((retval = nc_get_var_double(ncid, varid, &var[0]))) ERR(retval);
-  if (verbose) cout << varName << "[0]: " << var[0] << endl;
+  if (verbose) cout << var[0] << ", " << var[dim-1] << endl;
   return var;
 }
 
 size_t readNCDim(int ncid, string dimName) {
   int dimid, retval;
   size_t dim;
+  if (verbose) cout << dimName << ": ";
   if ((retval = nc_inq_dimid(ncid, dimName.c_str(), &dimid) )) ERR(retval);
   if ((retval = nc_inq_dimlen(ncid, dimid, &dim) )) ERR(retval);
-  if (verbose) cout << dimName << ": " << dim << endl;
+  if (verbose) cout << dim << endl;
   return dim;
 }
