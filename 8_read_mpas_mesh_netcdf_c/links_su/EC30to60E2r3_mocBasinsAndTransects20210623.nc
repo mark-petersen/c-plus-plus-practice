@@ -1,1 +1,0 @@
-/gpfs/alpine/cli115/scratch/mpetersen/E3SM/inputdata/ocn/mpas-o/EC30to60E2r3/EC30to60E2r3_mocBasinsAndTransects20210623.nc
