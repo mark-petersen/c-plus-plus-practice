@@ -60,8 +60,6 @@ int main()
 
   cout << "xCell[0]: " << xCell[0] << endl;
 
-  constexpr size_t dim1=nCells;
-  constexpr size_t dim2=nVertLevels;
   string varName = "temperature";
   {
     cout << "1. C arrays with fixed size   ";
@@ -76,6 +74,8 @@ int main()
   {
     cout << "2. C arrays with ** and new (variable dim)  ";
     double** var;
+  constexpr size_t dim1=nCells;
+  constexpr size_t dim2=nVertLevels;
     var = new double*[dim1];
     for (int i=0; i<dim1; i++) var[i] = new double[dim2];
 
@@ -90,7 +90,9 @@ int main()
     cout << "temperature[200][20] " << var[200][20] << endl;
   }
   {
-    cout << "3. c++ array object (fixed dim)    var";
+    cout << "3. c++ array object (fixed dim) ";
+  constexpr size_t dim1=nCells;
+  constexpr size_t dim2=nVertLevels;
     array < array<double, dim2>, dim1 > var;
 
     double tempArray[dim1][dim2];
@@ -106,6 +108,13 @@ int main()
   {
     cout << "4. c++ vector, single length and computed index offset";
     vector <double> var;
+    int dimid;
+    size_t dim1;
+    if ((retval = nc_inq_dimid(ncid, "nCells", &dimid) )) ERR(retval);
+    if ((retval = nc_inq_dimlen(ncid, dimid, &dim1) )) ERR(retval);
+    size_t dim2;
+    if ((retval = nc_inq_dimid(ncid, "nVertLevels", &dimid) )) ERR(retval);
+    if ((retval = nc_inq_dimlen(ncid, dimid, &dim2) )) ERR(retval);
     var.resize(dim1*dim2);
 
     if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
@@ -114,18 +123,21 @@ int main()
   }
   {
     cout << "5. c++ vector of vectors for 2D";
-    vector <double> var;
-    var.resize(dim1*dim2);
+    vector<vector<double>> var;
+    constexpr size_t dim1=nCells;
+    constexpr size_t dim2=nVertLevels;
 
     double tempArray[dim1][dim2];
     if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
     if ((retval = nc_get_var_double(ncid, varid, &tempArray[0][0]))) ERR(retval);
+    var.resize(dim1);
     for (int i = 0; i < dim1; i++) {
+      var[i].resize(dim2);
       for (int j = 0; j < dim2; j++) {
-        var[i*dim2 + j] = tempArray[i][j];
+        var[i][j] = tempArray[i][j];
       }
     }
-    cout << "temperature[200*d2+20] " << var[200*dim2+20] << endl;
+    cout << "temperature[200][20] " << var[200][20] << endl;
   }
 
 }

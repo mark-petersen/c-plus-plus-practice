@@ -41,15 +41,12 @@ int main()
   dataFile.getVar("xCell").getVar(xCell);
   cout << "xCell[0]: " << xCell[0] << endl;
 
-// 1. C arrays with fixed size
   {
     cout << "1. C arrays with fixed size   ";
     double temperature[nCells][nVertLevels];
     dataFile.getVar("temperature").getVar(temperature);
-    cout << "temperature[0][0] " << temperature[0][0] << endl;
+    cout << "temperature[200][20] " << temperature[200][20] << endl;
   }
-
-// 2. C arrays with ** and new
   {
     cout << "2. C arrays with ** and new (variable dim)  ";
     double** var;
@@ -73,12 +70,10 @@ int main()
         }
       }
     }
-    cout << "temperature[0][0] " << var[0][0] << endl;
+    cout << "temperature[200][20] " << var[200][20] << endl;
   }
-
-// 3. c++ array object (dimensioned to a number)
   {
-    cout << "3. c++ array object (fixed dim)    var";
+    cout << "3. c++ array object (fixed dim) ";
     constexpr size_t dim1=nCells;
     constexpr size_t dim2=nVertLevels;
     array < array<double, dim2>, dim1 > var;
@@ -97,12 +92,14 @@ int main()
         }
       }
     }
-    cout << "temperature[0][0] " << var[0][0] << endl;
+    cout << "temperature[200][20] " << var[200][20] << endl;
   }
-
-// 4. c++ vector, single length and computed index offset
   {
     cout << "4. c++ vector, single length and computed index offset ";
+    // I was not able to figure out how to read a resized vector directly
+    //int dim1 = dataFile.getDim("nCells").getSize();
+    //int dim2 = dataFile.getDim("nVertLevels").getSize();
+    //cout << "dim12 " << dim1 << " " << dim2 << endl;
     constexpr size_t dim1=nCells;
     constexpr size_t dim2=nVertLevels;
     vector<double> var;
@@ -114,18 +111,25 @@ int main()
     if(tempVar.isNull()) {
       cout << "Warning: " <<  varName << " was not found in file" << endl;
     } else {
-      double tempArray[dim1][dim2];
-      tempVar.getVar(tempArray);
+    double tempArray[dim1][dim2];
+     tempVar.getVar(tempArray);
+    // I was not able to figure out how to read a resized vector directly
+    // I tried variations of this with dim1, dim2 read in:
+      //tempVar.getVar(&var[0])
+      //tempVar.getVar(var[0])
+      //tempVar.getVar(var.begin())
+      //tempVar.getVar(&var.begin())
+      //tempVar.getVar(var.front())
+      //tempVar.getVar(&var.front())
+      //tempVar.getVar(&var[0],dim1*dim2,&var[0])
       for (int i = 0; i < dim1; i++) {
         for (int j = 0; j < dim2; j++) {
           var[i*dim2 + j] = tempArray[i][j];
         }
       }
     }
-    cout << "temperature[0][0] " << var[0] << endl;
+    cout << "temperature[200*d2+20] " << var[200*dim2+20] << endl;
   }
-
-// 5. c++ vector of vectors for 2D.
   {
     cout << "5. c++ vector of vectors for 2D ";
     constexpr size_t dim1=nCells;
@@ -148,9 +152,6 @@ int main()
         }
       }
     }
-    cout << "temperature[0][0] " << var[0][0] << endl;
+    cout << "temperature[200][20] " << var[200][20] << endl;
   }
-
-// 6. YAKL arrays
-
 }

@@ -1,0 +1,1 @@
+/lustre/scratch5/mpeterse/E3SM/inputdata/ocn/mpas-o/oRRS18to6v3/oRRS18to6v3.171116.nc
