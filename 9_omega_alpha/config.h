@@ -9,5 +9,7 @@ namespace config {
   inline constexpr char fileName[] = "ocean.QU.240km.151209.nc";
   //inline constexpr char fileName[] = "mpaso.EC30to60E2r3.230313.nc";
   //inline constexpr char fileName[] = "oRRS18to6v3.171116.nc";
+
+  inline constexpr char timestep_method[] = "forward_Euler";
 }
 #endif

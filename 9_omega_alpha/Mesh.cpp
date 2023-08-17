@@ -1,21 +1,18 @@
-// 4. c++ vector, single length and computed index offset
-// netcdf-c version
+// Using netcdf-c version of the netcdf libraries, and all 
+// arrays are c++ vector containers, 1D with computed index offset
 
 #include <iostream>
 #include <string>
 #include <netcdf>
 #include <vector>
 #include "config.h"
-#include "MpasMesh.h"
-#include "io.h" // note io is included in MpasMesh.h, but there is a better way to do this.
+#include "Mesh.h"
+#include "io.h"
 
 using namespace std;
 
-/* Handle errors by printing an error message and exiting with a
- * non-zero status. */
-
 // constructor
-MpasMesh::MpasMesh(string meshFileName) {
+Mesh::Mesh(string meshFileName) {
 
   int ncid, varid, retval;
   if (config::verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
@@ -80,5 +77,9 @@ MpasMesh::MpasMesh(string meshFileName) {
   temperature = readNCDouble(ncid, "temperature", nCells*nVertLevels);
   salinity = readNCDouble(ncid, "salinity", nCells*nVertLevels);
   layerThickness = readNCDouble(ncid, "layerThickness", nCells*nVertLevels);
+  if (config::verbose) cout << endl;
+
+  if (config::verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
+  if ((retval = nc_close(ncid))) ERR(retval);
   if (config::verbose) cout << endl;
 }

@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-class MpasMesh {
+class mesh {
   public:
 
     // MPAS dimensions
@@ -66,6 +66,6 @@ class MpasMesh {
     vector <double> layerThickness;
 
     // constructor
-    MpasMesh(string meshFileName);
+    Mesh(string meshFileName);
 };
 #endif

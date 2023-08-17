@@ -1,5 +1,5 @@
-// 4. c++ vector, single length and computed index offset
-// netcdf-c version
+// Using netcdf-c version of the netcdf libraries, and all 
+// arrays are c++ vector containers, 1D with computed index offset
 
 #include <iostream>
 #include <string>
