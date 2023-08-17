@@ -9,6 +9,7 @@
 #include <string>
 #include "config.h"
 #include "Mesh.h"
+#include "State.h"
 #include "timestep.h"
 
 using namespace std;
@@ -18,15 +19,16 @@ int main() {
   int n_timesteps = 3;
 
   // read in mesh
-  string dirName = config::dirName; // convert char to string
-  string fileName = config::fileName; // convert char to string
-  MpasMesh m(dirName + fileName);
+  Mesh m;
+  State s(m);
 
   // time step loop
   for (int n=0; n<n_timesteps; n++) {
       if (config::verbose) cout << "timestep n" << endl;
-      timestep(m);
+        timestep(m, s);
   }
+  cout << "s.normalVelocity[0]: " << s.normalVelocity[0] << endl;
+  cout << "s.layerThickness[0]: " << s.layerThickness[0] << endl;
 
 }
 

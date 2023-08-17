@@ -1,11 +1,11 @@
-#ifndef MPASMESH_H
-#define MPASMESH_H
+#ifndef MESH_H
+#define MESH_H
 
 #include <vector>
 #include <string>
 using namespace std;
 
-class mesh {
+class Mesh {
   public:
 
     // MPAS dimensions
@@ -66,6 +66,6 @@ class mesh {
     vector <double> layerThickness;
 
     // constructor
-    Mesh(string meshFileName);
+    Mesh();
 };
 #endif

@@ -13,20 +13,22 @@
 using namespace std;
 
 // constructor
-State::State(string stateFileName) {
+State::State(Mesh &m) {
+  if (config::verbose) cout << "** State Constructor **" << endl;
 
-  int ncid, retval;
-  if (config::verbose) cout << "** Opening file: " << stateFileName << " **" << endl;
-  if ((retval = nc_open((stateFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
-  if (config::verbose) cout << endl;
+    normalVelocity.resize(m.nEdges * m.nVertLevels);
+    layerThickness.resize(m.nCells * m.nVertLevels);
 
-  if (config::verbose) cout << "** Read in state variables **" << endl;
-  temperature = readNCDouble(ncid, "temperature", nCells*nVertLevels);
-  salinity = readNCDouble(ncid, "salinity", nCells*nVertLevels);
-  layerThickness = readNCDouble(ncid, "layerThickness", nCells*nVertLevels);
-  if (config::verbose) cout << endl;
-
-  if (config::verbose) cout << "** Closing file: " << stateFileName << " **" << endl;
-  if ((retval = nc_close(ncid))) ERR(retval);
-  if (config::verbose) cout << endl;
+    // initialize
+    size_t d=m.nVertLevels;
+    for (size_t e=0; e<m.nEdges; e++) {
+      for (size_t k=0; k<d; k++) {
+         normalVelocity[e*d+k] = 1.0;
+      }
+    }
+    for (size_t i=0; i<m.nCells; i++) {
+      for (size_t k=0; k<d; k++) {
+         layerThickness[i*d+k] = 2.0;
+      }
+    }
 }

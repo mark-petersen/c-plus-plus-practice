@@ -33,6 +33,6 @@ class Diag {
     //vector <double> viscosity; // type="real" dimensions="nVertLevels nEdges Time" units="m^2 s^-1" description="horizontal viscosity"
 
     // constructor
-    Diag(state s);
+    //Diag(state &s);
 };
 #endif

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "Mesh.h"
 using namespace std;
 
 class State {
@@ -13,6 +14,6 @@ class State {
     vector <double> layerThickness;
 
     // constructor
-    State();
+    State(Mesh &m);
 };
 #endif

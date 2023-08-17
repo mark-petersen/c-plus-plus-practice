@@ -12,7 +12,11 @@
 using namespace std;
 
 // constructor
-Mesh::Mesh(string meshFileName) {
+Mesh::Mesh() {
+
+  string dirName = config::dirName; // convert char to string
+  string fileName = config::fileName; // convert char to string
+  string meshFileName = dirName + fileName;
 
   int ncid, varid, retval;
   if (config::verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
