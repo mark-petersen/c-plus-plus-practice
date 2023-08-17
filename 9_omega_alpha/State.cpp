@@ -20,15 +20,15 @@ State::State(Mesh &m) {
     layerThickness.resize(m.nCells * m.nVertLevels);
 
     // initialize
-    size_t d=m.nVertLevels;
+    size_t K=m.nVertLevels;
     for (size_t e=0; e<m.nEdges; e++) {
-      for (size_t k=0; k<d; k++) {
-         normalVelocity[e*d+k] = 1.0;
+      for (size_t k=0; k<K; k++) {
+         normalVelocity[e*K+k] = 1.0;
       }
     }
     for (size_t i=0; i<m.nCells; i++) {
-      for (size_t k=0; k<d; k++) {
-         layerThickness[i*d+k] = 2.0;
+      for (size_t k=0; k<K; k++) {
+         layerThickness[i*K+k] = 2.0;
       }
     }
 }

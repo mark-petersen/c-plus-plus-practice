@@ -4,7 +4,7 @@
 #include "Mesh.h"
 #include "State.h"
 
-void timestep(Mesh &m, State &s);
-void forward_Euler_timestep(Mesh &m, State &s);
+void timestep(Mesh &m, vector<State> &s);
+void forward_Euler_timestep(Mesh &m, vector<State> &s);
 
 #endif
