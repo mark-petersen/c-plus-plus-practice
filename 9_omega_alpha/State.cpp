@@ -9,7 +9,6 @@
 #include "State.h"
 #include "Mesh.h"
 #include "io.h"
-#define ERRORMESSAGE(m) {printf("Error: %s\n", m); exit(0);}
 
 using namespace std;
 

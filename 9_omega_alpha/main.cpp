@@ -10,6 +10,7 @@
 #include "config.h"
 #include "Mesh.h"
 #include "State.h"
+#include "Tend.h"
 #include "timestep.h"
 
 using namespace std;
@@ -17,18 +18,25 @@ using namespace std;
 int main() {
   // configs to move later
   size_t n_timesteps = 3;
-  size_t timesteps_in_memory = 2; 
+  size_t state_levels_in_memory = 2; 
+  size_t tend_levels_in_memory = 1; 
 
-  // read in mesh
   Mesh m;
   vector <State> s;
+  vector <Tend> tend;
   {
     State temporaryState(m);
-    for (size_t n=0; n<timesteps_in_memory; n++) {
+    for (size_t n=0; n<state_levels_in_memory; n++) {
       s.push_back(temporaryState);
     }
-    // temporaryState is destroyed here.
   }
+  {
+    Tend temporaryTend(m);
+    for (size_t n=0; n<tend_levels_in_memory; n++) {
+      tend.push_back(temporaryTend);
+    }
+  }
+  // temporaryTend is destroyed here.
   s[0].init(m);
 
   // time step loop
@@ -43,6 +51,10 @@ int main() {
   cout << "s.normalVelocity[1]: " << s[1].normalVelocity[e*K-1] << endl;
   cout << "s.layerThickness[0]: " << s[0].layerThickness[0] << endl;
   cout << "s.layerThickness[0]: " << s[1].layerThickness[i*K-1] << endl;
+  cout << "tend.normalVelocity[0]: " << tend[0].normalVelocity[0] << endl;
+  cout << "tend.normalVelocity[1]: " << tend[0].normalVelocity[e*K-1] << endl;
+  cout << "tend.layerThickness[0]: " << tend[0].layerThickness[0] << endl;
+  cout << "tend.layerThickness[0]: " << tend[0].layerThickness[i*K-1] << endl;
 
 }
 

@@ -3,6 +3,8 @@
 
 // see https://www.learncpp.com/cpp-tutorial/sharing-global-constants-across-multiple-files-using-inline-variables/
 
+#define ERRORMESSAGE(m) {printf("Error: %s\n", m); exit(0);}
+
 namespace config {
   inline constexpr bool verbose { true }; // print verbose output during run
   inline constexpr char dirName[] = "links_su/";

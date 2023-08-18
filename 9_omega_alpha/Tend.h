@@ -3,16 +3,18 @@
 
 #include <vector>
 #include <string>
+#include "Mesh.h"
+#include "State.h"
 using namespace std;
 
-class Tend {
+// Tend is derived from the State class, so it
+// inherits all its variables.
+class Tend : public State {
   public:
   
-    // tend variables
-    vector <double> normalVelocity;
-    vector <double> layerThickness;
+    // tend variables: nothing extra!
 
     // constructor
-    Tend();
+    Tend(Mesh &m);
 };
 #endif
