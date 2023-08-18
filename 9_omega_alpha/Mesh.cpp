@@ -18,7 +18,7 @@ Mesh::Mesh() {
   string fileName = config::fileName; // convert char to string
   string meshFileName = dirName + fileName;
 
-  int ncid, varid, retval;
+  int ncid, retval;
   if (config::verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
   if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
   if (config::verbose) cout << endl;
@@ -75,12 +75,6 @@ Mesh::Mesh() {
   //triangleAngleQuality = readNCDouble(ncid, "triangleAngleQuality", nCells);
   //boundaryVertex = readNCInt(ncid, "boundaryVertex", nVertices);
   //obtuseTriangle = readNCInt(ncid, "obtuseTriangle", nCells);
-  if (config::verbose) cout << endl;
-
-  if (config::verbose) cout << "** Read in state variables **" << endl;
-  temperature = readNCDouble(ncid, "temperature", nCells*nVertLevels);
-  salinity = readNCDouble(ncid, "salinity", nCells*nVertLevels);
-  layerThickness = readNCDouble(ncid, "layerThickness", nCells*nVertLevels);
   if (config::verbose) cout << endl;
 
   if (config::verbose) cout << "** Closing file: " << meshFileName << " **" << endl;

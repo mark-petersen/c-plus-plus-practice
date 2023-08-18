@@ -15,5 +15,6 @@ class State {
 
     // constructor
     State(Mesh &m);
+    void init(Mesh &m);
 };
 #endif

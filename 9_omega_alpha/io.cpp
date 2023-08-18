@@ -32,6 +32,14 @@ vector <double> readNCDouble(int ncid, string varName, size_t dim) {
   return var;
 }
 
+void fillNCDouble(int ncid, string varName, vector <double> &var) {
+  int varid, retval;
+  if (config::verbose) cout << varName << ": ";
+  if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
+  if ((retval = nc_get_var_double(ncid, varid, &var[0]))) ERR(retval);
+  if (config::verbose) cout << var[0] << ", " << var[1] << endl;
+}
+
 size_t readNCDim(int ncid, string dimName) {
   int dimid, retval;
   size_t dim;

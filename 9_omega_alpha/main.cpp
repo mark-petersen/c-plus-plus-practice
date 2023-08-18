@@ -15,23 +15,34 @@
 using namespace std;
 
 int main() {
-  
-  int n_timesteps = 3;
+  // configs to move later
+  size_t n_timesteps = 3;
+  size_t timesteps_in_memory = 2; 
 
   // read in mesh
   Mesh m;
   vector <State> s;
-  State s1(m);
-  s.push_back(s1);
-  s.push_back(s1);
+  {
+    State temporaryState(m);
+    for (size_t n=0; n<timesteps_in_memory; n++) {
+      s.push_back(temporaryState);
+    }
+    // temporaryState is destroyed here.
+  }
+  s[0].init(m);
 
   // time step loop
   for (int n=0; n<n_timesteps; n++) {
       if (config::verbose) cout << "timestep n" << endl;
         timestep(m, s);
   }
+  size_t K=m.nVertLevels;
+  size_t i=m.nCells;
+  size_t e=m.nEdges;
   cout << "s.normalVelocity[0]: " << s[0].normalVelocity[0] << endl;
+  cout << "s.normalVelocity[1]: " << s[1].normalVelocity[e*K-1] << endl;
   cout << "s.layerThickness[0]: " << s[0].layerThickness[0] << endl;
+  cout << "s.layerThickness[0]: " << s[1].layerThickness[i*K-1] << endl;
 
 }
 

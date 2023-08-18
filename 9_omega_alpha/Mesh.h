@@ -60,11 +60,6 @@ class Mesh {
     //vector <int> boundaryVertex;
     //vector <int> obtuseTriangle;
   
-    // state variables
-    vector <double> temperature;
-    vector <double> salinity;
-    vector <double> layerThickness;
-
     // constructor
     Mesh();
 };

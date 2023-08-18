@@ -17,5 +17,6 @@ using namespace std;
 size_t readNCDim(int ncid, string dimName);
 vector <int> readNCInt(int ncid, string varName, size_t dim);
 vector <double> readNCDouble(int ncid, string varName, size_t dim);
+void fillNCDouble(int ncid, string varName, vector <double> &var);
 
 #endif
