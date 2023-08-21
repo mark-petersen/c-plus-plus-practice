@@ -8,7 +8,6 @@
 #include "Config.h"
 #include "Meta.h"
 #include "Mesh.h"
-#include "Tend.h"
 #include "State.h"
 #include "io.h"
 
@@ -62,21 +61,5 @@ void State::init(Config &config, Mesh &m) {
     ERRORMESSAGE("State::init: Incorrect initial_case")
   }
 
-}
-
-void State::computeTend(Config &config, Meta &meta, Mesh &m, Tend &tend) {
-    LOG(4,"-> State::computeTend")
-
-    size_t K=m.nVertLevels;
-    for (size_t e=0; e<m.nEdges; e++) {
-      for (size_t k=0; k<K; k++) {
-        tend.normalVelocity[e*K+k] = - config.Rayleigh_drag * normalVelocity[e*K+k];
-      }
-    }
-    for (size_t i=0; i<m.nCells; i++) {
-      for (size_t k=0; k<K; k++) {
-        tend.layerThickness[i*K+k] = - config.Rayleigh_drag * layerThickness[i*K+k];
-      }
-    }
 }
 

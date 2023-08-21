@@ -8,6 +8,7 @@
 #include "State.h"
 #include "Tend.h"
 #include "timestep.h"
+#include "tendencies.h"
 
 void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, std::vector<Tend> &tend) {
     LOG(4,"-> forward_Euler_timestep")
@@ -15,7 +16,7 @@ void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<Sta
 
     size_t tCur=meta.timeArrayIndex[0];
     size_t tNew=meta.timeArrayIndex[1];
-    s[tCur].computeTend(config, meta, m, tend[0]);
+    compute_tendencies(config, meta, m, s[tCur], tend[0]);
 
     size_t K=m.nVertLevels;
     for (size_t e=0; e<m.nEdges; e++) {

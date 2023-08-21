@@ -6,15 +6,14 @@
 #include "Config.h"
 #include "Meta.h"
 #include "Mesh.h"
+#include "State.h"
 
 // Tend is derived from the State class, so it
 // inherits all its variables.
-class Tend {
+class Tend : public State {
   public:
-  
-    // tend variables:
-    std::vector <double> normalVelocity;
-    std::vector <double> layerThickness;
+
+    // tend variables: nothing extra!
 
     // constructor
     Tend(Config &config, Mesh &m);

@@ -6,17 +6,15 @@
 #include <netcdf>
 #include <vector>
 #include "Config.h"
-#include "Tend.h"
+#include "State.h"
 #include "Meta.h"
 #include "Mesh.h"
-#include "io.h"
+#include "Tend.h"
 
 using namespace std;
 
 // constructor
-Tend::Tend(Config &config, Mesh &m) {
+Tend::Tend(Config &config, Mesh &m) : State(config, m) {
     LOG(4,"-> Tend::Tend")
 
-    normalVelocity.resize(m.nEdges * m.nVertLevels, -1.0e32);
-    layerThickness.resize(m.nCells * m.nVertLevels, -1.0e32);
 }
