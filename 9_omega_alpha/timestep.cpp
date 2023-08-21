@@ -1,24 +1,30 @@
 
 #include <iostream>
-#include <string>
 #include <vector>
+#include <cmath> // for exp
 #include "Config.h"
 #include "Mesh.h"
 #include "State.h"
 #include "Tend.h"
 #include "timestep.h"
-using namespace std;
 
-void forward_Euler_timestep(Config &config, Mesh &m, vector<State> &s, vector<Tend> &tend) {
-    if (config.verbose) cout << "In forward_Euler_timestep" << endl;
+void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, std::vector<Tend> &tend) {
+    LOG(4,"-> forward_Euler_timestep")
     // y(n+1) = y(n) + dt*RHS(n)
-    //tend[0].compute_tend(config, m, s);
 
     size_t K=m.nVertLevels;
+    size_t tCur=meta.timeArrayIndex[0];
+    size_t tNew=meta.timeArrayIndex[1];
+    //tend[0].compute_tend(config, m, s);
     for (size_t e=0; e<m.nEdges; e++) {
       for (size_t k=0; k<K; k++) {
-        //s[s.newTime].normalVelocity[e*K+k] = s[s.curTime].normalVelocity[e*K+k] + dt * tend[0].normalVelocity[e*K+k];
-        // normalVelocity[e*K+k] = 1.0;
+        tend[0].normalVelocity[e*K+k] = - config.Rayleigh_drag * s[tCur].normalVelocity[e*K+k];
+      }
+    }
+
+    for (size_t e=0; e<m.nEdges; e++) {
+      for (size_t k=0; k<K; k++) {
+        s[tNew].normalVelocity[e*K+k] = s[tCur].normalVelocity[e*K+k] + config.dt * tend[0].normalVelocity[e*K+k];
       }
     }
     for (size_t i=0; i<m.nCells; i++) {
@@ -26,14 +32,24 @@ void forward_Euler_timestep(Config &config, Mesh &m, vector<State> &s, vector<Te
          s[0].layerThickness[i*K+k] = 2.0;
       }
     }
+    // switch array indices for next step:
+    meta.timeArrayIndex[0] = tNew;
+    meta.timeArrayIndex[1] = tCur;
 }
 
-void timestep(Config &config, Mesh &m, vector<State> &s, vector<Tend> &tend) {
-    if (config.verbose) cout << "In timestep" << endl;
+void timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, std::vector<Tend> &tend) {
+    LOG(4,"-> timestep")
 
     if (config.timestep_method=="forward_Euler") {
-      forward_Euler_timestep(config, m, s, tend);
+      forward_Euler_timestep(config, meta, m, s, tend);
     }
+
+    // check against exact solution
+    size_t n = meta.timeIndex;
+    size_t tNew=meta.timeArrayIndex[1];
+    double curTime = (n+1)*config.dt;
+    double sol = config.initial_condition_constant * std::exp(-config.Rayleigh_drag*curTime);
+    LOG(3, meta.timeIndex << " " << sol << "  " << s[tNew].normalVelocity[0])
 
 }
 

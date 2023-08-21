@@ -21,17 +21,15 @@ State::State(Config &config, Mesh &m) {
 }
 
 void State::init(Config &config, Mesh &m) {
-  string initial_case = "init_file";
-  //string initial_case = "ones";
 
   size_t K=m.nVertLevels;
-  if (initial_case=="ones") {
-    fill(normalVelocity.begin(), normalVelocity.end(), 1.0);
-    fill(layerThickness.begin(), layerThickness.end(), 1.0);
+  if (config.initial_condition=="constant") {
+    fill(normalVelocity.begin(), normalVelocity.end(), config.initial_condition_constant);
+    fill(layerThickness.begin(), layerThickness.end(), config.initial_condition_constant);
 
-  } else if (initial_case=="init_file") {
+  } else if (config.initial_condition=="init_file") {
 
-    string meshFileName = config.dirName + config.fileName;
+    std::string meshFileName = config.dirName + config.fileName;
     int ncid, retval;
     if (config.verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
     if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
@@ -46,7 +44,7 @@ void State::init(Config &config, Mesh &m) {
     if ((retval = nc_close(ncid))) ERR(retval);
     if (config.verbose) cout << endl;
 
-  } else if (initial_case=="sinx") {
+  } else if (config.initial_condition=="sinx") {
     for (size_t e=0; e<m.nEdges; e++) {
       for (size_t k=0; k<K; k++) {
          normalVelocity[e*K+k] = 1.0;
