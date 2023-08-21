@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-using namespace std;
 
 class Mesh {
   public:
@@ -18,49 +17,49 @@ class Mesh {
     size_t vertexDegree;
   
     // MPAS mesh variables
-    vector <double> latCell;
-    vector <double> lonCell;
-    vector <double> xCell;
-    vector <double> yCell;
-    vector <double> zCell;
-    vector <double> latEdge;
-    vector <double> lonEdge;
-    vector <double> xEdge;
-    vector <double> yEdge;
-    vector <double> zEdge;
-    vector <double> latVertex;
-    vector <double> lonVertex;
-    vector <double> xVertex;
-    vector <double> yVertex;
-    vector <double> zVertex;
-    vector <double> areaCell;
-    vector <double> angleEdge;
-    vector <double> dcEdge;
-    vector <double> dvEdge;
-    vector <double> areaTriangle;
-    vector <double> meshDensity;
-    vector <int> indexToCellID;
-    vector <int> indexToEdgeID;
-    vector <int> indexToVertexID;
-    vector <int> nEdgesOnCell;
-    vector <int> nEdgesOnEdge;
-    vector <int> cellsOnCell;
-    vector <int> edgesOnCell;
-    vector <int> verticesOnCell;
-    vector <int> edgesOnEdge;
-    vector <int> cellsOnEdge;
-    vector <int> verticesOnEdge;
-    vector <int> cellsOnVertex;
-    vector <int> edgesOnVertex;
+    std::vector <double> latCell;
+    std::vector <double> lonCell;
+    std::vector <double> xCell;
+    std::vector <double> yCell;
+    std::vector <double> zCell;
+    std::vector <double> latEdge;
+    std::vector <double> lonEdge;
+    std::vector <double> xEdge;
+    std::vector <double> yEdge;
+    std::vector <double> zEdge;
+    std::vector <double> latVertex;
+    std::vector <double> lonVertex;
+    std::vector <double> xVertex;
+    std::vector <double> yVertex;
+    std::vector <double> zVertex;
+    std::vector <double> areaCell;
+    std::vector <double> angleEdge;
+    std::vector <double> dcEdge;
+    std::vector <double> dvEdge;
+    std::vector <double> areaTriangle;
+    std::vector <double> meshDensity;
+    std::vector <int> indexToCellID;
+    std::vector <int> indexToEdgeID;
+    std::vector <int> indexToVertexID;
+    std::vector <int> nEdgesOnCell;
+    std::vector <int> nEdgesOnEdge;
+    std::vector <int> cellsOnCell;
+    std::vector <int> edgesOnCell;
+    std::vector <int> verticesOnCell;
+    std::vector <int> edgesOnEdge;
+    std::vector <int> cellsOnEdge;
+    std::vector <int> verticesOnEdge;
+    std::vector <int> cellsOnVertex;
+    std::vector <int> edgesOnVertex;
     // mesh quality variables. Not in init file.
-    //vector <double> cellQuality;
-    //vector <double> gridSpacing;
-    //vector <double> triangleQuality;
-    //vector <double> triangleAngleQuality;
-    //vector <int> boundaryVertex;
-    //vector <int> obtuseTriangle;
+    //std::vector <double> cellQuality;
+    //std::vector <double> gridSpacing;
+    //std::vector <double> triangleQuality;
+    //std::vector <double> triangleAngleQuality;
+    //std::vector <int> boundaryVertex;
+    //std::vector <int> obtuseTriangle;
   
     // constructor
-    Mesh();
+    Mesh(Config &config);
 };
 #endif

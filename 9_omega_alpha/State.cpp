@@ -5,7 +5,7 @@
 #include <string>
 #include <netcdf>
 #include <vector>
-#include "config.h"
+#include "Config.h"
 #include "State.h"
 #include "Mesh.h"
 #include "io.h"
@@ -13,14 +13,14 @@
 using namespace std;
 
 // constructor
-State::State(Mesh &m) {
-  if (config::verbose) cout << "** State Constructor **" << endl;
+State::State(Config &config, Mesh &m) {
+  if (config.verbose) cout << "** State Constructor **" << endl;
 
     normalVelocity.resize(m.nEdges * m.nVertLevels, -1.0e32);
     layerThickness.resize(m.nCells * m.nVertLevels, -1.0e32);
 }
 
-void State::init(Mesh &m) {
+void State::init(Config &config, Mesh &m) {
   string initial_case = "init_file";
   //string initial_case = "ones";
 
@@ -31,22 +31,20 @@ void State::init(Mesh &m) {
 
   } else if (initial_case=="init_file") {
 
-    string dirName = config::dirName; // convert char to string
-    string fileName = config::fileName; // convert char to string
-    string meshFileName = dirName + fileName;
+    string meshFileName = config.dirName + config.fileName;
     int ncid, retval;
-    if (config::verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
+    if (config.verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
     if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
-    if (config::verbose) cout << endl;
+    if (config.verbose) cout << endl;
 
-    if (config::verbose) cout << "** Read in state variables **" << endl;
+    if (config.verbose) cout << "** Read in state variables **" << endl;
     fillNCDouble(ncid, "normalVelocity", normalVelocity);
     fillNCDouble(ncid, "layerThickness", layerThickness);
-    if (config::verbose) cout << endl;
+    if (config.verbose) cout << endl;
 
-    if (config::verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
+    if (config.verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
     if ((retval = nc_close(ncid))) ERR(retval);
-    if (config::verbose) cout << endl;
+    if (config.verbose) cout << endl;
 
   } else if (initial_case=="sinx") {
     for (size_t e=0; e<m.nEdges; e++) {

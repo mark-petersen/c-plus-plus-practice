@@ -4,26 +4,23 @@
 #include <iostream>
 #include <string>
 #include <netcdf>
-#include <vector>
-#include "config.h"
+#include "Config.h"
 #include "Mesh.h"
 #include "io.h"
 
 using namespace std;
 
 // constructor
-Mesh::Mesh() {
+Mesh::Mesh(Config &config) {
 
-  string dirName = config::dirName; // convert char to string
-  string fileName = config::fileName; // convert char to string
-  string meshFileName = dirName + fileName;
+  string meshFileName = config.dirName + config.fileName;
 
   int ncid, retval;
-  if (config::verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
+  if (config.verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
   if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
-  if (config::verbose) cout << endl;
+  if (config.verbose) cout << endl;
 
-  if (config::verbose) cout << "** Read in dimensions **" << endl;
+  if (config.verbose) cout << "** Read in dimensions **" << endl;
   nCells = readNCDim(ncid, "nCells");
   nVertLevels = readNCDim(ncid, "nVertLevels");
   nEdges = readNCDim(ncid, "nEdges");
@@ -31,9 +28,9 @@ Mesh::Mesh() {
   maxEdges = readNCDim(ncid, "maxEdges");
   maxEdges2 = readNCDim(ncid, "maxEdges2");
   vertexDegree = readNCDim(ncid, "vertexDegree");
-  if (config::verbose) cout << endl;
+  if (config.verbose) cout << endl;
 
-  if (config::verbose) cout << "** Read in mesh variables **" << endl;
+  if (config.verbose) cout << "** Read in mesh variables **" << endl;
   latCell = readNCDouble(ncid, "latCell", nCells);
   lonCell = readNCDouble(ncid, "lonCell", nCells);
   xCell = readNCDouble(ncid, "yCell", nCells);
@@ -75,9 +72,9 @@ Mesh::Mesh() {
   //triangleAngleQuality = readNCDouble(ncid, "triangleAngleQuality", nCells);
   //boundaryVertex = readNCInt(ncid, "boundaryVertex", nVertices);
   //obtuseTriangle = readNCInt(ncid, "obtuseTriangle", nCells);
-  if (config::verbose) cout << endl;
+  if (config.verbose) cout << endl;
 
-  if (config::verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
+  if (config.verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
   if ((retval = nc_close(ncid))) ERR(retval);
-  if (config::verbose) cout << endl;
+  if (config.verbose) cout << endl;
 }

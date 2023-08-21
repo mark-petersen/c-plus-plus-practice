@@ -4,17 +4,17 @@
 #include <vector>
 #include <string>
 #include "Mesh.h"
-using namespace std;
 
 class State {
   public:
   
     // State variables
-    vector <double> normalVelocity;
-    vector <double> layerThickness;
+    std::vector <double> normalVelocity;
+    std::vector <double> layerThickness;
+
 
     // constructor
-    State(Mesh &m);
-    void init(Mesh &m);
+    State(Config &config, Mesh &m);
+    void init(Config &config, Mesh &m);
 };
 #endif

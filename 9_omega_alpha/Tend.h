@@ -5,7 +5,6 @@
 #include <string>
 #include "Mesh.h"
 #include "State.h"
-using namespace std;
 
 // Tend is derived from the State class, so it
 // inherits all its variables.
@@ -15,6 +14,6 @@ class Tend : public State {
     // tend variables: nothing extra!
 
     // constructor
-    Tend(Mesh &m);
+    Tend(Config &config, Mesh &m);
 };
 #endif
