@@ -19,6 +19,9 @@
 class Config {
   public:
 
+  //*******************************************************
+  //  Initialization
+  //*******************************************************
   bool verbose { true }; // print verbose output during run
   std::string dirName { "links_su/" };
   std::string fileName { "ocean.QU.240km.151209.nc" };
@@ -26,13 +29,27 @@ class Config {
   //std::string fileName { "oRRS18to6v3.171116.nc" };
   
   //std::string initial_condition = "init_file";
-  std::string initial_condition = "constant";
+  //std::string initial_condition = "constant";
   double initial_condition_constant = 55.0;
+  std::string initial_condition = "sinx";
 
+  //*******************************************************
+  //  time stepping
+  //*******************************************************
   std::string timestep_method { "forward_Euler" };
   double dt = 0.01; // time step [s]
   size_t n_timesteps = 100;
 
-  double Rayleigh_drag {0.1}; // coefficient in -Ra*u term [1/s]
+  //*******************************************************
+  //  velocity tendency terms
+  //*******************************************************
+  bool uTend_Rayleigh_enable = true;
+  double uTend_Rayleigh_drag {0.1}; // coefficient in -Ra*u term [1/s]
+
+  //*******************************************************
+  //  thickness tendency terms
+  //*******************************************************
+  bool hTend_decay_enable = true;
+  double hTend_decay_coef {0.1}; // coefficient in -Ra*u term [1/s]
 };
 #endif

@@ -18,9 +18,10 @@ using namespace std;
 
 int main() {
   LOG(2,"Omega-Alpha initialization")
-  LOG(4,"-> main")
 
-  //MetaInfo meta;
+  //*******************************************************
+  //  Initialization
+  //*******************************************************
   Config config;
   Meta meta(config);
   Mesh m(config);
@@ -43,11 +44,14 @@ int main() {
   }
   s[0].init(config, m);
 
-  // time step loop
+  //*******************************************************
+  //  time step loop
+  //*******************************************************
   LOG(3,"**time   ***exact    ****** computed")
   for (meta.timeIndex=0; meta.timeIndex<config.n_timesteps; meta.timeIndex++) {
         timestep(config, meta, m,s,t);
   }
+
   size_t K=m.nVertLevels;
   size_t i=m.nCells;
   size_t e=m.nEdges;

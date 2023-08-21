@@ -16,7 +16,8 @@ void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<Sta
 
     size_t tCur=meta.timeArrayIndex[0];
     size_t tNew=meta.timeArrayIndex[1];
-    compute_tendencies(config, meta, m, s[tCur], tend[0]);
+    compute_velocity_tendencies(config, meta, m, s[tCur], tend[0]);
+    compute_thickness_tendencies(config, meta, m, s[tCur], tend[0]);
 
     size_t K=m.nVertLevels;
     for (size_t e=0; e<m.nEdges; e++) {
@@ -44,7 +45,7 @@ void timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, std::v
     // check against exact solution
     size_t tNew=meta.timeArrayIndex[1];
     double curTime = (meta.timeIndex)*config.dt;
-    double sol = config.initial_condition_constant * std::exp(-config.Rayleigh_drag*curTime);
+    double sol = config.initial_condition_constant * std::exp(-config.uTend_Rayleigh_drag*curTime);
     LOG(3, meta.timeIndex << " " << sol << "  " << s[tNew].normalVelocity[0] << "  "<<s[tNew].layerThickness[0])
 
 }
