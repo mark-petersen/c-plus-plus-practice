@@ -6,21 +6,24 @@
 #include <netcdf>
 #include <vector>
 #include "Config.h"
-#include "State.h"
+#include "Meta.h"
 #include "Mesh.h"
+#include "Tend.h"
+#include "State.h"
 #include "io.h"
 
 using namespace std;
 
 // constructor
 State::State(Config &config, Mesh &m) {
-  if (config.verbose) cout << "** State Constructor **" << endl;
+    LOG(4,"-> State::State")
 
     normalVelocity.resize(m.nEdges * m.nVertLevels, -1.0e32);
     layerThickness.resize(m.nCells * m.nVertLevels, -1.0e32);
 }
 
 void State::init(Config &config, Mesh &m) {
+  LOG(4,"-> State::Init")
 
   size_t K=m.nVertLevels;
   if (config.initial_condition=="constant") {
@@ -60,3 +63,20 @@ void State::init(Config &config, Mesh &m) {
   }
 
 }
+
+void State::computeTend(Config &config, Meta &meta, Mesh &m, Tend &tend) {
+    LOG(4,"-> State::computeTend")
+
+    size_t K=m.nVertLevels;
+    for (size_t e=0; e<m.nEdges; e++) {
+      for (size_t k=0; k<K; k++) {
+        tend.normalVelocity[e*K+k] = - config.Rayleigh_drag * normalVelocity[e*K+k];
+      }
+    }
+    for (size_t i=0; i<m.nCells; i++) {
+      for (size_t k=0; k<K; k++) {
+        tend.layerThickness[i*K+k] = - config.Rayleigh_drag * layerThickness[i*K+k];
+      }
+    }
+}
+

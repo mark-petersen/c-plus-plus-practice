@@ -6,18 +6,17 @@
 #include <netcdf>
 #include <vector>
 #include "Config.h"
-#include "State.h"
 #include "Tend.h"
+#include "Meta.h"
 #include "Mesh.h"
 #include "io.h"
 
 using namespace std;
 
-// constructor, derived from the State class
-Tend::Tend(Config &config, Mesh &m) : State(config, m) {
-  if (config.verbose) cout << "** Tend Constructor **" << endl;
+// constructor
+Tend::Tend(Config &config, Mesh &m) {
+    LOG(4,"-> Tend::Tend")
 
-  // variable initialization derived from State constructor.
-
+    normalVelocity.resize(m.nEdges * m.nVertLevels, -1.0e32);
+    layerThickness.resize(m.nCells * m.nVertLevels, -1.0e32);
 }
-

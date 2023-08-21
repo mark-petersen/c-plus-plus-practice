@@ -51,8 +51,8 @@ int main() {
   size_t K=m.nVertLevels;
   size_t i=m.nCells;
   size_t e=m.nEdges;
-  cout << "s.normalVelocity[0]: " << s[0].normalVelocity[0] << endl;
-  cout << "s.normalVelocity[1]: " << s[1].normalVelocity[e*K-1] << endl;
+  cout << "s[0].normalVelocity[0]: " << s[0].normalVelocity[0] << endl;
+  cout << "s[1].normalVelocity[1]: " << s[1].normalVelocity[e*K-1] << endl;
 
 }
 
