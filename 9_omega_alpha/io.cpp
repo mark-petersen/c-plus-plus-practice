@@ -10,13 +10,18 @@
 
 using namespace std;
 
-vector <int> readNCInt(int ncid, string varName, size_t dim) {
+vector <int> readNCInt(int ncid, string varName, size_t dim, bool minus1) {
   int varid, retval;
   vector <int> var;
   var.resize(dim);
   LOG(5, varName << ": ");
   if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
   if ((retval = nc_get_var_int(ncid, varid, &var[0]))) ERR(retval);
+  if (minus1) {
+    for (size_t i=0; i<dim; i++) {
+      var[i]--;
+    }
+  }
   LOG(5, var[0] << ", " << var[dim-1] )
   return var;
 }

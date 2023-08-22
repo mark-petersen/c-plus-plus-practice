@@ -58,6 +58,9 @@ class Mesh {
     //std::vector <double> triangleAngleQuality;
     //std::vector <int> boundaryVertex;
     //std::vector <int> obtuseTriangle;
+
+    // mesh variables that are computed on start-up
+    std::vector <signed char> edgeSignOnCell;
   
     // constructor
     Mesh(Config &config);

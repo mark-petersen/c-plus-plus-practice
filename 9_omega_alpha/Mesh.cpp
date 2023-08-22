@@ -52,19 +52,24 @@ Mesh::Mesh(Config &config) {
   dvEdge = readNCDouble(ncid, "dvEdge", nEdges);
   areaTriangle = readNCDouble(ncid, "areaTriangle", nVertices);
   meshDensity = readNCDouble(ncid, "meshDensity", nCells);
-  indexToCellID = readNCInt(ncid, "indexToCellID", nCells);
-  indexToEdgeID = readNCInt(ncid, "indexToEdgeID", nEdges);
-  indexToVertexID = readNCInt(ncid, "indexToVertexID", nVertices);
-  nEdgesOnCell = readNCInt(ncid, "nEdgesOnCell", nCells);
-  nEdgesOnEdge = readNCInt(ncid, "nEdgesOnEdge", nEdges);
-  cellsOnCell = readNCInt(ncid, "cellsOnCell", nCells*maxEdges);
-  edgesOnCell = readNCInt(ncid, "edgesOnCell", nCells*maxEdges);
-  verticesOnCell = readNCInt(ncid, "verticesOnCell", nCells*maxEdges);
-  edgesOnEdge = readNCInt(ncid, "edgesOnEdge", nEdges*maxEdges2);
-  cellsOnEdge = readNCInt(ncid, "cellsOnEdge", nEdges*2.0);
-  verticesOnEdge = readNCInt(ncid, "verticesOnEdge", nEdges*2.0);
-  cellsOnVertex = readNCInt(ncid, "cellsOnVertex", nVertices*vertexDegree);
-  edgesOnVertex = readNCInt(ncid, "edgesOnVertex", nVertices*vertexDegree);
+
+  // Cell pointers. These need to be reduced by 1 for Fortran->C
+  indexToCellID = readNCInt(ncid, "indexToCellID", nCells, true);
+  indexToEdgeID = readNCInt(ncid, "indexToEdgeID", nEdges, true);
+  indexToVertexID = readNCInt(ncid, "indexToVertexID", nVertices, true);
+  cellsOnCell = readNCInt(ncid, "cellsOnCell", nCells*maxEdges, true);
+  edgesOnCell = readNCInt(ncid, "edgesOnCell", nCells*maxEdges, true);
+  verticesOnCell = readNCInt(ncid, "verticesOnCell", nCells*maxEdges, true);
+  edgesOnEdge = readNCInt(ncid, "edgesOnEdge", nEdges*maxEdges2, true);
+  cellsOnEdge = readNCInt(ncid, "cellsOnEdge", nEdges*2.0, true);
+  verticesOnEdge = readNCInt(ncid, "verticesOnEdge", nEdges*2.0, true);
+  cellsOnVertex = readNCInt(ncid, "cellsOnVertex", nVertices*vertexDegree, true);
+  edgesOnVertex = readNCInt(ncid, "edgesOnVertex", nVertices*vertexDegree, true);
+
+  // These do not need to be reduced by 1 for Fortran->C
+  nEdgesOnCell = readNCInt(ncid, "nEdgesOnCell", nCells, false);
+  nEdgesOnEdge = readNCInt(ncid, "nEdgesOnEdge", nEdges, false);
+
   // mesh quality variables. Not in init file.
   //cellQuality = readNCDouble(ncid, "cellQuality", nCells);
   //gridSpacing = readNCDouble(ncid, "gridSpacing", nCells);
@@ -77,4 +82,24 @@ Mesh::Mesh(Config &config) {
   if (config.verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
   if ((retval = nc_close(ncid))) ERR(retval);
   if (config.verbose) cout << endl;
+
+  size_t E=maxEdges;
+  size_t iCell, i, cell1, cell2, iEdge;
+  for (iCell=0; iCell<nCells; iCell++) {
+    for (i=0; i<nEdgesOnCell[iCell]; i++) {
+      iEdge = edgesOnCell[iCell*E+iEdge];
+      cell1 = cellsOnEdge[iEdge*2];
+      cell2 = cellsOnEdge[iEdge*2+1];
+      // Vectors point from lower to higher cell number.
+      // If my cell number is higher than my neighbor, then
+      // vector points towards me and the edge sign is positive.
+      if (iCell==std::max(cell1,cell2)) {
+        edgeSignOnCell[iCell*E+iEdge] = 1;
+      } else {
+        edgeSignOnCell[iCell*E+iEdge] = -1;
+      }
+    }
+  }
+
+
 }

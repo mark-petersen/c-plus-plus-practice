@@ -13,7 +13,7 @@
 #define NEWLINE {if (verbose) std::cout << std::endl;}
 
 size_t readNCDim(int ncid, std::string dimName);
-std::vector <int> readNCInt(int ncid, std::string varName, size_t dim);
+std::vector <int> readNCInt(int ncid, std::string varName, size_t dim, bool minus1);
 std::vector <double> readNCDouble(int ncid, std::string varName, size_t dim);
 void fillNCDouble(int ncid, std::string varName, std::vector <double> &var);
 

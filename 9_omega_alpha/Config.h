@@ -49,7 +49,10 @@ class Config {
   //*******************************************************
   //  thickness tendency terms
   //*******************************************************
-  bool hTend_decay_enable = true;
-  double hTend_decay_coef {0.1}; // coefficient in -Ra*u term [1/s]
+  bool hTend_decay_enable = true; // -c*h ( for testing only)
+  double hTend_decay_coef {0.1}; // coefficient Ra [1/s]
+
+  bool hTend_del2_enable = true; // kappa del2(h)
+  double hTend_del2_coef {0.1}; // coefficient in -Ra*u term [1/s]
 };
 #endif
