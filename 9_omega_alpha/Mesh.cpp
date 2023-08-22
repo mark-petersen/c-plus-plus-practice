@@ -21,7 +21,7 @@ Mesh::Mesh(Config &config) {
     if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
     if (config.verbose) cout << endl;
 
-    if (config.verbose) cout << "** Read in dimensions **" << endl;
+    LOG(4,"** Read in dimensions **")
     nCells = readNCDim(ncid, "nCells");
     nEdges = readNCDim(ncid, "nEdges");
     nVertices = readNCDim(ncid, "nVertices");
@@ -34,12 +34,16 @@ Mesh::Mesh(Config &config) {
     } else {
         nVertLevels = config.initialize_nVertLevels;
     }
-    if (config.verbose) cout << endl;
 
-    if (config.verbose) cout << "** Read in mesh variables **" << endl;
+    LOG(4,"** Read in mesh variables **")
     latCell = readNCDouble(ncid, "latCell", nCells);
     lonCell = readNCDouble(ncid, "lonCell", nCells);
-    xCell = readNCDouble(ncid, "yCell", nCells);
+    xCell = readNCDouble(ncid, "xCell", nCells);
+  std::cout << "IC mesh xCell: ";
+  for (size_t i=0; i<16; i++) {
+    std::cout << xCell[i]<< " ";
+  }
+  std::cout << std::endl;
     yCell = readNCDouble(ncid, "yCell", nCells);
     zCell = readNCDouble(ncid, "zCell", nCells);
     latEdge = readNCDouble(ncid, "latEdge", nEdges);
@@ -83,9 +87,8 @@ Mesh::Mesh(Config &config) {
     //triangleAngleQuality = readNCDouble(ncid, "triangleAngleQuality", nCells);
     //boundaryVertex = readNCInt(ncid, "boundaryVertex", nVertices);
     //obtuseTriangle = readNCInt(ncid, "obtuseTriangle", nCells);
-    if (config.verbose) cout << endl;
 
-    if (config.verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
+    LOG(4,"** Closing file: " << meshFileName << " **")
     if ((retval = nc_close(ncid))) ERR(retval);
     if (config.verbose) cout << endl;
 

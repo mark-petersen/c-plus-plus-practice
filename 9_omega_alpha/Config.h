@@ -17,44 +17,45 @@
 #include <string>
 
 class Config {
-  public:
+    public:
 
-  //*******************************************************
-  //  Initialization
-  //*******************************************************
-  bool verbose { true }; // print verbose output during run
-  std::string dirName { "links_su/" };
-  //std::string fileName { "ocean.QU.240km.151209.nc" };
-  //std::string fileName { "mpaso.EC30to60E2r3.230313.nc" };
-  //std::string fileName { "oRRS18to6v3.171116.nc" };
-  std::string fileName { "mpas_mesh_16x16.nc"};
-  
-  //std::string initial_condition = "init_file";
-  size_t initialize_nVertLevels = 2; // nVertLevels if initial_condition!="init_file"
-  //std::string initial_condition = "constant";
-  double initial_condition_amplitude = 55.0;
-  std::string initial_condition = "sinx";
+    //*******************************************************
+    //    Initialization
+    //*******************************************************
+    bool verbose { true }; // print verbose output during run
+    std::string dirName { "links_su/" };
+    //std::string fileName { "ocean.QU.240km.151209.nc" };
+    //std::string fileName { "mpaso.EC30to60E2r3.230313.nc" };
+    //std::string fileName { "oRRS18to6v3.171116.nc" };
+    std::string fileName { "mpas_mesh_16x16.nc"};
+    
+    //std::string initial_condition = "init_file";
+    size_t initialize_nVertLevels = 1; // nVertLevels if initial_condition!="init_file"
+    //std::string initial_condition = "constant";
+    double initial_condition_amplitude = 1.0;
+    std::string initial_condition = "sinx";
+    double Lx = 64.0e3*16.0; // change later
 
-  //*******************************************************
-  //  time stepping
-  //*******************************************************
-  std::string timestep_method { "forward_Euler" };
-  double dt = 0.01; // time step [s]
-  size_t n_timesteps = 100;
+    //*******************************************************
+    //    time stepping
+    //*******************************************************
+    std::string timestep_method { "forward_Euler" };
+    double dt = 0.001; // time step [s]
+    size_t n_timesteps = 1000;
 
-  //*******************************************************
-  //  velocity tendency terms
-  //*******************************************************
-  bool uTend_Rayleigh_enable = true;
-  double uTend_Rayleigh_drag {0.1}; // coefficient in -Ra*u term [1/s]
+    //*******************************************************
+    //    velocity tendency terms
+    //*******************************************************
+    bool uTend_Rayleigh_enable = true;
+    double uTend_Rayleigh_drag {0.1}; // coefficient in -Ra*u term [1/s]
 
-  //*******************************************************
-  //  thickness tendency terms
-  //*******************************************************
-  bool hTend_decay_enable = false; // -c*h ( for testing only)
-  double hTend_decay_coef {0.1}; // coefficient Ra [1/s]
+    //*******************************************************
+    //    thickness tendency terms
+    //*******************************************************
+    bool hTend_decay_enable = false; // -c*h ( for testing only)
+    double hTend_decay_coef {0.1}; // coefficient Ra [1/s]
 
-  bool hTend_del2_enable = true; // kappa del2(h)
-  double hTend_del2_coef {0.1}; // coefficient in -Ra*u term [1/s]
+    bool hTend_del2_enable = true; // kappa del2(h)
+    double hTend_del2_coef = 1.0e7; // coefficient in -Ra*u term [1/s]
 };
 #endif
