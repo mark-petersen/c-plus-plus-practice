@@ -10,7 +10,7 @@
 5. Max printing - individual variable reading
 */
 
-#define VERBOSITY 5
+#define VERBOSITY 3
 #define LOG(verbose_level, message) {if (VERBOSITY>=verbose_level) std::cout<< message << std::endl;}
 #define ERRORMESSAGE(m) {printf("Error: %s\n", m); exit(0);}
 
@@ -30,9 +30,9 @@ class Config {
   std::string fileName { "mpas_mesh_16x16.nc"};
   
   //std::string initial_condition = "init_file";
-  //std::string initial_condition = "constant";
   size_t initialize_nVertLevels = 2; // nVertLevels if initial_condition!="init_file"
-  double initial_condition_constant = 55.0;
+  //std::string initial_condition = "constant";
+  double initial_condition_amplitude = 55.0;
   std::string initial_condition = "sinx";
 
   //*******************************************************
@@ -51,7 +51,7 @@ class Config {
   //*******************************************************
   //  thickness tendency terms
   //*******************************************************
-  bool hTend_decay_enable = true; // -c*h ( for testing only)
+  bool hTend_decay_enable = false; // -c*h ( for testing only)
   double hTend_decay_coef {0.1}; // coefficient Ra [1/s]
 
   bool hTend_del2_enable = true; // kappa del2(h)

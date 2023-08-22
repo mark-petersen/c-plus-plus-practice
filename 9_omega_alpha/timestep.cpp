@@ -44,7 +44,7 @@ void timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, std::v
     // check against exact solution
     size_t tNew=meta.timeArrayIndex[1];
     double curTime = (meta.timeIndex)*config.dt;
-    double sol = config.initial_condition_constant * std::exp(-config.uTend_Rayleigh_drag*curTime);
+    double sol = config.initial_condition_amplitude * std::exp(-config.uTend_Rayleigh_drag*curTime);
     LOG(3, meta.timeIndex << " " << sol << "  " << s[tNew].normalVelocity[0] << "  "<<s[tNew].layerThickness[0])
 
 }

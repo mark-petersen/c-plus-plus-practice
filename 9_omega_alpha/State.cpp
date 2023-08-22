@@ -2,6 +2,7 @@
 // arrays are c++ vector containers, 1D with computed index offset
 
 #include <iostream>
+#include <cmath> // for sin, M_PI
 #include <string>
 #include <netcdf>
 #include <vector>
@@ -22,44 +23,47 @@ State::State(Config &config, Mesh &m) {
 }
 
 void State::init(Config &config, Mesh &m) {
-  LOG(4,"-> State::Init")
+    LOG(4,"-> State::Init")
 
-  size_t K=m.nVertLevels;
-  if (config.initial_condition=="constant") {
-    fill(normalVelocity.begin(), normalVelocity.end(), config.initial_condition_constant);
-    fill(layerThickness.begin(), layerThickness.end(), config.initial_condition_constant);
+    size_t K=m.nVertLevels;
+    double Lx = 500; // change later
+    double pi2Lx = 2.0*M_PI/Lx;
+    size_t iCell, iEdge, k;
+    if (config.initial_condition=="constant") {
+        fill(normalVelocity.begin(), normalVelocity.end(), config.initial_condition_amplitude);
+        fill(layerThickness.begin(), layerThickness.end(), config.initial_condition_amplitude);
 
-  } else if (config.initial_condition=="init_file") {
+    } else if (config.initial_condition=="init_file") {
 
-    std::string meshFileName = config.dirName + config.fileName;
-    int ncid, retval;
-    if (config.verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
-    if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
-    if (config.verbose) cout << endl;
+        std::string meshFileName = config.dirName + config.fileName;
+        int ncid, retval;
+        if (config.verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
+        if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
+        if (config.verbose) cout << endl;
 
-    if (config.verbose) cout << "** Read in state variables **" << endl;
-    fillNCDouble(ncid, "normalVelocity", normalVelocity);
-    fillNCDouble(ncid, "layerThickness", layerThickness);
-    if (config.verbose) cout << endl;
+        if (config.verbose) cout << "** Read in state variables **" << endl;
+        fillNCDouble(ncid, "normalVelocity", normalVelocity);
+        fillNCDouble(ncid, "layerThickness", layerThickness);
+        if (config.verbose) cout << endl;
 
-    if (config.verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
-    if ((retval = nc_close(ncid))) ERR(retval);
-    if (config.verbose) cout << endl;
+        if (config.verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
+        if ((retval = nc_close(ncid))) ERR(retval);
+        if (config.verbose) cout << endl;
 
-  } else if (config.initial_condition=="sinx") {
-    for (size_t e=0; e<m.nEdges; e++) {
-      for (size_t k=0; k<K; k++) {
-         normalVelocity[e*K+k] = 1.0;
-      }
+    } else if (config.initial_condition=="sinx") {
+        for (iEdge=0; iEdge<m.nEdges; iEdge++) {
+            for (k=0; k<K; k++) {
+                 normalVelocity[iEdge*K+k] = config.initial_condition_amplitude * std::sin(pi2Lx*m.xEdge[iEdge]);
+            }
+        }
+        for (iCell=0; iCell<m.nCells; iCell++) {
+            for (k=0; k<K; k++) {
+                 layerThickness[iCell*K+k] = config.initial_condition_amplitude * std::sin(pi2Lx*m.xEdge[iEdge]);
+            }
+        }
+    } else {
+        ERRORMESSAGE("State::init: Incorrect initial_case")
     }
-    for (size_t i=0; i<m.nCells; i++) {
-      for (size_t k=0; k<K; k++) {
-         layerThickness[i*K+k] = 2.0;
-      }
-    }
-  } else {
-    ERRORMESSAGE("State::init: Incorrect initial_case")
-  }
 
 }
 
