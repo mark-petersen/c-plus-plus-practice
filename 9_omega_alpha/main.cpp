@@ -29,8 +29,10 @@ int main() {
   vector <Tend> t;
   //Diag d;
   {
+  LOG(4,"before State temporaryState(config, m);")
     State temporaryState(config, m);
     for (size_t n=0; n<meta.stateLevelsInMemory; n++) {
+  LOG(4,"before State push_back(temporaryState)")
       s.push_back(temporaryState);
     }
   // temporaryState is destroyed here.
@@ -38,6 +40,7 @@ int main() {
   {
     Tend temporaryTend(config, m);
     for (size_t n=0; n<meta.tendLevelsInMemory; n++) {
+  LOG(4,"before State push_back(temporaryTend)")
       t.push_back(temporaryTend);
     }
   // temporaryTend is destroyed here.

@@ -59,7 +59,7 @@ class Mesh {
     //std::vector <int> boundaryVertex;
     //std::vector <int> obtuseTriangle;
 
-    // mesh variables that are computed on start-up
+    // mesh variables that are computed on start-up, not in netcdf file
     std::vector <signed char> edgeSignOnCell;
   
     // constructor

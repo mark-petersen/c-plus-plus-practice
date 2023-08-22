@@ -10,7 +10,7 @@
 5. Max printing - individual variable reading
 */
 
-#define VERBOSITY 3
+#define VERBOSITY 5
 #define LOG(verbose_level, message) {if (VERBOSITY>=verbose_level) std::cout<< message << std::endl;}
 #define ERRORMESSAGE(m) {printf("Error: %s\n", m); exit(0);}
 
