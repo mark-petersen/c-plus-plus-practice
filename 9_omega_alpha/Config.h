@@ -24,12 +24,14 @@ class Config {
   //*******************************************************
   bool verbose { true }; // print verbose output during run
   std::string dirName { "links_su/" };
-  std::string fileName { "ocean.QU.240km.151209.nc" };
+  //std::string fileName { "ocean.QU.240km.151209.nc" };
   //std::string fileName { "mpaso.EC30to60E2r3.230313.nc" };
   //std::string fileName { "oRRS18to6v3.171116.nc" };
+  std::string fileName { "mpas_mesh_16x16.nc"};
   
   //std::string initial_condition = "init_file";
   //std::string initial_condition = "constant";
+  size_t initialize_nVertLevels = 2; // nVertLevels if initial_condition!="init_file"
   double initial_condition_constant = 55.0;
   std::string initial_condition = "sinx";
 

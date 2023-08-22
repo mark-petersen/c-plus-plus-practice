@@ -23,12 +23,17 @@ Mesh::Mesh(Config &config) {
 
     if (config.verbose) cout << "** Read in dimensions **" << endl;
     nCells = readNCDim(ncid, "nCells");
-    nVertLevels = readNCDim(ncid, "nVertLevels");
     nEdges = readNCDim(ncid, "nEdges");
     nVertices = readNCDim(ncid, "nVertices");
     maxEdges = readNCDim(ncid, "maxEdges");
     maxEdges2 = readNCDim(ncid, "maxEdges2");
     vertexDegree = readNCDim(ncid, "vertexDegree");
+    // set nVertLevels, either from init file or from config.
+    if (config.initial_condition=="init_file") {
+        nVertLevels = readNCDim(ncid, "nVertLevels");
+    } else {
+        nVertLevels = config.initialize_nVertLevels;
+    }
     if (config.verbose) cout << endl;
 
     if (config.verbose) cout << "** Read in mesh variables **" << endl;
