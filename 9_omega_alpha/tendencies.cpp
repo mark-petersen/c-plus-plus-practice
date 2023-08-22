@@ -39,25 +39,18 @@ void hTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
   size_t iCell, i, k, cell1, cell2, iEdge;
   double invAreaCell, r_tmp, tracer_turb_flux, flux;
   for (iCell=0; iCell<m.nCells; iCell++) {
-//    LOG(4,"iCell "<<iCell)
     invAreaCell = 1.0 / m.areaCell[iCell];
     for (i=0; i<m.nEdgesOnCell[iCell]; i++) {
- //   LOG(4,"i "<<i)
       iEdge = m.edgesOnCell.at(iCell*E+i);
       cell1 = m.cellsOnEdge.at(iEdge*2);
       cell2 = m.cellsOnEdge.at(iEdge*2+1);
-    LOG(4,"iEdge, cell1, cell2 "<< iEdge<< " " << cell1 << "  " << cell2)
       r_tmp = config.hTend_del2_coef * m.dvEdge[iEdge] / m.dcEdge[iEdge];
       for (k=0; k<K; k++) {
-//    LOG(4,"k "<<k)
 //        ! \kappa_2 \nabla \phi on edge
         tracer_turb_flux = s.layerThickness.at(cell2*K+k) - s.layerThickness.at(cell1*K+k);
- //   LOG(4,"k2 "<<k)
 //        ! div(h \kappa_2 \nabla \phi) at cell center, but no h coefficient here
         flux =  tracer_turb_flux * r_tmp;
-  //  LOG(4,"k3 "<<k)
         tend.layerThickness[iCell*K+k] -= m.edgeSignOnCell[iCell*E+i] * flux * invAreaCell;
-   // LOG(4,"k4 "<<k)
       }
     }
   }
