@@ -22,8 +22,8 @@
 #include "Meta.h"
 #include "Mesh.h"
 #include "State.h"
-#include "Tend.h"
 #include "Diag.h"
+#include "Tend.h"
 #include "timestep.h"
 
 using namespace std;
@@ -38,20 +38,21 @@ int main() {
     Meta meta(config);
     Mesh m(config);
     vector <State> s;
-    vector <Tend> tend;
-    Diag diag(m);
     {
         State temporaryState(m);
         for (size_t n=0; n<meta.stateLevelsInMemory; n++) {
             s.push_back(temporaryState);
         }
     }     // temporaryState is destroyed here.
+    Diag diag(m);
+    vector <Tend> tend;
     {
         Tend temporaryTend(m);
         for (size_t n=0; n<meta.tendLevelsInMemory; n++) {
             tend.push_back(temporaryTend);
         }
     }     // temporaryTend is destroyed here.
+
     s[0].init(config, m);
     diag.compute(config, m, s[0]);
 

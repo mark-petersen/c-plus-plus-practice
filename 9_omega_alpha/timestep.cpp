@@ -10,14 +10,7 @@
 #include "Tend.h"
 #include "timestep.h"
 #include "tendencies.h"
-
-void printXRow(std::vector<double> &var, size_t Nx, std::string text) {
-    std::cout << text << ": ";
-    for (size_t i=0; i<16; i++) {
-        printf(" %.8f", var[i]);
-    }
-    printf("\n");
-}
+#include "io.h"
 
 void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, Diag &diag, std::vector<Tend> &tend) {
     LOG(4,"-> forward_Euler_timestep")

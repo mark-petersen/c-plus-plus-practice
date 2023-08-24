@@ -8,11 +8,17 @@
 #include "Config.h"
 #include "io.h"
 
-using namespace std;
+void printXRow(std::vector<double> &var, size_t Nx, std::string text) {
+    std::cout << text << ": ";
+    for (size_t i=0; i<16; i++) {
+        printf(" %.8f", var[i]);
+    }
+    printf("\n");
+}
 
-vector <int> readNCInt(int ncid, string varName, size_t dim, bool minus1) {
+std::vector <int> readNCInt(int ncid, std::string varName, size_t dim, bool minus1) {
     int varid, retval;
-    vector <int> var;
+    std::vector <int> var;
     var.resize(dim);
     LOG(5, varName << ": ");
     if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
@@ -26,9 +32,9 @@ vector <int> readNCInt(int ncid, string varName, size_t dim, bool minus1) {
     return var;
 }
 
-vector <double> readNCDouble(int ncid, string varName, size_t dim) {
+std::vector <double> readNCDouble(int ncid, std::string varName, size_t dim) {
     int varid, retval;
-    vector <double> var;
+    std::vector <double> var;
     var.resize(dim);
     LOG(5, varName << ": ");
     if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
@@ -37,7 +43,7 @@ vector <double> readNCDouble(int ncid, string varName, size_t dim) {
     return var;
 }
 
-void fillNCDouble(int ncid, string varName, vector <double> &var) {
+void fillNCDouble(int ncid, std::string varName, std::vector <double> &var) {
     int varid, retval;
     LOG(5, varName << ": ");
     if ((retval = nc_inq_varid(ncid, varName.c_str(), &varid))) ERR(retval);
@@ -45,7 +51,7 @@ void fillNCDouble(int ncid, string varName, vector <double> &var) {
     LOG(5, var[0] << ", " << var[1] )
 }
 
-size_t readNCDim(int ncid, string dimName) {
+size_t readNCDim(int ncid, std::string dimName) {
     int dimid, retval;
     size_t dim;
     LOG(5, dimName << ": ");
