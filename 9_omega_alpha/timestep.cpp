@@ -6,6 +6,7 @@
 #include "Meta.h"
 #include "Mesh.h"
 #include "State.h"
+#include "Diag.h"
 #include "Tend.h"
 #include "timestep.h"
 #include "tendencies.h"
@@ -18,14 +19,14 @@ void printXRow(std::vector<double> &var, size_t Nx, std::string text) {
     printf("\n");
 }
 
-void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, std::vector<Tend> &tend) {
+void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, Diag &diag, std::vector<Tend> &tend) {
     LOG(4,"-> forward_Euler_timestep")
     // y(n+1) = y(n) + dt*RHS(n)
 
     size_t tCur=meta.timeArrayIndex[0];
     size_t tNew=meta.timeArrayIndex[1];
-    compute_velocity_tendencies(config, meta, m, s[tCur], tend[0]);
-    compute_thickness_tendencies(config, meta, m, s[tCur], tend[0]);
+    compute_velocity_tendencies(config, meta, m, s[tCur], diag, tend[0]);
+    compute_thickness_tendencies(config, meta, m, s[tCur], diag, tend[0]);
 
     size_t K=m.nVertLevels;
     for (size_t e=0; e<m.nEdges; e++) {
@@ -38,16 +39,18 @@ void forward_Euler_timestep(Config &config, Meta &meta, Mesh &m, std::vector<Sta
             s[tNew].layerThickness[i*K+k] = s[tCur].layerThickness[i*K+k] + config.dt * tend[0].layerThickness[i*K+k];
         }
     }
+    diag.compute(config, m, s[tNew]);
+
     // switch array indices for next step:
     meta.timeArrayIndex[0] = tNew;
     meta.timeArrayIndex[1] = tCur;
 }
 
-void timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, std::vector<Tend> &tend) {
+void timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, Diag &diag, std::vector<Tend> &tend) {
     LOG(4,"-> timestep")
 
     if (config.timestep_method=="forward_Euler") {
-        forward_Euler_timestep(config, meta, m, s, tend);
+        forward_Euler_timestep(config, meta, m, s, diag, tend);
     }
 
     // check against exact solution

@@ -15,7 +15,7 @@ class State {
     std::vector <double> layerThickness;
 
     // constructor
-    State(Config &config, Mesh &m);
+    State(Mesh &m);
     void init(Config &config, Mesh &m);
 };
 #endif

@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-#include "Config.h"
 #include "Meta.h"
 #include "Mesh.h"
 #include "State.h"
@@ -16,6 +15,6 @@ class Tend : public State {
     // tend variables: nothing extra!
 
     // constructor
-    Tend(Config &config, Mesh &m);
+    Tend(Mesh &m);
 };
 #endif

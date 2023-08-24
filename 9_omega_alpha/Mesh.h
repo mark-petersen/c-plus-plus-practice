@@ -37,6 +37,7 @@ class Mesh {
     std::vector <double> dcEdge;
     std::vector <double> dvEdge;
     std::vector <double> areaTriangle;
+    std::vector <double> weightsOnEdge;
     std::vector <double> meshDensity;
     std::vector <int> indexToCellID;
     std::vector <int> indexToEdgeID;

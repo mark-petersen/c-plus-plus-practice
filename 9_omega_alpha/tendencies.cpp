@@ -3,6 +3,7 @@
 #include "Meta.h"
 #include "Mesh.h"
 #include "State.h"
+#include "Diag.h"
 #include "Tend.h"
 #include "tendencies.h"
 
@@ -79,14 +80,14 @@ void hTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
 //    end do
 }
 
-void compute_velocity_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void compute_velocity_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Diag &diag, Tend &tend) {
   LOG(4,"-> compute_velocity_tendencies")
 
   fill(tend.normalVelocity.begin(), tend.normalVelocity.end(), 0.0);
   uTend_Rayleigh(config, meta, m, s, tend);
 }
 
-void compute_thickness_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void compute_thickness_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Diag &diag, Tend &tend) {
   LOG(4,"-> compute_thickness_tendencies")
 
   fill(tend.layerThickness.begin(), tend.layerThickness.end(), 0.0);

@@ -15,7 +15,7 @@
 using namespace std;
 
 // constructor
-State::State(Config &config, Mesh &m) {
+State::State(Mesh &m) {
     LOG(4,"-> State::State")
 
     normalVelocity.resize(m.nEdges * m.nVertLevels, -1.0e32);
