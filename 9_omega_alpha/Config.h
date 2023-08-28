@@ -39,21 +39,23 @@ class Config {
     //*******************************************************
     //    time stepping
     //*******************************************************
-    std::string timestep_method { "forward_Euler" };
+    std::string timestep_method = "forward_Euler";
     double dt = 0.001; // time step [s]
-    size_t n_timesteps = 1000;
+    size_t n_timesteps = 10;
 
     //*******************************************************
     //    velocity tendency terms
     //*******************************************************
     bool uTend_Rayleigh_enable = true;
-    double uTend_Rayleigh_drag {0.1}; // coefficient in -Ra*u term [1/s]
+    double uTend_Rayleigh_drag = 0.1; // coefficient in -Ra*u term [1/s]
+
+    double coriolis = 1e-4; // Coriolis parameter f (to do: change to variable later)
 
     //*******************************************************
     //    thickness tendency terms
     //*******************************************************
     bool hTend_decay_enable = false; // -c*h ( for testing only)
-    double hTend_decay_coef {0.1}; // coefficient Ra [1/s]
+    double hTend_decay_coef = 0.1; // coefficient Ra [1/s]
 
     bool hTend_del2_enable = true; // kappa del2(h)
     double hTend_del2_coef = 1.0e7; // coefficient in -Ra*u term [1/s]
