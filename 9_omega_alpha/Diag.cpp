@@ -27,6 +27,22 @@ Diag::Diag(Mesh &m) {
 void Diag::compute(Config &config, Mesh &m, State &s) {
     LOG(4,"-> Diag::compute")
 
+// Loop over edges
+    //tangentialVelocity
+      do iEdge = 1, nEdges
+         tangentialVelocity(:,iEdge) = 0.0_RKIND
+         kmin = minLevelEdgeBot(iEdge)
+         kmax = maxLevelEdgeTop(iEdge)
+         do i = 1, nEdgesOnEdge(iEdge)
+            eoe = edgesOnEdge(i,iEdge)
+            weightsOnEdge_temp = weightsOnEdge(i, iEdge)
+            do k = kmin,kmax
+               tangentialVelocity(k,iEdge) = &
+               tangentialVelocity(k,iEdge) + weightsOnEdge_temp* &
+                                             normalVelocity(k, eoe)
+            end do
+         end do
+      end do
 // Loop over vertices
 //relativeVorticity
       do iVertex = 1, nVerticesAll
@@ -39,8 +55,23 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
             end do
          end do
       end do
+    //kineticEnergyVertex, for KE mix, if I want it later? (optional, consider later)
+      do iVertex = 1, nVerticesAll
+         kineticEnergyVertex(:, iVertex) = 0.0_RKIND
+         do i = 1, vertexDegree
+            iEdge = edgesOnVertex(i, iVertex)
+            rTmp  = dcEdge(iEdge)*dvEdge(iEdge)*0.25_RKIND/ &
+                    areaTriangle(iVertex)
+            do k = 1, nVertLevels
+               kineticEnergyVertex(k,iVertex) = &
+               kineticEnergyVertex(k,iVertex) + rTmp* &
+                            normalVelocity(k,iEdge)**2
+            end do
+         end do
+      end do
 
     //divergence, kineticEnergyCell
+    // Loop over cells
       do iCell = 1, nCells
          divergence(:,iCell) = 0.0_RKIND
          kineticEnergyCell(:,iCell) = 0.0_RKIND
@@ -66,35 +97,7 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
                                             normalVelocity(k,iEdge)
             end do
          end do
-    //tangentialVelocity
-      do iEdge = 1, nEdges
-         tangentialVelocity(:,iEdge) = 0.0_RKIND
-         kmin = minLevelEdgeBot(iEdge)
-         kmax = maxLevelEdgeTop(iEdge)
-         do i = 1, nEdgesOnEdge(iEdge)
-            eoe = edgesOnEdge(i,iEdge)
-            weightsOnEdge_temp = weightsOnEdge(i, iEdge)
-            do k = kmin,kmax
-               tangentialVelocity(k,iEdge) = &
-               tangentialVelocity(k,iEdge) + weightsOnEdge_temp* &
-                                             normalVelocity(k, eoe)
-            end do
-         end do
-      end do
-    //kineticEnergyCell, from KE vertex mix
-      do iVertex = 1, nVerticesAll
-         kineticEnergyVertex(:, iVertex) = 0.0_RKIND
-         do i = 1, vertexDegree
-            iEdge = edgesOnVertex(i, iVertex)
-            rTmp  = dcEdge(iEdge)*dvEdge(iEdge)*0.25_RKIND/ &
-                    areaTriangle(iVertex)
-            do k = 1, nVertLevels
-               kineticEnergyVertex(k,iVertex) = &
-               kineticEnergyVertex(k,iVertex) + rTmp* &
-                            normalVelocity(k,iEdge)**2
-            end do
-         end do
-      end do
+    //kineticEnergyCell, from KE vertex mix (optional, consider later)
       do iCell = 1, nCells
          kineticEnergyVertexOnCells(:, iCell) = 0.0_RKIND
          invAreaCell1 = invAreaCell(iCell)
@@ -117,87 +120,4 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
                                       kineticEnergyVertexOnCells(k,iCell)
       end do
       end do
-    //normalizedRelativeVorticityEdge (do I need these? - no)
-    //normalizedPlanetaryVorticityEdge
-    //normalizedRelativeVorticityCell
-      do iVertex = 1, nVertices
-         invAreaTri1 = 1.0_RKIND / areaTriangle(iVertex)
-         do k = 1, maxLevelVertexBot(iVertex)
-            layerThicknessVertex = 0.0_RKIND
-            do i = 1, vertexDegree
-               iCell = cellsOnVertex(i,iVertex)
-               layerThicknessVertex = layerThicknessVertex &
-                                    + layerThickness(k,iCell) &
-                                    * kiteAreasOnVertex(i,iVertex)
-            end do
-            layerThicknessVertex = layerThicknessVertex*invAreaTri1
-            if (layerThicknessVertex == 0) cycle
-
-            normalizedRelativeVorticityVertex(k,iVertex) = &
-                            relativeVorticity(k,iVertex) / &
-                            layerThicknessVertex
-            normalizedPlanetaryVorticityVertex(k,iVertex) = &
-                            fVertex(iVertex)/layerThicknessVertex
-         end do
-      end do
-      do iEdge = 1, nEdges
-         normalizedRelativeVorticityEdge (:,iEdge) = 0.0_RKIND
-         normalizedPlanetaryVorticityEdge(:,iEdge) = 0.0_RKIND
-         vertex1 = verticesOnEdge(1, iEdge)
-         vertex2 = verticesOnEdge(2, iEdge)
-         do k = minLevelEdgeTop(iEdge), maxLevelEdgeBot(iEdge)
-            normalizedRelativeVorticityEdge(k,iEdge) = 0.5_RKIND* &
-                   (normalizedRelativeVorticityVertex(k,vertex1) &
-                  + normalizedRelativeVorticityVertex(k,vertex2))
-            normalizedPlanetaryVorticityEdge(k,iEdge) = 0.5_RKIND* &
-                   (normalizedPlanetaryVorticityVertex(k,vertex1) &
-                  + normalizedPlanetaryVorticityVertex(k,vertex2))
-        end do
-      end do
-      do iCell = 1, nCells
-         normalizedRelativeVorticityCell(:,iCell) = 0.0_RKIND
-         invAreaCell1 = invAreaCell(iCell)
-
-         do i = 1, nEdgesOnCell(iCell)
-            j = kiteIndexOnCell(i, iCell)
-            iVertex = verticesOnCell(i, iCell)
-            do k = minLevelCell(iCell), maxLevelCell(iCell)
-               normalizedRelativeVorticityCell(k,iCell) = &
-               normalizedRelativeVorticityCell(k,iCell) + &
-                                  kiteAreasOnVertex(j,iVertex)* &
-                  normalizedRelativeVorticityVertex(k,iVertex)* &
-                  invAreaCell1
-            end do
-         end do
-      end do
-         do iEdge = 1,nEdges
-            do k = minLevelEdgeTop(iEdge), maxLevelEdgeBot(iEdge)
-               normalizedRelativeVorticityEdge(k,iEdge) = &
-               normalizedRelativeVorticityEdge(k,iEdge) - &
-                    apvm_scale_factor*dt* &
-                    (normalVelocity(k,iEdge)* &
-                     vorticityGradientNormalComponent(k,iEdge)      &
-                   + tangentialVelocity(k,iEdge)* &
-                     vorticityGradientTangentialComponent(k,iEdge) )
-            end do
-         enddo
-//relativeVorticityCell - Probably a visualization variable only
-      do iCell = 1, nCellsOwned
-         relativeVorticityCell(:,iCell) = 0.0_RKIND
-         invAreaCell1 = invAreaCell(iCell)
-         kmin = minLevelCell(iCell)
-         kmax = maxLevelCell(iCell)
-
-         do i = 1, nEdgesOnCell(iCell)
-            j = kiteIndexOnCell(i, iCell)
-            iVertex = verticesOnCell(i, iCell)
-            do k = kmin,kmax
-               relativeVorticityCell(k,iCell) = &
-               relativeVorticityCell(k,iCell) + &
-                        kiteAreasOnVertex(j,iVertex)* &
-                        relativeVorticity(k,iVertex)*invAreaCell1
-            end do
-         end do
-      end do
-
 }
