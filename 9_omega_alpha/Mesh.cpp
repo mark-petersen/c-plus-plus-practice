@@ -95,6 +95,7 @@ Mesh::Mesh(Config &config) {
     if ((retval = nc_close(ncid))) ERR(retval);
     if (config.verbose) cout << endl;
 
+    {
     edgeSignOnCell.resize(nCells*maxEdges);
     size_t E=maxEdges;
     size_t iCell, i, cell1, cell2, iEdge;
@@ -112,6 +113,26 @@ Mesh::Mesh(Config &config) {
                 edgeSignOnCell[iCell*E+i] = -1;
             }
         }
+    }
+    }
+
+    {
+    edgeSignOnVertex.resize(nVertices*vertexDegree);
+    size_t D=vertexDegree;
+    size_t iVertex, i, iEdge;
+    for (iVertex=0; iVertex<nVertices; iVertex++) {
+        for (i=0; i<vertexDegree; i++) {
+            iEdge = edgesOnVertex[iVertex*D+i];
+            // Vectors point from lower to higher vertex number.
+            // If my vertex number is higher than my neighbor, then
+            // vector points towards me and the edge sign is positive.
+            if (iVertex==verticesOnEdge[iEdge*2]) {
+                edgeSignOnVertex[iVertex*D+i] = -1;
+            } else {
+                edgeSignOnVertex[iVertex*D+i] = 1;
+            }
+        }
+    }
     }
 
 }

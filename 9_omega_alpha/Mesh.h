@@ -62,6 +62,7 @@ class Mesh {
 
     // mesh variables that are computed on start-up, not in netcdf file
     std::vector <signed char> edgeSignOnCell;
+    std::vector <signed char> edgeSignOnVertex;
   
     // constructor
     Mesh(Config &config);

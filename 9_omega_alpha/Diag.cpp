@@ -21,63 +21,75 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
   //*******************************************************
   // Loop over edges: tangential velocity
   //*******************************************************
-  size_t iEdge,k,eoe;
+  {
+  size_t i,iEdge,k,eoe;
   size_t K=m.nVertLevels;
-  size_t M=m.maxEdges2;
+  size_t ME2=m.maxEdges2;
   for (iEdge=0; iEdge<m.nEdges; iEdge++) {
     for (k=0; k<K; k++) {
       tangentialVelocity[iEdge*K+k] = 0.0;
     }
     for (i=0; i<m.nEdgesOnEdge[iEdge]; i++) {
-      eoe = edgesOnEdge[iEdge*M+i];
+      eoe = m.edgesOnEdge[iEdge*ME2+i];
       for (k=0; k<K; k++) {
-        tangentialVelocity(k,iEdge) += weightsOnEdge[iEdge*M+i]*normalVelocity[eoe*K+k];
+        tangentialVelocity[iEdge*K+k] += m.weightsOnEdge[iEdge*ME2+i]*s.normalVelocity[eoe*K+k];
       }
     }
+  }
   }
 
   //*******************************************************
   // Loop over vertices: relativeVorticity
   //*******************************************************
-  size_t iVertex;
+  {
+  size_t iVertex, iEdge, i, k;
   size_t V = m.nVertices;
+  size_t K=m.nVertLevels;
   double invAreaTri1;
-  for (iVertex=0; iVertex<m.nVertices; iVertex++) {
+  for (iVertex=0; iVertex<V; iVertex++) {
     invAreaTri1 = 1.0 / m.areaTriangle[iVertex];
     for (k=0; k<K; k++) {
       relativeVorticity[iVertex*K+k] = 0.0;
     }
-    for (i=0; i<vertexDegree; i++) {
-      iEdge = edgesOnVertex[iVertex*V+i];
+    for (i=0; i<m.vertexDegree; i++) {
+      iEdge = m.edgesOnVertex[iVertex*V+i];
       for (k=0; k<K; k++) {
-        relativeVorticity[iVertex*K+k] += edgeSignOnVertex[i, iVertex] * dcEdge[iEdge] * normalVelocity[k, iEdge] * invAreaTri1;
+        relativeVorticity[iVertex*K+k] += m.edgeSignOnVertex[i, iVertex] * m.dcEdge[iEdge] * s.normalVelocity[iEdge*K+k] * invAreaTri1;
         // maybe later:
-        //kineticEnergyVertex[k,iVertex] += dcEdge[iEdge]*pow(dvEdge[iEdge],0.25)/areaTriangle[iVertex]*std::pow(normalVelocity[k,iEdge],2);
+        //kineticEnergyVertex[k,iVertex] += m.dcEdge[iEdge]*pow(m.dvEdge[iEdge],0.25)/areaTriangle[iVertex]*std::pow(s.normalVelocity[k,iEdge],2);
       }
     }
+  }
   }
 
   //*******************************************************
   // Loop over cells: divergence, kineticEnergyCell
   //*******************************************************
+  {
+  size_t iCell, iEdge, i, k;
+  size_t K=m.nVertLevels;
+  size_t ME=m.maxEdges;
+  double invAreaCell, r_tmp;
+  signed char edgeSignOnCell_temp;
   for (iCell=0; iCell<m.nCells; iCell++) {
+    invAreaCell = 1.0 / m.areaCell[iCell];
     for (k=0; k<K; k++) {
       divergence[iCell*K+k] = 0.0;
       kineticEnergyCell[iCell*K+k] = 0.0;
-      div_hu[k] = 0.0;
     }
-    invAreaCell1 = invAreaCell[iCell];
     for (i=0; i<m.nEdgesOnCell[iCell]; i++) {
-      iEdge = m.edgesOnCell[i, iCell];
-      edgeSignOnCell_temp = edgeSignOnCell[i, iCell];
+      iEdge = m.edgesOnCell[iCell*ME+i];
+      edgeSignOnCell_temp = m.edgeSignOnCell[iCell*ME+i];
       for (k=0; k<K; k++) {
-         r_tmp = dvEdge[iEdge]*normalVelocity[k,iEdge]*invAreaCell1;
+        r_tmp = m.dvEdge[iEdge]*s.normalVelocity[iEdge*K+k]*invAreaCell;
 
-         divergence[iCell*K+k] -= edgeSignOnCell_temp*r_tmp;
-         div_hu[k] -= layerThicknessEdgeFlux[k,iEdge]* edgeSignOnCell_temp*r_tmp;
-         kineticEnergyCell[iCell*K+k] = kineticEnergyCell[iCell*K+k] + 0.25*r_tmp*dcEdge[iEdge]* normalVelocity[k,iEdge];
+        divergence[iCell*K+k] -= edgeSignOnCell_temp*r_tmp;
+        kineticEnergyCell[iCell*K+k] += 0.25*r_tmp*m.dcEdge[iEdge]*s.normalVelocity[iEdge*K+k];
+        // maybe later:
+        // div_hu[k] -= layerThicknessEdgeFlux[k,iEdge]* edgeSignOnCell_temp*r_tmp;
       }
     }
+  }
   }
 
 }
@@ -85,7 +97,6 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
   //*******************************************************
   // Loop over edges
   //*******************************************************
-/
 //      do iVertex = 1, nVerticesAll
 //         invAreaTri1 = 1.0 / areaTriangle(iVertex)
 //         do i = 1, vertexDegree
