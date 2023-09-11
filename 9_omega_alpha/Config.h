@@ -46,14 +46,26 @@ class Config {
     //*******************************************************
     //    velocity tendency terms
     //*******************************************************
+    bool uTend_advection_enable = true;
+
+    bool uTend_ssh_gradient_enable = true;
+
+    double coriolis = 1e-4; // Coriolis parameter f (to do: change to variable later)
+
+    bool uTend_del2_enable = true;
+    bool uTend_del4_enable = true;
+    bool uTend_bottom_drag_enable = true;
+
     bool uTend_Rayleigh_enable = true;
     double uTend_Rayleigh_drag = 0.1; // coefficient in -Ra*u term [1/s]
 
-    double coriolis = 1e-4; // Coriolis parameter f (to do: change to variable later)
+    bool uTend_wind_forcing_enable = true;
 
     //*******************************************************
     //    thickness tendency terms
     //*******************************************************
+    bool hTend_advection_enable = true;
+
     bool hTend_decay_enable = false; // -c*h ( for testing only)
     double hTend_decay_coef = 0.1; // coefficient Ra [1/s]
 

@@ -7,6 +7,78 @@
 #include "Tend.h"
 #include "tendencies.h"
 
+void uTend_ssh_gradient(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+  LOG(4,"-> uTend_ssh_gradient")
+  if (!config.uTend_ssh_gradient_enable) return;
+
+  size_t K=m.nVertLevels;
+  for (size_t e=0; e<m.nEdges; e++) {
+    for (size_t k=0; k<K; k++) {
+    //tend.normalVelocity[e*K+k] += config.uTend_ssh_gradient * s.normalVelocity[e*K+k];
+    }
+  }
+}
+
+void uTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+  LOG(4,"-> uTend_advection")
+  if (!config.uTend_advection_enable) return;
+
+  size_t K=m.nVertLevels;
+  for (size_t e=0; e<m.nEdges; e++) {
+    for (size_t k=0; k<K; k++) {
+    //tend.normalVelocity[e*K+k] += config.uTend_advection * s.normalVelocity[e*K+k];
+    }
+  }
+}
+
+void uTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+  LOG(4,"-> uTend_del2")
+  if (!config.uTend_del2_enable) return;
+
+  size_t K=m.nVertLevels;
+  for (size_t e=0; e<m.nEdges; e++) {
+    for (size_t k=0; k<K; k++) {
+    //tend.normalVelocity[e*K+k] += config.uTend_del2 * s.normalVelocity[e*K+k];
+    }
+  }
+}
+
+void uTend_del4(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+  LOG(4,"-> uTend_del4")
+  if (!config.uTend_del4_enable) return;
+
+  size_t K=m.nVertLevels;
+  for (size_t e=0; e<m.nEdges; e++) {
+    for (size_t k=0; k<K; k++) {
+    //tend.normalVelocity[e*K+k] += config.uTend_del4 * s.normalVelocity[e*K+k];
+    }
+  }
+}
+
+void uTend_bottom_drag(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+  LOG(4,"-> uTend_bottom_drag")
+  if (!config.uTend_bottom_drag_enable) return;
+
+  size_t K=m.nVertLevels;
+  for (size_t e=0; e<m.nEdges; e++) {
+    for (size_t k=0; k<K; k++) {
+    //tend.normalVelocity[e*K+k] += config.uTend_bottom_drag * s.normalVelocity[e*K+k];
+    }
+  }
+}
+
+void uTend_wind_forcing(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+  LOG(4,"-> uTend_wind_forcing")
+  if (!config.uTend_wind_forcing_enable) return;
+
+  size_t K=m.nVertLevels;
+  for (size_t e=0; e<m.nEdges; e++) {
+    for (size_t k=0; k<K; k++) {
+    //tend.normalVelocity[e*K+k] += config.uTend_wind_forcing * s.normalVelocity[e*K+k];
+    }
+  }
+}
+
 void uTend_Rayleigh(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
   LOG(4,"-> uTend_Rayleigh")
   if (!config.uTend_Rayleigh_enable) return;
@@ -15,6 +87,18 @@ void uTend_Rayleigh(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
   for (size_t e=0; e<m.nEdges; e++) {
     for (size_t k=0; k<K; k++) {
     tend.normalVelocity[e*K+k] -= config.uTend_Rayleigh_drag * s.normalVelocity[e*K+k];
+    }
+  }
+}
+
+void hTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+  LOG(4,"-> hTend_advection")
+  if (!config.hTend_advection_enable) return;
+
+  size_t K=m.nVertLevels;
+  for (size_t i=0; i<m.nCells; i++) {
+    for (size_t k=0; k<K; k++) {
+    //tend.layerThickness[i*K+k] -= config.hTend_advection_coef * s.layerThickness[i*K+k];
     }
   }
 }
