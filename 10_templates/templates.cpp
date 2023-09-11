@@ -13,6 +13,7 @@ void term1();
 void term2();
 
 // functions
+template <size_t MT>;
 void RHS() {
   std::cout << "RHS"<< std::endl;
   term1();
@@ -29,5 +30,5 @@ void term2() {
 
 int main() {
   std::cout << "Hello"<< std::endl;
-  RHS();
+  RHS<MT>();
 };
