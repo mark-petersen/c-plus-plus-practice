@@ -29,39 +29,39 @@
 using namespace std;
 
 int main() {
-    LOG(2,"Omega-Alpha initialization")
+  LOG(2,"Omega-Alpha initialization")
 
-    //*******************************************************
-    //    Initialization
-    //*******************************************************
-    Config config;
-    Meta meta(config);
-    Mesh m(config);
-    vector <State> s;
-    {
-        State temporaryState(m);
-        for (size_t n=0; n<meta.stateLevelsInMemory; n++) {
-            s.push_back(temporaryState);
-        }
-    }     // temporaryState is destroyed here.
-    Diag diag(m);
-    vector <Tend> tend;
-    {
-        Tend temporaryTend(m);
-        for (size_t n=0; n<meta.tendLevelsInMemory; n++) {
-            tend.push_back(temporaryTend);
-        }
-    }     // temporaryTend is destroyed here.
-
-    s[0].init(config, m);
-    diag.compute(config, m, s[0]);
-
-    //*******************************************************
-    //    time step loop
-    //*******************************************************
-    for (meta.timeIndex=0; meta.timeIndex<config.n_timesteps; meta.timeIndex++) {
-        timestep(config, meta, m,s,diag, tend);
+  //*******************************************************
+  //  Initialization
+  //*******************************************************
+  Config config;
+  Meta meta(config);
+  Mesh m(config);
+  vector <State> s;
+  {
+    State temporaryState(m);
+    for (size_t n=0; n<meta.stateLevelsInMemory; n++) {
+      s.push_back(temporaryState);
     }
+  }   // temporaryState is destroyed here.
+  Diag d(m);
+  vector <Tend> tend;
+  {
+    Tend temporaryTend(m);
+    for (size_t n=0; n<meta.tendLevelsInMemory; n++) {
+      tend.push_back(temporaryTend);
+    }
+  }   // temporaryTend is destroyed here.
+
+  s[0].init(config, m);
+  d.compute(config, m, s[0]);
+
+  //*******************************************************
+  //  time step loop
+  //*******************************************************
+  for (meta.timeIndex=0; meta.timeIndex<config.n_timesteps; meta.timeIndex++) {
+    timestep(config, meta, m,s,d, tend);
+  }
 
 }
 

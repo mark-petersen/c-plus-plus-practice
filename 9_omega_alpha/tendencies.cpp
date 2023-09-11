@@ -7,115 +7,143 @@
 #include "Tend.h"
 #include "tendencies.h"
 
-void uTend_ssh_gradient(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void uTend_KE_gradient(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
+  LOG(4,"-> uTend_KE_gradient")
+  if (!config.uTend_KE_gradient_enable) return;
+
+  size_t K=m.nVertLevels;
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    cell1 = m.cellsOnEdge[iEdge*2];
+    cell2 = m.cellsOnEdge[iEdge*2+1];
+    for (k=0; k<K; k++) {
+      tend.normalVelocity[iEdge*K+k] += d.kineticEnergyCell[cell2*K+k] - d.kineticEnergyCell[cell1*K+k];
+      // note, MPAS-O uses edgeMask(k,iEdge) as coefficient.
+    }
+  }
+}
+
+void uTend_ssh_gradient(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> uTend_ssh_gradient")
   if (!config.uTend_ssh_gradient_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t e=0; e<m.nEdges; e++) {
-    for (size_t k=0; k<K; k++) {
-    //tend.normalVelocity[e*K+k] += config.uTend_ssh_gradient * s.normalVelocity[e*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    cell1 = m.cellsOnEdge[iEdge*2];
+    cell2 = m.cellsOnEdge[iEdge*2+1];
+    for (k=0; k<K; k++) {
+      tend.normalVelocity[iEdge*K+k] += d.kineticEnergyCell[cell2*K+k] - d.kineticEnergyCell[cell1*K+k];
+      // note, MPAS-O uses edgeMask(k,iEdge) as coefficient.
     }
   }
 }
 
-void uTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void uTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> uTend_advection")
   if (!config.uTend_advection_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t e=0; e<m.nEdges; e++) {
-    for (size_t k=0; k<K; k++) {
-    //tend.normalVelocity[e*K+k] += config.uTend_advection * s.normalVelocity[e*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    for (k=0; k<K; k++) {
+    //tend.normalVelocity[iEdge*K+k] += config.uTend_advection * s.normalVelocity[iEdge*K+k];
     }
   }
 }
 
-void uTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void uTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> uTend_del2")
   if (!config.uTend_del2_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t e=0; e<m.nEdges; e++) {
-    for (size_t k=0; k<K; k++) {
-    //tend.normalVelocity[e*K+k] += config.uTend_del2 * s.normalVelocity[e*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    for (k=0; k<K; k++) {
+    //tend.normalVelocity[iEdge*K+k] += config.uTend_del2 * s.normalVelocity[iEdge*K+k];
     }
   }
 }
 
-void uTend_del4(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void uTend_del4(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> uTend_del4")
   if (!config.uTend_del4_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t e=0; e<m.nEdges; e++) {
-    for (size_t k=0; k<K; k++) {
-    //tend.normalVelocity[e*K+k] += config.uTend_del4 * s.normalVelocity[e*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    for (k=0; k<K; k++) {
+    //tend.normalVelocity[iEdge*K+k] += config.uTend_del4 * s.normalVelocity[iEdge*K+k];
     }
   }
 }
 
-void uTend_bottom_drag(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void uTend_bottom_drag(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> uTend_bottom_drag")
   if (!config.uTend_bottom_drag_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t e=0; e<m.nEdges; e++) {
-    for (size_t k=0; k<K; k++) {
-    //tend.normalVelocity[e*K+k] += config.uTend_bottom_drag * s.normalVelocity[e*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    for (k=0; k<K; k++) {
+    //tend.normalVelocity[iEdge*K+k] += config.uTend_bottom_drag * s.normalVelocity[iEdge*K+k];
     }
   }
 }
 
-void uTend_wind_forcing(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void uTend_wind_forcing(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> uTend_wind_forcing")
   if (!config.uTend_wind_forcing_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t e=0; e<m.nEdges; e++) {
-    for (size_t k=0; k<K; k++) {
-    //tend.normalVelocity[e*K+k] += config.uTend_wind_forcing * s.normalVelocity[e*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    for (k=0; k<K; k++) {
+    //tend.normalVelocity[iEdge*K+k] += config.uTend_wind_forcing * s.normalVelocity[iEdge*K+k];
     }
   }
 }
 
-void uTend_Rayleigh(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void uTend_Rayleigh(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> uTend_Rayleigh")
   if (!config.uTend_Rayleigh_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t e=0; e<m.nEdges; e++) {
-    for (size_t k=0; k<K; k++) {
-    tend.normalVelocity[e*K+k] -= config.uTend_Rayleigh_drag * s.normalVelocity[e*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    for (k=0; k<K; k++) {
+    tend.normalVelocity[iEdge*K+k] -= config.uTend_Rayleigh_drag * s.normalVelocity[iEdge*K+k];
     }
   }
 }
 
-void hTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void hTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> hTend_advection")
   if (!config.hTend_advection_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t i=0; i<m.nCells; i++) {
-    for (size_t k=0; k<K; k++) {
-    //tend.layerThickness[i*K+k] -= config.hTend_advection_coef * s.layerThickness[i*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iCell=0; iCell<m.nCells; iCell++) {
+    for (k=0; k<K; k++) {
+    //tend.layerThickness[iCell*K+k] -= config.hTend_advection_coef * s.layerThickness[iCell*K+k];
     }
   }
 }
 
-void hTend_decay(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void hTend_decay(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> hTend_decay")
   if (!config.hTend_decay_enable) return;
 
   size_t K=m.nVertLevels;
-  for (size_t i=0; i<m.nCells; i++) {
-    for (size_t k=0; k<K; k++) {
-    tend.layerThickness[i*K+k] -= config.hTend_decay_coef * s.layerThickness[i*K+k];
+  size_t k, cell1, cell2;
+  for (size_t iCell=0; iCell<m.nCells; iCell++) {
+    for (k=0; k<K; k++) {
+    tend.layerThickness[iCell*K+k] -= config.hTend_decay_coef * s.layerThickness[iCell*K+k];
     }
   }
 }
 
-void hTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
+void hTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> hTend_del2")
   if (!config.hTend_del2_enable) return;
 
@@ -164,18 +192,25 @@ void hTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Tend &tend) {
 //    end do
 }
 
-void compute_velocity_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Diag &diag, Tend &tend) {
+void compute_velocity_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> compute_velocity_tendencies")
 
   fill(tend.normalVelocity.begin(), tend.normalVelocity.end(), 0.0);
-  uTend_Rayleigh(config, meta, m, s, tend);
+  uTend_advection(config, meta, m, s, d, tend);
+  uTend_ssh_gradient(config, meta, m, s, d, tend);
+  uTend_del2(config, meta, m, s, d, tend);
+  uTend_del4(config, meta, m, s, d, tend);
+  uTend_bottom_drag(config, meta, m, s, d, tend);
+  uTend_wind_forcing(config, meta, m, s, d, tend);
+  uTend_Rayleigh(config, meta, m, s, d, tend);
 }
 
-void compute_thickness_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Diag &diag, Tend &tend) {
+void compute_thickness_tendencies(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
   LOG(4,"-> compute_thickness_tendencies")
 
   fill(tend.layerThickness.begin(), tend.layerThickness.end(), 0.0);
-  hTend_decay(config, meta, m, s, tend);
-  hTend_del2(config, meta, m, s, tend);
+  hTend_advection(config, meta, m, s, d, tend);
+  hTend_del2(config, meta, m, s, d, tend);
+  hTend_decay(config, meta, m, s, d, tend);
 }
 
