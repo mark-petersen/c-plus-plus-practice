@@ -46,6 +46,7 @@ Mesh::Mesh(Config &config) {
   std::cout << std::endl;
     yCell = readNCDouble(ncid, "yCell", nCells);
     zCell = readNCDouble(ncid, "zCell", nCells);
+    bottomDepth = readNCDouble(ncid, "bottomDepth", nCells);
     latEdge = readNCDouble(ncid, "latEdge", nEdges);
     lonEdge = readNCDouble(ncid, "lonEdge", nEdges);
     xEdge = readNCDouble(ncid, "xEdge", nEdges);

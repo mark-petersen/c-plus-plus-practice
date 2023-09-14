@@ -39,6 +39,7 @@ class Mesh {
     std::vector <double> areaTriangle;
     std::vector <double> weightsOnEdge;
     std::vector <double> meshDensity;
+    std::vector <double> bottomDepth;
     std::vector <int> indexToCellID;
     std::vector <int> indexToEdgeID;
     std::vector <int> indexToVertexID;

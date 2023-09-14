@@ -33,7 +33,9 @@ void uTend_ssh_gradient(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, 
     cell1 = m.cellsOnEdge[iEdge*2];
     cell2 = m.cellsOnEdge[iEdge*2+1];
     for (k=0; k<K; k++) {
-      tend.normalVelocity[iEdge*K+k] += d.kineticEnergyCell[cell2*K+k] - d.kineticEnergyCell[cell1*K+k];
+      tend.normalVelocity[iEdge*K+k] += gravity * (
+         ( - m.bottomDepth[cell2] + s.layerThickness[cell2*K+k])
+        -( - m.bottomDepth[cell1] + s.layerThickness[cell1*K+k]));
       // note, MPAS-O uses edgeMask(k,iEdge) as coefficient.
     }
   }
@@ -43,12 +45,47 @@ void uTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Ten
   LOG(4,"-> uTend_advection")
   if (!config.uTend_advection_enable) return;
 
+// Option 1: \left[ \frac{\omega_v +f_v}{[h_i]_v}\right]_e\left([h_i]_e u_e^{\perp}\right)
+// mrp add option 1 later.
+//         do iEdge = 1, nEdgesAll
+//         do k=1,nVertLevels
+//            tmpVorticity(k,iEdge) = normRelVortEdge(k,iEdge) + &
+//                                 normPlanetVortEdge(k,iEdge)
+//         end do
+//         end do
+//         do iEdge = 1, nEdgesOwned
+//         cell1 = cellsOnEdge(1,iEdge)
+//         cell2 = cellsOnEdge(2,iEdge)
+//         invLength = 1.0_RKIND / dcEdge(iEdge)
+//
+//         do k = kmin, kmax
+//            tend(k,iEdge) = tend(k,iEdge) + &
+//                        edgeMask(k,iEdge)* (qArr(k,iEdge) - &
+//                           (kineticEnergyCell(k,cell2) &
+//                          - kineticEnergyCell(k,cell1))*invLength)
+//         end do
+//      end do
+//      do iEdge = 1, nEdgesOwned
+//         cell1 = cellsOnEdge(1,iEdge)
+//         cell2 = cellsOnEdge(2,iEdge)
+//         invLength = 1.0_RKIND / dcEdge(iEdge)
+//         do k = kmin, kmax
+//            tend(k,iEdge) = tend(k,iEdge) + &
+//                        edgeMask(k,iEdge)* (qArr(k,iEdge) - &
+//                           (kineticEnergyCell(k,cell2) &
+//                          - kineticEnergyCell(k,cell1))*invLength)
+//         end do
+//      end do
+
+// Option 2: ([\omega_v]_e +f_e) u_e^\perp
+  {
   size_t K=m.nVertLevels;
   size_t k, cell1, cell2;
   for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
     for (k=0; k<K; k++) {
-    //tend.normalVelocity[iEdge*K+k] += config.uTend_advection * s.normalVelocity[iEdge*K+k];
+      //tend.normalVelocity[iEdge*K+k] += config.uTend_advection * s.normalVelocity[iEdge*K+k];
     }
+  }
   }
 }
 

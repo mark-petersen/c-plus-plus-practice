@@ -16,6 +16,8 @@
 
 #include <string>
 
+inline constexpr double gravity = 9.807; // m/s^2 -- gravity is light on this planet
+
 class Config {
     public:
 
@@ -49,6 +51,7 @@ class Config {
     bool uTend_advection_enable = true;
 
     bool uTend_ssh_gradient_enable = true;
+    bool uTend_KE_gradient_enable = true;
 
     double coriolis = 1e-4; // Coriolis parameter f (to do: change to variable later)
 
