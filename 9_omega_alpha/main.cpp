@@ -26,8 +26,6 @@
 #include "Tend.h"
 #include "timestep.h"
 
-using namespace std;
-
 int main() {
   LOG(2,"Omega-Alpha initialization")
 
@@ -37,7 +35,7 @@ int main() {
   Config config;
   Meta meta(config);
   Mesh m(config);
-  vector <State> s;
+  std::vector <State> s;
   {
     State temporaryState(m);
     for (size_t n=0; n<meta.stateLevelsInMemory; n++) {
@@ -45,7 +43,7 @@ int main() {
     }
   }   // temporaryState is destroyed here.
   Diag d(m);
-  vector <Tend> tend;
+  std::vector <Tend> tend;
   {
     Tend temporaryTend(m);
     for (size_t n=0; n<meta.tendLevelsInMemory; n++) {

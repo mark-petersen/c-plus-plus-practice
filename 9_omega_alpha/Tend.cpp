@@ -5,8 +5,6 @@
 #include "Mesh.h"
 #include "Tend.h"
 
-using namespace std;
-
 // constructor
 Tend::Tend(Mesh &m) : State(m) {
     LOG(4,"-> Tend::Tend")

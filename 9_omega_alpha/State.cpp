@@ -12,8 +12,6 @@
 #include "State.h"
 #include "io.h"
 
-using namespace std;
-
 // constructor
 State::State(Mesh &m) {
     LOG(4,"-> State::State")
@@ -36,18 +34,18 @@ void State::init(Config &config, Mesh &m) {
 
         std::string meshFileName = config.dirName + config.fileName;
         int ncid, retval;
-        if (config.verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
+        if (config.verbose) std::cout << "** Opening file: " << meshFileName << " **" << std::endl;
         if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
-        if (config.verbose) cout << endl;
+        if (config.verbose) std::cout << std::endl;
 
-        if (config.verbose) cout << "** Read in state variables **" << endl;
+        if (config.verbose) std::cout << "** Read in state variables **" << std::endl;
         fillNCDouble(ncid, "normalVelocity", normalVelocity);
         fillNCDouble(ncid, "layerThickness", layerThickness);
-        if (config.verbose) cout << endl;
+        if (config.verbose) std::cout << std::endl;
 
-        if (config.verbose) cout << "** Closing file: " << meshFileName << " **" << endl;
+        if (config.verbose) std::cout << "** Closing file: " << meshFileName << " **" << std::endl;
         if ((retval = nc_close(ncid))) ERR(retval);
-        if (config.verbose) cout << endl;
+        if (config.verbose) std::cout << std::endl;
 
     } else if (config.initial_condition=="sinx") {
         for (iEdge=0; iEdge<m.nEdges; iEdge++) {

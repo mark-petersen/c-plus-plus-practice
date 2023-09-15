@@ -8,18 +8,16 @@
 #include "Mesh.h"
 #include "io.h"
 
-using namespace std;
-
 // constructor
 Mesh::Mesh(Config &config) {
     LOG(4,"-> Mesh::Mesh")
 
-    string meshFileName = config.dirName + config.fileName;
+    std::string meshFileName = config.dirName + config.fileName;
 
     int ncid, retval;
-    if (config.verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
+    if (config.verbose) std::cout << "** Opening file: " << meshFileName << " **" << std::endl;
     if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
-    if (config.verbose) cout << endl;
+    if (config.verbose) std::cout << std::endl;
 
     LOG(4,"** Read in dimensions **")
     nCells = readNCDim(ncid, "nCells");
@@ -94,7 +92,7 @@ Mesh::Mesh(Config &config) {
 
     LOG(4,"** Closing file: " << meshFileName << " **")
     if ((retval = nc_close(ncid))) ERR(retval);
-    if (config.verbose) cout << endl;
+    if (config.verbose) std::cout << std::endl;
 
     {
     edgeSignOnCell.resize(nCells*maxEdges);
