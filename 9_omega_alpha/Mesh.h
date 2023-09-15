@@ -7,14 +7,14 @@
 class Mesh {
   public:
 
-    // MPAS dimensions
+    // MPAS dimensions, with shortcuts for inner dimensions.
     size_t nCells;
-    size_t nVertLevels;
     size_t nEdges;
     size_t nVertices;
-    size_t maxEdges;
-    size_t maxEdges2;
-    size_t vertexDegree;
+    size_t nVertLevels, K;
+    size_t maxEdges, ME;
+    size_t maxEdges2, ME2;
+    size_t vertexDegree, VD;
   
     // MPAS mesh variables
     std::vector <double> latCell;

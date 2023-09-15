@@ -23,16 +23,14 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
   //*******************************************************
   {
   size_t i,iEdge,k,eoe;
-  size_t K=m.nVertLevels;
-  size_t ME2=m.maxEdges2;
   for (iEdge=0; iEdge<m.nEdges; iEdge++) {
-    for (k=0; k<K; k++) {
-      tangentialVelocity[iEdge*K+k] = 0.0;
+    for (k=0; k<m.K; k++) {
+      tangentialVelocity[iEdge*m.K+k] = 0.0;
     }
     for (i=0; i<m.nEdgesOnEdge[iEdge]; i++) {
-      eoe = m.edgesOnEdge[iEdge*ME2+i];
-      for (k=0; k<K; k++) {
-        tangentialVelocity[iEdge*K+k] += m.weightsOnEdge[iEdge*ME2+i]*s.normalVelocity[eoe*K+k];
+      eoe = m.edgesOnEdge[iEdge*m.ME2+i];
+      for (k=0; k<m.K; k++) {
+        tangentialVelocity[iEdge*m.K+k] += m.weightsOnEdge[iEdge*m.ME2+i]*s.normalVelocity[eoe*m.K+k];
       }
     }
   }
@@ -43,18 +41,16 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
   //*******************************************************
   {
   size_t iVertex, iEdge, i, k;
-  size_t V = m.nVertices;
-  size_t K=m.nVertLevels;
   double invAreaTri1;
-  for (iVertex=0; iVertex<V; iVertex++) {
+  for (iVertex=0; iVertex<m.nVertices; iVertex++) {
     invAreaTri1 = 1.0 / m.areaTriangle[iVertex];
-    for (k=0; k<K; k++) {
-      relativeVorticity[iVertex*K+k] = 0.0;
+    for (k=0; k<m.K; k++) {
+      relativeVorticity[iVertex*m.K+k] = 0.0;
     }
-    for (i=0; i<m.vertexDegree; i++) {
-      iEdge = m.edgesOnVertex[iVertex*V+i];
-      for (k=0; k<K; k++) {
-        relativeVorticity[iVertex*K+k] += m.edgeSignOnVertex[i, iVertex] * m.dcEdge[iEdge] * s.normalVelocity[iEdge*K+k] * invAreaTri1;
+    for (i=0; i<m.VD; i++) {
+      iEdge = m.edgesOnVertex[iVertex*m.VD+i];
+      for (k=0; k<m.K; k++) {
+        relativeVorticity[iVertex*m.K+k] += m.edgeSignOnVertex[iVertex*m.VD+i] * m.dcEdge[iEdge] * s.normalVelocity[iEdge*m.K+k] * invAreaTri1;
         // maybe later:
         //kineticEnergyVertex[k,iVertex] += m.dcEdge[iEdge]*pow(m.dvEdge[iEdge],0.25)/areaTriangle[iVertex]*std::pow(s.normalVelocity[k,iEdge],2);
       }
@@ -66,25 +62,23 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
   // Loop over cells: divergence, kineticEnergyCell
   //*******************************************************
   {
-  size_t iCell, iEdge, i, k;
-  size_t K=m.nVertLevels;
-  size_t ME=m.maxEdges;
+  size_t iEdge, i, k;
   double invAreaCell, r_tmp;
   signed char edgeSignOnCell_temp;
-  for (iCell=0; iCell<m.nCells; iCell++) {
+  for (size_t iCell=0; iCell<m.nCells; iCell++) {
     invAreaCell = 1.0 / m.areaCell[iCell];
-    for (k=0; k<K; k++) {
-      divergence[iCell*K+k] = 0.0;
-      kineticEnergyCell[iCell*K+k] = 0.0;
+    for (k=0; k<m.K; k++) {
+      divergence[iCell*m.K+k] = 0.0;
+      kineticEnergyCell[iCell*m.K+k] = 0.0;
     }
     for (i=0; i<m.nEdgesOnCell[iCell]; i++) {
-      iEdge = m.edgesOnCell[iCell*ME+i];
-      edgeSignOnCell_temp = m.edgeSignOnCell[iCell*ME+i];
-      for (k=0; k<K; k++) {
-        r_tmp = m.dvEdge[iEdge]*s.normalVelocity[iEdge*K+k]*invAreaCell;
+      iEdge = m.edgesOnCell[iCell*m.ME+i];
+      edgeSignOnCell_temp = m.edgeSignOnCell[iCell*m.ME+i];
+      for (k=0; k<m.K; k++) {
+        r_tmp = m.dvEdge[iEdge]*s.normalVelocity[iEdge*m.K+k]*invAreaCell;
 
-        divergence[iCell*K+k] -= edgeSignOnCell_temp*r_tmp;
-        kineticEnergyCell[iCell*K+k] += 0.25*r_tmp*m.dcEdge[iEdge]*s.normalVelocity[iEdge*K+k];
+        divergence[iCell*m.K+k] -= edgeSignOnCell_temp*r_tmp;
+        kineticEnergyCell[iCell*m.K+k] += 0.25*r_tmp*m.dcEdge[iEdge]*s.normalVelocity[iEdge*m.K+k];
         // maybe later:
         // div_hu[k] -= layerThicknessEdgeFlux[k,iEdge]* edgeSignOnCell_temp*r_tmp;
       }

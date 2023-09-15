@@ -34,16 +34,16 @@ Mesh::Mesh(Config &config) {
     } else {
         nVertLevels = config.initialize_nVertLevels;
     }
+    // dimension shortcuts
+    K = nVertLevels;
+    ME = maxEdges;
+    ME2 = maxEdges2;
+    VD = vertexDegree;
 
     LOG(4,"** Read in mesh variables **")
     latCell = readNCDouble(ncid, "latCell", nCells);
     lonCell = readNCDouble(ncid, "lonCell", nCells);
     xCell = readNCDouble(ncid, "xCell", nCells);
-  std::cout << "IC mesh xCell: ";
-  for (size_t i=0; i<16; i++) {
-    std::cout << xCell[i]<< " ";
-  }
-  std::cout << std::endl;
     yCell = readNCDouble(ncid, "yCell", nCells);
     zCell = readNCDouble(ncid, "zCell", nCells);
     bottomDepth = readNCDouble(ncid, "bottomDepth", nCells);
@@ -98,42 +98,46 @@ Mesh::Mesh(Config &config) {
 
     {
     edgeSignOnCell.resize(nCells*maxEdges);
-    size_t E=maxEdges;
     size_t iCell, i, cell1, cell2, iEdge;
     for (iCell=0; iCell<nCells; iCell++) {
         for (i=0; i<nEdgesOnCell[iCell]; i++) {
-            iEdge = edgesOnCell[iCell*E+i];
+            iEdge = edgesOnCell[iCell*ME+i];
             cell1 = cellsOnEdge[iEdge*2];
             cell2 = cellsOnEdge[iEdge*2+1];
             // Vectors point from lower to higher cell number.
             // If my cell number is higher than my neighbor, then
             // vector points towards me and the edge sign is positive.
             if (iCell==std::max(cell1,cell2)) {
-                edgeSignOnCell[iCell*E+i] = 1;
+                edgeSignOnCell[iCell*ME+i] = 1;
             } else {
-                edgeSignOnCell[iCell*E+i] = -1;
+                edgeSignOnCell[iCell*ME+i] = -1;
             }
         }
     }
     }
 
     {
-    edgeSignOnVertex.resize(nVertices*vertexDegree);
-    size_t D=vertexDegree;
+    edgeSignOnVertex.resize(nVertices*VD);
     size_t iVertex, i, iEdge;
     for (iVertex=0; iVertex<nVertices; iVertex++) {
-        for (i=0; i<vertexDegree; i++) {
-            iEdge = edgesOnVertex[iVertex*D+i];
+        for (i=0; i<VD; i++) {
+            iEdge = edgesOnVertex[iVertex*VD+i];
             // Vectors point from lower to higher vertex number.
             // If my vertex number is higher than my neighbor, then
             // vector points towards me and the edge sign is positive.
             if (iVertex==verticesOnEdge[iEdge*2]) {
-                edgeSignOnVertex[iVertex*D+i] = -1;
+                edgeSignOnVertex[iVertex*VD+i] = -1;
             } else {
-                edgeSignOnVertex[iVertex*D+i] = 1;
+                edgeSignOnVertex[iVertex*VD+i] = 1;
             }
         }
     }
     }
 
 }
+    // mrp add printing routing later
+//  std::cout << "IC mesh xCell: ";
+//  for (size_t i=0; i<16; i++) {
+//    std::cout << xCell[i]<< " ";
+//  }
+//  std::cout << std::endl;
