@@ -32,7 +32,7 @@ Mesh::Mesh(Config &config) {
     } else {
         nVertLevels = config.initialize_nVertLevels;
     }
-    // dimension shortcuts
+    // inner dimension shortcuts
     K = nVertLevels;
     ME = maxEdges;
     ME2 = maxEdges2;

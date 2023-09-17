@@ -77,10 +77,14 @@ void uTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Ten
 
 // Option 2: ([\omega_v]_e +f_e) u_e^\perp
   {
-  size_t k, cell1, cell2;
+  size_t k, vertex1, vertex2;
+  double relativeVorticityEdge;
   for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    vertex1 = m.verticesOnEdge[iEdge*2];
+    vertex2 = m.verticesOnEdge[iEdge*2+1];
     for (k=0; k<m.K; k++) {
-      //tend.normalVelocity[iEdge*m.K+k] += config.uTend_advection * s.normalVelocity[iEdge*m.K+k];
+      relativeVorticityEdge = 0.5*(d.relativeVorticity[vertex1*m.K+k] + d.relativeVorticity[vertex2*m.K+k]);
+      tend.normalVelocity[iEdge*m.K+k] += (relativeVorticityEdge + config.coriolis) * d.tangentialVelocity[iEdge*m.K+k];
     }
   }
   }
@@ -90,12 +94,61 @@ void uTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &te
   LOG(4,"-> uTend_del2")
   if (!config.uTend_del2_enable) return;
 
+//   do iEdge = 1, nEdgesOwned
+//      cell1 = cellsOnEdge(1,iEdge)
+//      cell2 = cellsOnEdge(2,iEdge)
+//      vertex1 = verticesOnEdge(1,iEdge)
+//      vertex2 = verticesOnEdge(2,iEdge)
+//
+//      dcEdgeInv = 1.0_RKIND / dcEdge(iEdge)
+//      dvEdgeInv = 1.0_RKIND / dvEdge(iEdge)
+//
+//      visc2 =  viscDel2*meshScalingDel2(iEdge)
+//
+//      do k = minLevelEdgeBot(iEdge), maxLevelEdgeTop(iEdge)
+//
+//         ! Here -( relativeVorticity(k,vertex2) - 
+//         !         relativeVorticity(k,vertex1) ) / dvEdge(iEdge)
+//         ! is - \nabla relativeVorticity pointing from vertex 2 
+//         ! to vertex 1, or equivalently
+//         ! + k \times \nabla relativeVorticity pointing from cell1 
+//         ! to cell2.
+//
+//         uDiff = (div(k,cell2) - div(k,cell1))*dcEdgeInv &
+//                -(relVort(k,vertex2)-relVort(k,vertex1))*dvEdgeInv
+//
+//         tend(k,iEdge) = tend(k,iEdge) + &
+//                         edgeMask(k,iEdge)*visc2*uDiff
+//
+//      end do
+//   end do
+
   size_t k, cell1, cell2;
+  size_t vertex1, vertex2;
+  double dcEdgeInv, dvEdgeInv;
   for (size_t iEdge=0; iEdge<m.nEdges; iEdge++) {
+    cell1 = m.cellsOnEdge[iEdge*2];
+    cell2 = m.cellsOnEdge[iEdge*2+1];
+    vertex1 = m.verticesOnEdge[iEdge*2];
+    vertex2 = m.verticesOnEdge[iEdge*2+1];
+    dcEdgeInv = 1.0 / m.dcEdge[iEdge];
+    dvEdgeInv = 1.0 / m.dvEdge[iEdge];
+//      visc2 =  viscDel2*meshScalingDel2(iEdge)
     for (k=0; k<m.K; k++) {
-    //tend.normalVelocity[iEdge*m.K+k] += config.uTend_del2 * s.normalVelocity[iEdge*m.K+k];
+      // Here -( relativeVorticity(k,vertex2) - 
+      //         relativeVorticity(k,vertex1) ) / dvEdge(iEdge)
+      // is - \nabla relativeVorticity pointing from vertex 2 
+      // to vertex 1, or equivalently
+      // + k \times \nabla relativeVorticity pointing from cell1 
+      // to cell2.
+
+      // MPAS-O uses edgeMask(k,iEdge)
+      tend.normalVelocity[iEdge*m.K+k] += config.uTend_del2_coef*
+              (d.divergence[cell2*m.K+k] - d.divergence[cell1*m.K+k])*dcEdgeInv
+             -(d.relativeVorticity[vertex2*m.K+k] - d.relativeVorticity[vertex1*m.K+k])*dvEdgeInv;
     }
   }
+
 }
 
 void uTend_del4(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &tend) {
@@ -150,10 +203,19 @@ void hTend_advection(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Ten
   LOG(4,"-> hTend_advection")
   if (!config.hTend_advection_enable) return;
 
-  size_t k, cell1, cell2;
+  size_t iEdge, i, k;
+  double invAreaCell, r_tmp;
+  signed char edgeSignOnCell_temp;
   for (size_t iCell=0; iCell<m.nCells; iCell++) {
-    for (k=0; k<m.K; k++) {
-    //tend.layerThickness[iCell*m.K+k] -= config.hTend_advection_coef * s.layerThickness[iCell*m.K+k];
+    invAreaCell = 1.0 / m.areaCell[iCell];
+    for (i=0; i<m.nEdgesOnCell[iCell]; i++) {
+      iEdge = m.edgesOnCell[iCell*m.ME+i];
+      edgeSignOnCell_temp = m.edgeSignOnCell[iCell*m.ME+i];
+      for (k=0; k<m.K; k++) {
+        r_tmp = m.dvEdge[iEdge]*s.normalVelocity[iEdge*m.K+k]*invAreaCell;
+
+        tend.layerThickness[iCell*m.K+k] -= edgeSignOnCell_temp*r_tmp;
+      }
     }
   }
 }

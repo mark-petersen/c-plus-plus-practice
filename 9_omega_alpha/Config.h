@@ -56,6 +56,7 @@ class Config {
     double coriolis = 1e-4; // Coriolis parameter f (to do: change to variable later)
 
     bool uTend_del2_enable = true;
+    double uTend_del2_coef = 1e-4; // m^2/s
     bool uTend_del4_enable = true;
     bool uTend_bottom_drag_enable = true;
 
