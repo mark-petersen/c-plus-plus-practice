@@ -60,4 +60,3 @@ void timestep(Config &config, Meta &meta, Mesh &m, std::vector<State> &s, Diag &
         printf("Sol:                                                 %.8f \n", sol);
 
 }
-

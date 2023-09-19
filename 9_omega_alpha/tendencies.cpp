@@ -107,11 +107,11 @@ void uTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &te
 //
 //      do k = minLevelEdgeBot(iEdge), maxLevelEdgeTop(iEdge)
 //
-//         ! Here -( relativeVorticity(k,vertex2) - 
+//         ! Here -( relativeVorticity(k,vertex2) -
 //         !         relativeVorticity(k,vertex1) ) / dvEdge(iEdge)
-//         ! is - \nabla relativeVorticity pointing from vertex 2 
+//         ! is - \nabla relativeVorticity pointing from vertex 2
 //         ! to vertex 1, or equivalently
-//         ! + k \times \nabla relativeVorticity pointing from cell1 
+//         ! + k \times \nabla relativeVorticity pointing from cell1
 //         ! to cell2.
 //
 //         uDiff = (div(k,cell2) - div(k,cell1))*dcEdgeInv &
@@ -135,11 +135,11 @@ void uTend_del2(Config &config, Meta &meta, Mesh &m, State &s, Diag &d, Tend &te
     dvEdgeInv = 1.0 / m.dvEdge[iEdge];
 //      visc2 =  viscDel2*meshScalingDel2(iEdge)
     for (k=0; k<m.K; k++) {
-      // Here -( relativeVorticity(k,vertex2) - 
+      // Here -( relativeVorticity(k,vertex2) -
       //         relativeVorticity(k,vertex1) ) / dvEdge(iEdge)
-      // is - \nabla relativeVorticity pointing from vertex 2 
+      // is - \nabla relativeVorticity pointing from vertex 2
       // to vertex 1, or equivalently
-      // + k \times \nabla relativeVorticity pointing from cell1 
+      // + k \times \nabla relativeVorticity pointing from cell1
       // to cell2.
 
       // MPAS-O uses edgeMask(k,iEdge)
@@ -300,4 +300,3 @@ void compute_thickness_tendencies(Config &config, Meta &meta, Mesh &m, State &s,
   hTend_del2(config, meta, m, s, d, tend);
   hTend_decay(config, meta, m, s, d, tend);
 }
-

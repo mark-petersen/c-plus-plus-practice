@@ -27,7 +27,7 @@ using namespace netCDF::exceptions;
 static const int NLAT = 6;
 static const int NLON = 12;
 
-// These are used to calculate the values we expect to find. 
+// These are used to calculate the values we expect to find.
 static const float SAMPLE_PRESSURE = 900;
 static const float SAMPLE_TEMP = 9.0;
 static const float START_LAT = 25.0;
@@ -45,7 +45,7 @@ int main(void)
    // These will hold our latitudes and longitudes.
    float latsIn[NLAT];
    float lonsIn[NLON];
-  
+
   try
   {
    // Open the file and check to make sure it's valid.
@@ -61,7 +61,7 @@ int main(void)
    //cout<<"there are "<<dataFile.getDimCount()<<" dimensions"<<endl;
    //cout<<"there are "<<dataFile.getGroupCount()<<" groups"<<endl;
    //cout<<"there are "<<dataFile.getTypeCount()<<" types"<<endl;
-     
+
    // Get the  latitude and longitude coordinate variables and read data
    NcVar latVar, lonVar;
    latVar = dataFile.getVar("latitude");
@@ -71,11 +71,11 @@ int main(void)
    latVar.getVar(latsIn);
    lonVar.getVar(lonsIn);
 
-   // Check the coordinate variable data. 
+   // Check the coordinate variable data.
    for(int lat = 0; lat < NLAT; lat++)
       if (latsIn[lat] != START_LAT + 5. * lat)
 	 return NC_ERR;
-   
+
    // Check longitude values.
    for (int lon = 0; lon < NLON; lon++)
       if (lonsIn[lon] != START_LON + 5. * lon)
@@ -89,60 +89,60 @@ int main(void)
    if(tempVar.isNull()) return NC_ERR;
    presVar.getVar(presIn);
    tempVar.getVar(tempIn);
-       
-   // Check the data. 
+
+   // Check the data.
    for (int lat = 0; lat < NLAT; lat++)
       for (int lon = 0; lon < NLON; lon++)
 	 if (presIn[lat][lon] != SAMPLE_PRESSURE + (lon * NLAT + lat)
 	     || tempIn[lat][lon] != SAMPLE_TEMP + .25 * (lon * NLAT + lat))
 	    return NC_ERR;
-   
+
    // Each of the netCDF variables has a "units" attribute. Let's read
    // them and check them.
    NcVarAtt att;
    string units;
-   
+
    att = latVar.getAtt("units");
    if(att.isNull()) return NC_ERR;
-   
+
    att.getValues(units);
    if (units != "degrees_north")
      {
        cout<<"getValue returned "<<units<<endl;
        return NC_ERR;
      }
-   
+
 
    att = lonVar.getAtt("units");
    if(att.isNull()) return NC_ERR;
-   
+
    att.getValues(units);
    if (units != "degrees_east")
      {
        cout<<"getValue returned "<<units<<endl;
        return NC_ERR;
      }
-   
+
    att = presVar.getAtt("units");
    if(att.isNull()) return NC_ERR;
-   
+
    att.getValues(units);
    if (units != "hPa")
      {
        cout<<"getValue returned "<<units<<endl;
        return NC_ERR;
      }
-   
+
    att = tempVar.getAtt("units");
    if(att.isNull()) return NC_ERR;
-   
+
    att.getValues(units);
    if (units != "celsius")
      {
        cout<<"getValue returned "<<units<<endl;
        return NC_ERR;
      }
-   
+
    // The file will be automatically closed by the destructor. This
    // frees up any internal netCDF resources associated with the file,
    // and flushes any buffers.

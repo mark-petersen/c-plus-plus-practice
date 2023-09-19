@@ -1,8 +1,8 @@
-/*                                              __      __         
+/*                                              __      __
   ____  ____ ___  ___  ____ _____ _      ____ _/ /___  / /_  ____ _
  / __ \/ __ `__ \/ _ \/ __ `/ __ `/_____/ __ `/ / __ \/ __ \/ __ `/
-/ /_/ / / / / / /  __/ /_/ / /_/ /_____/ /_/ / / /_/ / / / / /_/ / 
-\____/_/ /_/ /_/\___/\__, /\__,_/      \__,_/_/ .___/_/ /_/\__,_/  
+/ /_/ / / / / / /  __/ /_/ / /_/ /_____/ /_/ / / /_/ / / / / /_/ /
+\____/_/ /_/ /_/\___/\__, /\__,_/      \__,_/_/ .___/_/ /_/\__,_/
                     /____/                   /_/                  */
 
 // Omega-alpha is a preliminary version of the Omega ocean model. The modeling
@@ -53,13 +53,23 @@ int main() {
 
   s[0].init(config, m);
   d.compute(config, m, s[0]);
+  if (config.output_on_startup) {
+    //write_output(config, meta, m,s,d, tend);
+  }
 
   //*******************************************************
   //  time step loop
   //*******************************************************
   for (meta.timeIndex=0; meta.timeIndex<config.n_timesteps; meta.timeIndex++) {
     timestep(config, meta, m,s,d, tend);
+
+    if (meta.timeIndex % config.output_frequency==0) {
+    //write_output(config, meta, m,s,d, tend);
+    }
   }
 
-}
+  //*******************************************************
+  //  output
+  //*******************************************************
 
+}

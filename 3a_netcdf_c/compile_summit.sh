@@ -1,7 +1,7 @@
 #! /bin/bash
 
 module load gcc
-module load netcdf-c	 
+module load netcdf-c
 module load netcdf-cxx4/4.3.1
 
 for file in pres_temp_4D_wr.c  sfc_pres_temp_wr.c  simple_xy_wr.c pres_temp_4D_rd.c  sfc_pres_temp_rd.c  simple_xy_rd.c
@@ -15,5 +15,4 @@ do
   ./$file.out
 done
 
-# 
-
+#

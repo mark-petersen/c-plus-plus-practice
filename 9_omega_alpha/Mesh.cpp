@@ -1,4 +1,4 @@
-// Using netcdf-c version of the netcdf libraries, and all 
+// Using netcdf-c version of the netcdf libraries, and all
 // arrays are c++ vector containers, 1D with computed index offset
 
 #include <iostream>
@@ -62,7 +62,7 @@ Mesh::Mesh(Config &config) {
     areaTriangle = readNCDouble(ncid, "areaTriangle", nVertices);
     meshDensity = readNCDouble(ncid, "meshDensity", nCells);
     weightsOnEdge = readNCDouble(ncid, "weightsOnEdge", maxEdges2*nEdges);
-    // description="Reconstruction weights associated with each of the edgesOnEdge, 
+    // description="Reconstruction weights associated with each of the edgesOnEdge,
     //   used to reconstruct the tangentialVelocity from normalVelocities on neighboring edges."
 
     // Cell pointers. These need to be reduced by 1 for Fortran->C

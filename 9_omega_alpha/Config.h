@@ -30,7 +30,7 @@ class Config {
     //std::string fileName { "mpaso.EC30to60E2r3.230313.nc" };
     //std::string fileName { "oRRS18to6v3.171116.nc" };
     std::string fileName { "mpas_mesh_16x16.nc"};
-    
+
     //std::string initial_condition = "init_file";
     size_t initialize_nVertLevels = 1; // nVertLevels if initial_condition!="init_file"
     //std::string initial_condition = "constant";
@@ -44,6 +44,12 @@ class Config {
     std::string timestep_method = "forward_Euler";
     double dt = 0.001; // time step [s]
     size_t n_timesteps = 10;
+
+    //*******************************************************
+    //    output
+    //*******************************************************
+    bool output_on_startup = true;
+    size_t output_frequency = 1; // time step interval for output
 
     //*******************************************************
     //    velocity tendency terms

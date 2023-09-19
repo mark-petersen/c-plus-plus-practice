@@ -1,4 +1,4 @@
-// Using netcdf-c version of the netcdf libraries, and all 
+// Using netcdf-c version of the netcdf libraries, and all
 // arrays are c++ vector containers, 1D with computed index offset
 
 #include <iostream>
@@ -60,4 +60,3 @@ size_t readNCDim(int ncid, std::string dimName) {
     LOG(5, dim )
     return dim;
 }
-

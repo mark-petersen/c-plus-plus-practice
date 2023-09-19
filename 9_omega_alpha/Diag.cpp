@@ -187,7 +187,7 @@ void Diag::compute(Config &config, Mesh &m, State &s) {
 //      do iCell = 1, nCells
 //      do k = 1, nVertLevels
 //         kineticEnergyCell(k,iCell) = 5.0/8.0* &
-//                                      kineticEnergyCell(k,iCell) & 
+//                                      kineticEnergyCell(k,iCell) &
 //                                    + 3.0/8.0* &
 //                                      kineticEnergyVertexOnCells(k,iCell)
 //      end do

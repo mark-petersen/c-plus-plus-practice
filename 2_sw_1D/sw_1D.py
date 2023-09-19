@@ -50,7 +50,7 @@ for i in range(nt):
   h[:] = hnew[:]
   told = tnew
   tnew = told + dt
-  
+
   # u_t = - g h_x
   j=0
   RHSu[j] = -g*(h[j+1] - h[nx-1])/(2*dx)
@@ -60,7 +60,7 @@ for i in range(nt):
   RHSu[j] = -g*(h[0] - h[j-1])/(2*dx)
   unew[:] = u[:] + dt * RHSu[:]
   print('unew',unew)
-  
+
   # h_t = -H d/dx(u)
   j=0
   RHSh[j] = -H*(u[j+1] - u[nx-1])/(2*dx)

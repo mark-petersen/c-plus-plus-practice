@@ -38,7 +38,7 @@ for i in range(nt):
     RHS[j] = nu * (u[j-1]-2*u[j]+u[j+1])/dx**2
   j=nx-1
   RHS[j] = nu * (u[j-1]-2*u[j]+u[0])/dx**2
-  
+
   unew[:] = u[:] + dt * RHS[:]
 
 

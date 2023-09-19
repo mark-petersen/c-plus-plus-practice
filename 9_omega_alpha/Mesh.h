@@ -15,7 +15,7 @@ class Mesh {
     size_t maxEdges, ME;
     size_t maxEdges2, ME2;
     size_t vertexDegree, VD;
-  
+
     // MPAS mesh variables
     std::vector <double> latCell;
     std::vector <double> lonCell;
@@ -64,7 +64,7 @@ class Mesh {
     // mesh variables that are computed on start-up, not in netcdf file
     std::vector <signed char> edgeSignOnCell;
     std::vector <signed char> edgeSignOnVertex;
-  
+
     // constructor
     Mesh(Config &config);
 };

@@ -27,14 +27,14 @@ int main ( int argc, char *argv[] )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
 //    15 June 2016
 //
 //  Author:
-// 
+//
 //    John Burkardt
 //
 //  Reference:
@@ -47,7 +47,7 @@ int main ( int argc, char *argv[] )
 //    ISBN: 0262571323,
 //    LC: QA76.642.G76.
 //
-//    Marc Snir, Steve Otto, Steven Huss-Lederman, David Walker, 
+//    Marc Snir, Steve Otto, Steven Huss-Lederman, David Walker,
 //    Jack Dongarra,
 //    MPI: The Complete Reference,
 //    Volume I: The MPI Core,
@@ -76,7 +76,7 @@ int main ( int argc, char *argv[] )
 //
 //  Record the starting time.
 //
-  if ( id == 0 ) 
+  if ( id == 0 )
   {
     wtime = MPI_Wtime ( );
   }
@@ -89,8 +89,8 @@ int main ( int argc, char *argv[] )
   {
     wtime = MPI_Wtime ( ) - wtime;
 
-    cout << "\n";       
-    cout << "  Wall clock elapsed seconds = " << wtime << "\n";      
+    cout << "\n";
+    cout << "  Wall clock elapsed seconds = " << wtime << "\n";
   }
 //
 //  Terminate MPI.
@@ -126,14 +126,14 @@ void update ( int id, int p )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
 //    14 June 2016
 //
 //  Author:
-// 
+//
 //    John Burkardt
 //
 //  Parameters:
@@ -233,7 +233,7 @@ void update ( int id, int p )
     h[i] = initial_condition ( x[i], time );
   }
   h[n+1] = 0.0;
-  
+
   time_delta = ( time_max - time_min ) / ( double ) ( j_max - j_min );
   x_delta = ( x_max - x_min ) / ( double ) ( p * n - 1 );
 //
@@ -242,14 +242,14 @@ void update ( int id, int p )
 //
   cfl = k * time_delta / x_delta / x_delta;
 
-  if ( id == 0 ) 
+  if ( id == 0 )
   {
     cout << "\n";
     cout << "UPDATE\n";
     cout << "  CFL stability criterion value = " << cfl << "\n";;
   }
 
-  if ( 0.5 <= cfl ) 
+  if ( 0.5 <= cfl )
   {
     if ( id == 0 )
     {
@@ -320,8 +320,8 @@ void update ( int id, int p )
 //
     for ( i = 1; i <= n; i++ )
     {
-      h_new[i] = h[i] 
-      + ( time_delta * k / x_delta / x_delta ) * ( h[i-1] - 2.0 * h[i] + h[i+1] ) 
+      h_new[i] = h[i]
+      + ( time_delta * k / x_delta / x_delta ) * ( h[i-1] - 2.0 * h[i] + h[i+1] )
       + time_delta * rhs ( x[i], time );
     }
 //
@@ -382,14 +382,14 @@ double boundary_condition ( double x, double time )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
 //    23 April 2008
 //
 //  Author:
-// 
+//
 //    John Burkardt
 //
 //  Parameters:
@@ -425,14 +425,14 @@ double initial_condition ( double x, double time )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
 //    23 April 2008
 //
 //  Author:
-// 
+//
 //    John Burkardt
 //
 //  Parameters:
@@ -460,14 +460,14 @@ double rhs ( double x, double time )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
 //    23 April 2008
 //
 //  Author:
-// 
+//
 //    John Burkardt
 //
 //  Parameters:
@@ -499,7 +499,7 @@ void timestamp ( )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
@@ -530,4 +530,3 @@ void timestamp ( )
   return;
 # undef TIME_SIZE
 }
-

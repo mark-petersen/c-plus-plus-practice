@@ -31,7 +31,7 @@ class MpasMesh {
     size_t maxEdges;
     size_t maxEdges2;
     size_t vertexDegree;
-  
+
     // MPAS mesh variables
     vector <double> latCell;
     vector <double> lonCell;
@@ -74,7 +74,7 @@ class MpasMesh {
     //vector <double> triangleAngleQuality;
     //vector <int> boundaryVertex;
     //vector <int> obtuseTriangle;
-  
+
     // state variables
     vector <double> temperature;
     vector <double> salinity;
@@ -87,7 +87,7 @@ class MpasMesh {
       if (verbose) cout << "** Opening file: " << meshFileName << " **" << endl;
       if ((retval = nc_open((meshFileName).c_str(), NC_NOWRITE, &ncid))) ERR(retval);
       if (verbose) cout << endl;
-    
+
       if (verbose) cout << "** Read in dimensions **" << endl;
       nCells = readNCDim(ncid, "nCells");
       nVertLevels = readNCDim(ncid, "nVertLevels");
@@ -97,7 +97,7 @@ class MpasMesh {
       maxEdges2 = readNCDim(ncid, "maxEdges2");
       vertexDegree = readNCDim(ncid, "vertexDegree");
       if (verbose) cout << endl;
-    
+
       if (verbose) cout << "** Read in mesh variables **" << endl;
       latCell = readNCDouble(ncid, "latCell", nCells);
       lonCell = readNCDouble(ncid, "lonCell", nCells);
@@ -141,13 +141,13 @@ class MpasMesh {
       //boundaryVertex = readNCInt(ncid, "boundaryVertex", nVertices);
       //obtuseTriangle = readNCInt(ncid, "obtuseTriangle", nCells);
       if (verbose) cout << endl;
-    
+
       if (verbose) cout << "** Read in state variables **" << endl;
       temperature = readNCDouble(ncid, "temperature", nCells*nVertLevels);
       salinity = readNCDouble(ncid, "salinity", nCells*nVertLevels);
       layerThickness = readNCDouble(ncid, "layerThickness", nCells*nVertLevels);
       if (verbose) cout << endl;
-    
+
        }
 };
 

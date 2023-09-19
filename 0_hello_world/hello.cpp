@@ -18,4 +18,3 @@ int main() {
     printf("p = %i \n",p);
     return 0;
 }
-

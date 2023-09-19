@@ -9,7 +9,7 @@
 
 class State {
   public:
-  
+
     // State variables
     std::vector <double> normalVelocity;
     std::vector <double> layerThickness;

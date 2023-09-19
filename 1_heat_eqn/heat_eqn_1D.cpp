@@ -46,7 +46,7 @@ for (int i=0; i<nt; i++) {
   for (int j=0; j<nx; j++) {
     u[j] = unew[j];
   }
-  
+
   int j=0;
   // cout<< "u"<<u[nx-1]<<" "<<2*u[j]<<" "<<u[j+1]<<" "<<nu<<" "<<dx2r<<" "<<(u[nx-1]-2*u[j]+u[j+1])<<" "<<endl;
   RHS[j] = nu * (u[nx-1]-2*u[j]+u[j+1])*dx2r;
@@ -55,10 +55,10 @@ for (int i=0; i<nt; i++) {
   }
   j=nx-1;
   RHS[j] = nu * (u[j-1]-2*u[j]+u[0])*dx2r;
-    
+
   for (int j=0; j<nx; j++) {
     unew[j] = u[j] + dt * RHS[j];
-  } 
+  }
 }
 
 cout << "RHS"<<endl;
@@ -66,7 +66,7 @@ for (int j=0; j<nx; j++) {
   cout << RHS[j] << " ";
 }
 cout <<endl;
-  
+
 cout << "unew"<<endl;
 for (int j=0; j<nx; j++) {
   cout << unew[j] << " ";
@@ -90,6 +90,6 @@ cout <<endl;
 
 //   cout<<"dt="<<config.dt<<endl;
 //   cout<<domain.ssh[0][0]<<endl;
-  
+
   return 0;
 }

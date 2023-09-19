@@ -1,7 +1,7 @@
 #! /bin/bash
 
 module load gcc
-module load netcdf-c	 
+module load netcdf-c
 module load netcdf-cxx4/4.3.1
 
 # to make meshes:
@@ -19,5 +19,4 @@ do
   ./$file.out
 done
 
-# 
-
+#

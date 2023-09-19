@@ -1,4 +1,4 @@
-// Using netcdf-c version of the netcdf libraries, and all 
+// Using netcdf-c version of the netcdf libraries, and all
 // arrays are c++ vector containers, 1D with computed index offset
 
 #include <iostream>
@@ -73,4 +73,3 @@ void State::init(Config &config, Mesh &m) {
     }
 
 }
-
