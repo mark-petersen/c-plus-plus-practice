@@ -1,21 +1,20 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <vector>
-#include <string>
 #include "Config.h"
-#include "Meta.h"
 #include "Mesh.h"
+#include "Meta.h"
+#include <string>
+#include <vector>
 
 class State {
-  public:
+public:
+  // State variables
+  std::vector<double> normalVelocity;
+  std::vector<double> layerThickness;
 
-    // State variables
-    std::vector <double> normalVelocity;
-    std::vector <double> layerThickness;
-
-    // constructor
-    State(Mesh &m);
-    void init(Config &config, Mesh &m);
+  // constructor
+  State(Mesh &m);
+  void init(Config &config, Mesh &m);
 };
 #endif

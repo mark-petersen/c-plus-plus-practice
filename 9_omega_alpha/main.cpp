@@ -16,18 +16,18 @@
 // https://github.com/E3SM-Project/Omega/blob/develop/components/omega/doc/design/ShallowWaterOmega0.md
 // Mark Petersen, LANL, August 2023
 
-#include <iostream>
-#include <string>
 #include "Config.h"
-#include "Meta.h"
-#include "Mesh.h"
-#include "State.h"
 #include "Diag.h"
+#include "Mesh.h"
+#include "Meta.h"
+#include "State.h"
 #include "Tend.h"
 #include "timestep.h"
+#include <iostream>
+#include <string>
 
 int main() {
-  LOG(2,"Omega-Alpha initialization")
+  LOG(2, "Omega-Alpha initialization")
 
   //*******************************************************
   //  Initialization
@@ -35,41 +35,41 @@ int main() {
   Config config;
   Meta meta(config);
   Mesh m(config);
-  std::vector <State> s;
+  std::vector<State> s;
   {
     State temporaryState(m);
-    for (size_t n=0; n<meta.stateLevelsInMemory; n++) {
+    for (size_t n = 0; n < meta.stateLevelsInMemory; n++) {
       s.push_back(temporaryState);
     }
-  }   // temporaryState is destroyed here.
+  } // temporaryState is destroyed here.
   Diag d(m);
-  std::vector <Tend> tend;
+  std::vector<Tend> tend;
   {
     Tend temporaryTend(m);
-    for (size_t n=0; n<meta.tendLevelsInMemory; n++) {
+    for (size_t n = 0; n < meta.tendLevelsInMemory; n++) {
       tend.push_back(temporaryTend);
     }
-  }   // temporaryTend is destroyed here.
+  } // temporaryTend is destroyed here.
 
   s[0].init(config, m);
   d.compute(config, m, s[0]);
   if (config.output_on_startup) {
-    //write_output(config, meta, m,s,d, tend);
+    // write_output(config, meta, m,s,d, tend);
   }
 
   //*******************************************************
   //  time step loop
   //*******************************************************
-  for (meta.timeIndex=0; meta.timeIndex<config.n_timesteps; meta.timeIndex++) {
-    timestep(config, meta, m,s,d, tend);
+  for (meta.timeIndex = 0; meta.timeIndex < config.n_timesteps;
+       meta.timeIndex++) {
+    timestep(config, meta, m, s, d, tend);
 
-    if (meta.timeIndex % config.output_frequency==0) {
-    //write_output(config, meta, m,s,d, tend);
+    if (meta.timeIndex % config.output_frequency == 0) {
+      // write_output(config, meta, m,s,d, tend);
     }
   }
 
   //*******************************************************
   //  output
   //*******************************************************
-
 }
