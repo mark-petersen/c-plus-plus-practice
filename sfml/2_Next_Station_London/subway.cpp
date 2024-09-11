@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-// g++ circle.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics
+// g++ subway.cpp  -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics 
 
 int XMax = 1000;
 
@@ -21,6 +21,21 @@ void VLine(float xIn, sf::RenderWindow &windowIn, sf::Color colorIn) {
     lines[3].color  = colorIn;
     windowIn.draw(lines);
 }
+
+void Line(float x1, float y1, float x2, float y2, float PW,
+  sf::RenderWindow &windowIn, sf::Color colorIn) {
+    sf::VertexArray lines(sf::LinesStrip, 4);
+    lines[0].position = sf::Vector2f(c(x1)-PW, c(y1)-PW);
+    lines[1].position = sf::Vector2f(c(x1)-PW, c(y2)+PW);
+    lines[2].position = sf::Vector2f(c(x2)+PW, c(y2)+PW);
+    lines[3].position = sf::Vector2f(c(x2)+PW, c(y1)-PW);
+    lines[0].color  = colorIn;
+    lines[1].color  = colorIn;
+    lines[2].color  = colorIn;
+    lines[3].color  = colorIn;
+    windowIn.draw(lines);
+}
+
 
 int main()
 {
@@ -44,9 +59,8 @@ int main()
     shape.setFillColor(sf::Color::Cyan);
     window.draw(shape);
 
-    VLine(3.5, window, sf::Color::Yellow);
-    VLine(7.5, window, sf::Color::Yellow);
-
+    Line(3.5, 0., 5.5, 10., 1, window, sf::Color::Yellow);
+    Line(7.5, 0., 7.5, 10., 1, window, sf::Color::Yellow);
 
     window.display();
     }
