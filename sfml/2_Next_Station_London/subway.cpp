@@ -53,14 +53,31 @@ int main()
     }
     window.clear(sf::Color::White);
 
+
+    Line( 3.5, 0.0, 3.5, 10.5, 1, window, sf::Color::Yellow);
+    Line( 7.5, 0.0, 7.5, 10.5, 1, window, sf::Color::Yellow);
+    Line(  0., 3.5, 10.5, 3.5, 1, window, sf::Color::Yellow);
+    Line(  0., 7.5, 10.5, 7.5, 1, window, sf::Color::Yellow);
+    Line( 0.5, 1.5, 1.5, 1.5, 1, window, sf::Color::Yellow);
+    Line( 1.5, 0.5, 1.5, 1.5, 1, window, sf::Color::Yellow);
+    Line( 9.5, 1.5,10.5, 1.5, 1, window, sf::Color::Yellow);
+    Line( 9.5, 0.5, 9.5, 1.5, 1, window, sf::Color::Yellow);
+    Line( 0.5, 9.5, 1.5, 9.5, 1, window, sf::Color::Yellow);
+    Line( 1.5, 9.5, 1.5,10.5, 1, window, sf::Color::Yellow);
+    Line( 9.5, 9.5,10.5, 9.5, 1, window, sf::Color::Yellow);
+    Line( 9.5, 9.5, 9.5,10.5, 1, window, sf::Color::Yellow);
+
     sf::CircleShape shape;
-    shape.setRadius(4.f);
-    shape.setPosition(c(2), c(2));
-    shape.setFillColor(sf::Color::Cyan);
+    shape.setRadius(10.f);
+    shape.setPosition(c(1), c(1));
+    shape.setFillColor(sf::Color::Black);
     window.draw(shape);
 
-    Line(3.5, 0., 5.5, 10., 1, window, sf::Color::Yellow);
-    Line(7.5, 0., 7.5, 10., 1, window, sf::Color::Yellow);
+    sf::CircleShape shape2;
+    shape2.setRadius(8.f);
+    shape2.setPosition(c(1), c(1));
+    shape2.setFillColor(sf::Color::White);
+    window.draw(shape2);
 
     window.display();
     }
