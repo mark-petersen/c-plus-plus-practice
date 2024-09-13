@@ -36,6 +36,63 @@ void Line(float x1, float y1, float x2, float y2, float PW,
     windowIn.draw(lines);
 }
 
+void PlaceStation(float x1, float y1, int ShapeIn,
+  sf::RenderWindow &windowIn) {
+    sf::VertexArray lines(sf::LinesStrip, 4);
+
+    float r;
+    sf::CircleShape shape;
+
+    r=16.0;
+    shape.setRadius(r);
+    shape.setPointCount(30);
+    shape.setPosition(c(x1)-r, c(y1)-r);
+    shape.setOutlineThickness(2.0);
+    shape.setFillColor(sf::Color::White);
+    shape.setOutlineColor(sf::Color::Black);
+    windowIn.draw(shape);
+
+    // circle
+    if (ShapeIn==0) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(30);
+      shape.setRotation(45);
+      shape.setPosition(c(x1), c(y1)-1.4*r);
+    }
+
+    // triangle
+    if (ShapeIn==3) {
+      r=7.0;
+      shape.setRadius(r);
+      shape.setPointCount(3);
+      shape.setRotation(0);
+      shape.setPosition(c(x1)-r, c(y1)-r);
+    }
+
+    // square
+    if (ShapeIn==4) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(4);
+      shape.setRotation(45);
+      shape.setPosition(c(x1), c(y1)-1.4*r);
+    }
+
+    // pentagon
+    if (ShapeIn==5) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(5);
+      shape.setRotation(0);
+      shape.setPosition(c(x1)-r, c(y1)-r);
+    }
+
+    shape.setOutlineThickness(4.0);
+    shape.setFillColor(sf::Color::White);
+    shape.setOutlineColor(sf::Color::Black);
+    windowIn.draw(shape);
+}
 
 int main()
 {
@@ -53,7 +110,6 @@ int main()
     }
     window.clear(sf::Color::White);
 
-
     Line( 3.5, 0.0, 3.5, 10.5, 1, window, sf::Color::Yellow);
     Line( 7.5, 0.0, 7.5, 10.5, 1, window, sf::Color::Yellow);
     Line(  0., 3.5, 10.5, 3.5, 1, window, sf::Color::Yellow);
@@ -67,17 +123,32 @@ int main()
     Line( 9.5, 9.5,10.5, 9.5, 1, window, sf::Color::Yellow);
     Line( 9.5, 9.5, 9.5,10.5, 1, window, sf::Color::Yellow);
 
-    sf::CircleShape shape;
-    shape.setRadius(10.f);
-    shape.setPosition(c(1), c(1));
-    shape.setFillColor(sf::Color::Black);
-    window.draw(shape);
+    PlaceStation(  1, 1, 5, window);
+    PlaceStation(  2, 1, 3, window);
+    PlaceStation(  3, 1, 4, window);
+    PlaceStation(  5, 1, 3, window);
+    PlaceStation(  6, 1, 0, window);
+    PlaceStation(  8, 1, 3, window);
+    PlaceStation( 10, 1, 0, window);
 
-    sf::CircleShape shape2;
-    shape2.setRadius(8.f);
-    shape2.setPosition(c(1), c(1));
-    shape2.setFillColor(sf::Color::White);
-    window.draw(shape2);
+    PlaceStation(  2, 2, 5, window);
+    PlaceStation(  4, 2, 4, window);
+    PlaceStation(  7, 2, 5, window);
+    PlaceStation(  9, 2, 4, window);
+    PlaceStation( 10, 2, 5, window);
+
+    PlaceStation(  1, 3, 0, window);
+    PlaceStation(  4, 3, 3, window);
+    PlaceStation(  7, 3, 4, window);
+    PlaceStation( 10, 3, 3, window);
+
+    PlaceStation(  1, 4, 4, window);
+    PlaceStation(  3, 4, 5, window);
+    PlaceStation(  5, 4, 3, window);
+    PlaceStation(  6, 4, 0, window);
+    PlaceStation(  7, 4, 0, window);
+    PlaceStation(  8, 4, 0, window);
+    PlaceStation( 10, 4, 4, window);
 
     window.display();
     }
