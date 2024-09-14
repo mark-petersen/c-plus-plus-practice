@@ -2,19 +2,41 @@
 #include <iostream>
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
+void PlaceStation(float x1, float y1, int ShapeIn,
+  sf::RenderWindow &windowIn);
+
 class Station {
   public:
     // Constructor
     Station() = default;
-    Station(double x, double y) {
+
+    Station(double x, double y, int shape) 
+      : m_x{x}, m_y{y}, m_shape{shape}
+    {
       std::cout << "Station constructor called with x="<<x<<" & y="<<y<<std::endl;
-      m_x = x;
-      m_y = y;
+      m_exists = true;
+    }
+
+    void Viz(sf::RenderWindow &windowIn) {
+      PlaceStation( m_x, m_y, m_shape, windowIn);
+    }
+    void Info() {
+      if (m_exists) {
+        std::cout << "Station exists" << std::endl;
+        std::cout << "x = " << m_x << std::endl;
+        std::cout << "y = " << m_y << std::endl;
+        std::cout << "shape = " << m_shape << std::endl;
+      } else { 
+        std::cout << "Station does not exist" << std::endl;
+      }
+
     }
 
   private:
-    double m_x {1.0};
-    double m_y {1.0};
+    bool m_exists {false};
+    double m_x {-1.0};
+    double m_y {-1.0};
+    int m_shape {-1};
 };
 
 int XMax = 1000;
@@ -112,10 +134,16 @@ void PlaceStation(float x1, float y1, int ShapeIn,
 
 int main()
 {
-    Station firstStation(3.0, 4.0);
     std::cout << c(2) << std::endl;
     sf::RenderWindow window(sf::VideoMode(XMax, XMax), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
+
+    Station firstStation(3.0, 4.0, 0);
+    Station s1(  1, 1, 5);
+    Station s2;
+    s1.Info();
+    s2.Info();
+
 
     while (window.isOpen())
     {
@@ -140,7 +168,9 @@ int main()
     Line( 9.5, 9.5,10.5, 9.5, 1, window, sf::Color::Yellow);
     Line( 9.5, 9.5, 9.5,10.5, 1, window, sf::Color::Yellow);
 
-    PlaceStation(  1, 1, 5, window);
+    firstStation.Viz(window);
+    s1.Viz(window);
+    /*
     PlaceStation(  2, 1, 3, window);
     PlaceStation(  3, 1, 4, window);
     PlaceStation(  5, 1, 3, window);
@@ -166,7 +196,8 @@ int main()
     PlaceStation(  7, 4, 0, window);
     PlaceStation(  8, 4, 0, window);
     PlaceStation( 10, 4, 4, window);
-
+    */
     window.display();
     }
+
 }
