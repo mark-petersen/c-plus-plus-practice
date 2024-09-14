@@ -1,6 +1,21 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-// g++ subway.cpp  -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics 
+// g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
+
+class Station {
+  public:
+    // Constructor
+    Station() = default;
+    Station(double x, double y) {
+      std::cout << "Station constructor called with x="<<x<<" & y="<<y<<std::endl;
+      m_x = x;
+      m_y = y;
+    }
+
+  private:
+    double m_x {1.0};
+    double m_y {1.0};
+};
 
 int XMax = 1000;
 
@@ -35,6 +50,7 @@ void Line(float x1, float y1, float x2, float y2, float PW,
     lines[3].color  = colorIn;
     windowIn.draw(lines);
 }
+
 
 void PlaceStation(float x1, float y1, int ShapeIn,
   sf::RenderWindow &windowIn) {
@@ -96,6 +112,7 @@ void PlaceStation(float x1, float y1, int ShapeIn,
 
 int main()
 {
+    Station firstStation(3.0, 4.0);
     std::cout << c(2) << std::endl;
     sf::RenderWindow window(sf::VideoMode(XMax, XMax), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
