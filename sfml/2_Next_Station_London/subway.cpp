@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <array>
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
 void PlaceStation(float x1, float y1, int ShapeIn,
@@ -20,7 +21,14 @@ class Station {
     void Viz(sf::RenderWindow &windowIn) {
       PlaceStation( m_x, m_y, m_shape, windowIn);
     }
-    void Info() {
+
+    void init(int n) {
+      m_j = n / 10; 
+      m_i = n - 10*m_j;
+      std::cout << "n = "<<n<<" i = "<<m_i<<" j = "<<m_j<<std::endl;
+    }
+
+    void info() {
       if (m_exists) {
         std::cout << "Station exists" << std::endl;
         std::cout << "x = " << m_x << std::endl;
@@ -34,6 +42,8 @@ class Station {
 
   private:
     bool m_exists {false};
+    int m_i {-1};
+    int m_j {-1};
     double m_x {-1.0};
     double m_y {-1.0};
     int m_shape {-1};
@@ -141,9 +151,15 @@ int main()
     Station firstStation(3.0, 4.0, 0);
     Station s1(  1, 1, 5);
     Station s2;
-    s1.Info();
-    s2.Info();
+    s1.info();
+    s2.info();
 
+    std::array<Station, 100> Stations;
+    for (int n=0; n<100; n++) {
+      Stations[n].init(n);
+    }
+    Stations[0].info();
+    activateStation(  2, 1, 3, window);
 
     while (window.isOpen())
     {
