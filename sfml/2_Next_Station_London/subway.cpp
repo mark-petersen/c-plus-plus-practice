@@ -18,14 +18,23 @@ class Station {
       m_exists = true;
     }
 
-    void Viz(sf::RenderWindow &windowIn) {
-      PlaceStation( m_x, m_y, m_shape, windowIn);
+    void viz(sf::RenderWindow &windowIn) {
+      if (m_exists) {
+        PlaceStation( m_x, m_y, m_shape, windowIn);
+      }
     }
 
     void init(int n) {
       m_j = n / 10; 
       m_i = n - 10*m_j;
-      std::cout << "n = "<<n<<" i = "<<m_i<<" j = "<<m_j<<std::endl;
+      //std::cout << "n = "<<n<<" i = "<<m_i<<" j = "<<m_j<<std::endl;
+    }
+
+    void activate(int shape) {
+      m_exists = true;
+      m_x = m_i + 1;
+      m_y = m_j + 1;
+      m_shape = shape;
     }
 
     void info() {
@@ -148,18 +157,58 @@ int main()
     sf::RenderWindow window(sf::VideoMode(XMax, XMax), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
 
-    Station firstStation(3.0, 4.0, 0);
-    Station s1(  1, 1, 5);
-    Station s2;
-    s1.info();
-    s2.info();
+    int stationDefs[100][3] {
+       {  0, 0, 5 }, 
+       {  1, 0, 3 }, 
+       {  2, 0, 4 }, 
+       {  4, 0, 3 }, 
+       {  5, 0, 0 }, 
+       {  7, 0, 3 }, 
+       {  9, 0, 0 }, 
+
+       {  1, 1, 5 }, 
+       {  3, 1, 4 }, 
+       {  6, 1, 5 }, 
+       {  8, 1, 4 }, 
+       {  9, 1, 5 }, 
+
+       {  0, 2, 0 }, 
+       {  3, 2, 3 }, 
+       {  6, 2, 4 }, 
+       {  9, 2, 3 }, 
+
+       {  0, 3, 4 }, 
+       {  2, 3, 5 }, 
+       {  4, 3, 3 }, 
+       {  5, 3, 0 }, 
+       {  6, 3, 0 }, 
+       {  7, 3, 0 }, 
+       {  9, 3, 4 },
+       { -1,-1,-1 }
+     };
+    //auto stationDefs = InitStationDefs();
+    //std::cout << "stationDefs" << stationDefs[5][0] << std::endl;
 
     std::array<Station, 100> Stations;
     for (int n=0; n<100; n++) {
       Stations[n].init(n);
     }
-    Stations[0].info();
-    activateStation(  2, 1, 3, window);
+
+    for (int m=0; stationDefs[m][0]>-1; m++) {
+      //std::cout << "m = " << m << "stationDefs[m] = " << stationDefs[m][0] << std::endl;
+      int i = stationDefs[m][0];
+      int j = stationDefs[m][1];
+      int n = j*10+i;
+      int shape = stationDefs[m][2];
+      Stations[n].activate(shape);
+    }
+    
+    //Station firstStation(3.0, 4.0, 0);
+    //Station s1(  1, 1, 5);
+    //Station s2;
+    //s1.info();
+    //s2.info();
+
 
     while (window.isOpen())
     {
@@ -184,35 +233,10 @@ int main()
     Line( 9.5, 9.5,10.5, 9.5, 1, window, sf::Color::Yellow);
     Line( 9.5, 9.5, 9.5,10.5, 1, window, sf::Color::Yellow);
 
-    firstStation.Viz(window);
-    s1.Viz(window);
-    /*
-    PlaceStation(  2, 1, 3, window);
-    PlaceStation(  3, 1, 4, window);
-    PlaceStation(  5, 1, 3, window);
-    PlaceStation(  6, 1, 0, window);
-    PlaceStation(  8, 1, 3, window);
-    PlaceStation( 10, 1, 0, window);
+    for (int n=0; n<100; n++) {
+      Stations[n].viz(window);
+    }
 
-    PlaceStation(  2, 2, 5, window);
-    PlaceStation(  4, 2, 4, window);
-    PlaceStation(  7, 2, 5, window);
-    PlaceStation(  9, 2, 4, window);
-    PlaceStation( 10, 2, 5, window);
-
-    PlaceStation(  1, 3, 0, window);
-    PlaceStation(  4, 3, 3, window);
-    PlaceStation(  7, 3, 4, window);
-    PlaceStation( 10, 3, 3, window);
-
-    PlaceStation(  1, 4, 4, window);
-    PlaceStation(  3, 4, 5, window);
-    PlaceStation(  5, 4, 3, window);
-    PlaceStation(  6, 4, 0, window);
-    PlaceStation(  7, 4, 0, window);
-    PlaceStation(  8, 4, 0, window);
-    PlaceStation( 10, 4, 4, window);
-    */
     window.display();
     }
 
