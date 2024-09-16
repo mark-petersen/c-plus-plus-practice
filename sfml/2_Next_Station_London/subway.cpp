@@ -3,8 +3,23 @@
 #include <array>
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
-void PlaceStation(float x1, float y1, int ShapeIn,
-  sf::RenderWindow &windowIn);
+int XMax = 1000;
+
+int c(float xIn) {
+  int x = (xIn-0.5)*XMax/10.0;
+  return x;
+}
+
+class Track {
+  public:
+    //Constructor
+    Track() = default;
+
+  private: 
+    bool m_exists {false};
+    int m_station1 {-1};
+    int m_station2 {-1};
+};
 
 class Station {
   public:
@@ -18,11 +33,110 @@ class Station {
       m_exists = true;
     }
 
-    void viz(sf::RenderWindow &windowIn) {
-      if (m_exists) {
-        PlaceStation( m_x, m_y, m_shape, windowIn);
-      }
+  void viz(sf::RenderWindow &windowIn) {
+    if (!m_exists) return;
+
+    float r;
+    sf::CircleShape shape;
+
+    if (m_tourist) {
+      r=18;
+      shape.setRadius(r);
+      shape.setPointCount(3);
+      shape.setPosition(c(m_x)-r, c(m_y)-r);
+      shape.setOutlineThickness(4.0);
+      shape.setFillColor(sf::Color::White);
+      shape.setOutlineColor(sf::Color::Black);
+      windowIn.draw(shape);
+      r=18;
+      shape.setRadius(r);
+      shape.setPointCount(3);
+      shape.setRotation(180);
+      shape.setPosition(c(m_x+2*r), c(m_y));
+      shape.setOutlineThickness(4.0);
+      shape.setFillColor(sf::Color::White);
+      shape.setOutlineColor(sf::Color::Black);
+      windowIn.draw(shape);
     }
+    r = 16.0;
+    shape.setRadius(r);
+    shape.setPointCount(30);
+    shape.setRotation(0);
+    shape.setPosition(c(m_x)-r, c(m_y)-r);
+    shape.setOutlineThickness(2.0);
+    if (!m_home) {
+      shape.setFillColor(sf::Color::White);
+      shape.setOutlineColor(sf::Color::Black);
+    } else if (m_home==1) {
+      shape.setFillColor(sf::Color::Green);
+      shape.setOutlineColor(sf::Color::Green);
+    } else if (m_home==2) {
+      shape.setFillColor(sf::Color::Red);
+      shape.setOutlineColor(sf::Color::Red);
+    } else if (m_home==3) {
+      shape.setFillColor(sf::Color::Magenta);
+      shape.setOutlineColor(sf::Color::Magenta);
+    } else if (m_home==4) {
+      shape.setFillColor(sf::Color::Blue);
+      shape.setOutlineColor(sf::Color::Blue);
+    }
+    windowIn.draw(shape);
+
+    // circle
+    if (m_shape==0) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(30);
+      shape.setRotation(45);
+      shape.setPosition(c(m_x), c(m_y)-1.4*r);
+    }
+
+    // triangle
+    if (m_shape==3) {
+      r=7.0;
+      shape.setRadius(r);
+      shape.setPointCount(3);
+      shape.setRotation(0);
+      shape.setPosition(c(m_x)-r, c(m_y)-r);
+    }
+
+    // square
+    if (m_shape==4) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(4);
+      shape.setRotation(45);
+      shape.setPosition(c(m_x), c(m_y)-1.4*r);
+    }
+
+    // pentagon
+    if (m_shape==5) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(5);
+      shape.setRotation(0);
+      shape.setPosition(c(m_x)-r, c(m_y)-r);
+    }
+
+    shape.setOutlineThickness(4.0);
+    if (!m_home) {
+      shape.setFillColor(sf::Color::White);
+      shape.setOutlineColor(sf::Color::Black);
+    } else if (m_home==1) {
+      shape.setFillColor(sf::Color::Green);
+      shape.setOutlineColor(sf::Color::White);
+    } else if (m_home==2) {
+      shape.setFillColor(sf::Color::Red);
+      shape.setOutlineColor(sf::Color::White);
+    } else if (m_home==3) {
+      shape.setFillColor(sf::Color::Magenta);
+      shape.setOutlineColor(sf::Color::White);
+    } else if (m_home==4) {
+      shape.setFillColor(sf::Color::Blue);
+      shape.setOutlineColor(sf::Color::White);
+    }
+    windowIn.draw(shape);
+}
 
     void init(int n) {
       m_j = n / 10; 
@@ -30,11 +144,16 @@ class Station {
       //std::cout << "n = "<<n<<" i = "<<m_i<<" j = "<<m_j<<std::endl;
     }
 
-    void activate(int shape) {
+    void activate(int shape, int special) {
       m_exists = true;
       m_x = m_i + 1;
       m_y = m_j + 1;
       m_shape = shape;
+      if (special==-1) {
+        m_tourist = true;
+      } else if (special > 0) {
+        m_home = special;
+      }
     }
 
     void info() {
@@ -56,14 +175,10 @@ class Station {
     double m_x {-1.0};
     double m_y {-1.0};
     int m_shape {-1};
+    bool m_tourist {false};
+    int m_home {0};
 };
 
-int XMax = 1000;
-
-int c(float xIn) {
-  int x = (xIn-0.5)*XMax/10.0;
-  return x;
-}
 
 void VLine(float xIn, sf::RenderWindow &windowIn, sf::Color colorIn) {
     sf::VertexArray lines(sf::LinesStrip, 4);
@@ -93,98 +208,40 @@ void Line(float x1, float y1, float x2, float y2, float PW,
 }
 
 
-void PlaceStation(float x1, float y1, int ShapeIn,
-  sf::RenderWindow &windowIn) {
-    sf::VertexArray lines(sf::LinesStrip, 4);
-
-    float r;
-    sf::CircleShape shape;
-
-    r=16.0;
-    shape.setRadius(r);
-    shape.setPointCount(30);
-    shape.setPosition(c(x1)-r, c(y1)-r);
-    shape.setOutlineThickness(2.0);
-    shape.setFillColor(sf::Color::White);
-    shape.setOutlineColor(sf::Color::Black);
-    windowIn.draw(shape);
-
-    // circle
-    if (ShapeIn==0) {
-      r=8.0;
-      shape.setRadius(r);
-      shape.setPointCount(30);
-      shape.setRotation(45);
-      shape.setPosition(c(x1), c(y1)-1.4*r);
-    }
-
-    // triangle
-    if (ShapeIn==3) {
-      r=7.0;
-      shape.setRadius(r);
-      shape.setPointCount(3);
-      shape.setRotation(0);
-      shape.setPosition(c(x1)-r, c(y1)-r);
-    }
-
-    // square
-    if (ShapeIn==4) {
-      r=8.0;
-      shape.setRadius(r);
-      shape.setPointCount(4);
-      shape.setRotation(45);
-      shape.setPosition(c(x1), c(y1)-1.4*r);
-    }
-
-    // pentagon
-    if (ShapeIn==5) {
-      r=8.0;
-      shape.setRadius(r);
-      shape.setPointCount(5);
-      shape.setRotation(0);
-      shape.setPosition(c(x1)-r, c(y1)-r);
-    }
-
-    shape.setOutlineThickness(4.0);
-    shape.setFillColor(sf::Color::White);
-    shape.setOutlineColor(sf::Color::Black);
-    windowIn.draw(shape);
-}
-
 int main()
 {
     std::cout << c(2) << std::endl;
     sf::RenderWindow window(sf::VideoMode(XMax, XMax), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
 
-    int stationDefs[100][3] {
-       {  0, 0, 5 }, 
-       {  1, 0, 3 }, 
-       {  2, 0, 4 }, 
-       {  4, 0, 3 }, 
-       {  5, 0, 0 }, 
-       {  7, 0, 3 }, 
-       {  9, 0, 0 }, 
+    int stationDefs[100][4] {
+       {  0, 0, 5, 0 }, 
+       {  1, 0, 3, 0 }, 
+       {  2, 0, 4, 0 }, 
+       {  4, 0, 3, 0 }, 
+       {  5, 0, 0, 0 }, 
+       {  7, 0, 3, 0 }, 
+       {  9, 0, 0, 0 }, 
 
-       {  1, 1, 5 }, 
-       {  3, 1, 4 }, 
-       {  6, 1, 5 }, 
-       {  8, 1, 4 }, 
-       {  9, 1, 5 }, 
+       {  1, 1, 5, 0 }, 
+       {  3, 1, 4, 0 }, 
+       {  6, 1, 5,-1 }, 
+       {  8, 1, 4, 0 }, 
+       {  9, 1, 5, 0 }, 
 
-       {  0, 2, 0 }, 
-       {  3, 2, 3 }, 
-       {  6, 2, 4 }, 
-       {  9, 2, 3 }, 
+       {  0, 2, 0, 0 }, 
+       {  3, 2, 3, 1 }, 
+       {  6, 2, 4, 0 }, 
+       {  9, 2, 3, 0 }, 
 
-       {  0, 3, 4 }, 
-       {  2, 3, 5 }, 
-       {  4, 3, 3 }, 
-       {  5, 3, 0 }, 
-       {  6, 3, 0 }, 
-       {  7, 3, 0 }, 
-       {  9, 3, 4 },
-       { -1,-1,-1 }
+       {  0, 3, 4,-1 }, 
+       {  2, 3, 5, 0 }, 
+       {  4, 3, 3, 0 }, 
+       {  5, 3, 0,-1 }, 
+       {  6, 3, 0, 0 }, 
+       {  7, 3, 0, 2 }, 
+       {  9, 3, 4, 0 },
+       { -1,-1,-1, 0 }
      };
     //auto stationDefs = InitStationDefs();
     //std::cout << "stationDefs" << stationDefs[5][0] << std::endl;
@@ -200,7 +257,8 @@ int main()
       int j = stationDefs[m][1];
       int n = j*10+i;
       int shape = stationDefs[m][2];
-      Stations[n].activate(shape);
+      int special = stationDefs[m][3];
+      Stations[n].activate(shape, special);
     }
     
     //Station firstStation(3.0, 4.0, 0);
