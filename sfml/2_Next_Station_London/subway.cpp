@@ -337,7 +337,7 @@ int main()
     std::cout << "location 4" << std::endl;
           i = Stations[n1].i;
           j = Stations[n1].j;
-          std::cout << "n,i,j,rot"<<n<<" "<<i<<" "<<j<<" "<<rot<<" "<<std::endl;
+          std::cout << "n1,i,j,rot"<<n1<<" "<<i<<" "<<j<<" "<<rot<<" "<<std::endl;
           for (int iter=0; iter<10; iter++) {
             i += iInc[rot];
             if (i<0||i>=iLen) {
@@ -350,13 +350,15 @@ int main()
             n = 10*j + i;
             std::cout << "iter, n,i,j,rot"<<iter<<" "<<n<<" "<<i<<" "<<j<<" "<<rot<<std::endl;
             if (Stations[n].exists()) {
-              std::cout << "St " << n1 <<" "<<n<<" "<<i<<" "<<j<<" "<<rot<<std::endl;
+              std::cout << "Station neig found!!! n1, n, i, j" << n1 <<" "<<n<<" "<<i<<" "<<j<<" "<<rot<<std::endl;
+              break;
             }
           }
         }
       }
 
     }
+    return 0;
 
     while (window.isOpen())
     {
