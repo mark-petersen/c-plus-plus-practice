@@ -4,6 +4,8 @@
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
 int XMax = 1000;
+int iLen = 10;
+int jLen = 10;
 
 int c(float xIn) {
   int x = (xIn-0.5)*XMax/10.0;
@@ -14,15 +16,33 @@ class Track {
   public:
     //Constructor
     Track() = default;
+    
+    void activate() {
+      // asfdl
+    }
+    
+  void viz(sf::RenderWindow &windowIn) {
+    if (!m_exists) return;
+  }
 
   private: 
     bool m_exists {false};
     int m_station1 {-1};
     int m_station2 {-1};
+    int m_i1 {-1};
+    int m_j1 {-1};
+    int m_i2 {-1};
+    int m_j2 {-1};
+    float m_x1 {-1};
+    float m_x2 {-1};
+    float m_y1 {-1};
+    float m_y2 {-1};
 };
 
 class Station {
   public:
+    int i {-1};
+    int j {-1};
     // Constructor
     Station() = default;
 
@@ -32,6 +52,10 @@ class Station {
       std::cout << "Station constructor called with x="<<x<<" & y="<<y<<std::endl;
       m_exists = true;
     }
+  
+  bool exists() {
+    return m_exists;
+  }
 
   void viz(sf::RenderWindow &windowIn) {
     if (!m_exists) return;
@@ -139,15 +163,15 @@ class Station {
 }
 
     void init(int n) {
-      m_j = n / 10; 
-      m_i = n - 10*m_j;
-      //std::cout << "n = "<<n<<" i = "<<m_i<<" j = "<<m_j<<std::endl;
+      j = n / 10; 
+      i = n - 10*j;
+      //std::cout << "n = "<<n<<" i = "<<i<<" j = "<<j<<std::endl;
     }
 
     void activate(int shape, int special) {
       m_exists = true;
-      m_x = m_i + 1;
-      m_y = m_j + 1;
+      m_x = i + 1;
+      m_y = j + 1;
       m_shape = shape;
       if (special==-1) {
         m_tourist = true;
@@ -170,8 +194,6 @@ class Station {
 
   private:
     bool m_exists {false};
-    int m_i {-1};
-    int m_j {-1};
     double m_x {-1.0};
     double m_y {-1.0};
     int m_shape {-1};
@@ -297,13 +319,44 @@ int main()
       int special = stationDefs[m][3];
       Stations[n].activate(shape, special);
     }
-    
-    //Station firstStation(3.0, 4.0, 0);
-    //Station s1(  1, 1, 5);
-    //Station s2;
-    //s1.info();
-    //s2.info();
 
+    std::cout << "location 1" << std::endl;
+    int iInc[8] {1,1,0,-1,-1,-1,0,1};
+    std::cout << "iInc"<<iInc[0] << std::endl;
+    int jInc[8] {0,1,1,1,0,-1,-1,-1};
+    std::cout << "jInc"<<jInc[0] << std::endl;
+    std::vector<Track> Tracks;
+    std::cout << "location 1" << std::endl;
+    //for (int n1=0; n1<100; n1++) {
+    for (int n1=0; n1<10; n1++) {
+    std::cout << "location 2" << std::endl;
+      if (Stations[n1].exists()) {
+    std::cout << "location 3" << std::endl;
+        int i; int j; int n;
+        for (int rot=0; rot<8; rot++) {
+    std::cout << "location 4" << std::endl;
+          i = Stations[n1].i;
+          j = Stations[n1].j;
+          std::cout << "n,i,j,rot"<<n<<i<<j<<rot<<std::endl;
+          for (int iter=0; iter<10; iter++) {
+            i += iInc[rot];
+            if (i<0||i>=iLen) {
+              break;
+            }
+            j += jInc[rot];
+            if (j<0||j>=jLen) {
+              break;
+            }
+            n = 10*j + i;
+            std::cout << "iter, n,i,j,rot"<<iter<<n<<i<<j<<rot<<std::endl;
+            if (Stations[n].exists()) {
+              std::cout << "St " << n1 << n << std::endl;
+            }
+          }
+        }
+      }
+
+    }
 
     while (window.isOpen())
     {
