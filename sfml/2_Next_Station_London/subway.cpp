@@ -320,24 +320,20 @@ int main()
       Stations[n].activate(shape, special);
     }
 
-    std::cout << "location 1" << std::endl;
     int iInc[8] {1,1,0,-1,-1,-1,0,1};
-    std::cout << "iInc"<<iInc[0] << std::endl;
     int jInc[8] {0,1,1,1,0,-1,-1,-1};
-    std::cout << "jInc"<<jInc[0] << std::endl;
     std::vector<Track> Tracks;
-    std::cout << "location 1" << std::endl;
     //for (int n1=0; n1<100; n1++) {
     for (int n1=0; n1<10; n1++) {
-    std::cout << "location 2" << std::endl;
       if (Stations[n1].exists()) {
-    std::cout << "location 3" << std::endl;
         int i; int j; int n;
-        for (int rot=0; rot<8; rot++) {
-    std::cout << "location 4" << std::endl;
           i = Stations[n1].i;
           j = Stations[n1].j;
-          std::cout << "n1,i,j,rot"<<n1<<" "<<i<<" "<<j<<" "<<rot<<" "<<std::endl;
+        std::cout << "* Starting station i,j="<<" ("<<i<<", "<<j<<") "<<std::endl;
+        for (int rot=0; rot<4; rot++) {
+          i = Stations[n1].i;
+          j = Stations[n1].j;
+          //std::cout << "n1,i,j,rot"<<n1<<" "<<i<<" "<<j<<" "<<rot<<" "<<std::endl;
           for (int iter=0; iter<10; iter++) {
             i += iInc[rot];
             if (i<0||i>=iLen) {
@@ -348,9 +344,9 @@ int main()
               break;
             }
             n = 10*j + i;
-            std::cout << "iter, n,i,j,rot"<<iter<<" "<<n<<" "<<i<<" "<<j<<" "<<rot<<std::endl;
+            //std::cout << "iter, n,i,j,rot"<<iter<<" "<<n<<" "<<i<<" "<<j<<" "<<rot<<std::endl;
             if (Stations[n].exists()) {
-              std::cout << "Station neig found!!! n1, n, i, j" << n1 <<" "<<n<<" "<<i<<" "<<j<<" "<<rot<<std::endl;
+              std::cout << "  *    to: i,j="<<" ("<<i<<", "<<j<<") rot = "<<rot<<std::endl;
               break;
             }
           }
