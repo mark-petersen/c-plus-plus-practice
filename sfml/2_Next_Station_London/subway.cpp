@@ -1,15 +1,21 @@
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <array>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window/Mouse.hpp>
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
 int XMax = 800;
 int iLen = 10;
 int jLen = 10;
 
-int c(float iIn) {
-  int x = (iIn+0.5)*XMax/10.0;
+int c(float i) {
+  int x = (i+0.5)*XMax/10.0;
   return x;
+}
+
+int ind(float x) {
+  int i = x*10.0/XMax;
+  return i;
 }
 
 class Track {
@@ -417,6 +423,16 @@ int main()
     }
 
     window.display();
+    // left click...
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      // get global mouse position
+    sf::Vector2i position = sf::Mouse::getPosition(  window	);
+    //std::cout<< "mouse click!" << std::endl;
+    std::cout<< "mouse location: "<<ind(position.x) << ", "<< ind(position.y) <<std::endl;
+      
+      // set mouse position relative to a window
+      //sf::Mouse::setPosition(sf::Vector2i(100, 200), window);
+    }
     }
 
     return 0;
