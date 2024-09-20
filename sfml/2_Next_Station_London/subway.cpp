@@ -3,7 +3,7 @@
 #include <array>
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
-int XMax = 1000;
+int XMax = 800;
 int iLen = 10;
 int jLen = 10;
 
@@ -31,8 +31,9 @@ class Track {
       sf::VertexArray m_line(sf::LineStrip, 2);
       m_line[0].position = sf::Vector2f(c(m_i1), c(m_j1));
       m_line[1].position = sf::Vector2f(c(m_i2), c(m_j2));
-      m_line[0].color  = sf::Color::Black;
-      m_line[1].color  = sf::Color::Black;
+      sf::Color Grey(200,200,200);
+      m_line[0].color = Grey;
+      m_line[1].color = Grey;
       windowIn.draw(m_line);
     }
 
@@ -96,17 +97,22 @@ class Station {
       shape.setFillColor(sf::Color::White);
       shape.setOutlineColor(sf::Color::Black);
     } else if (m_home==1) {
-      shape.setFillColor(sf::Color::Green);
-      shape.setOutlineColor(sf::Color::Green);
+      // set color to a private variable!
+      sf::Color color(  0,193, 93); // dark green
+      shape.setFillColor(color);
+      shape.setOutlineColor(color);
     } else if (m_home==2) {
-      shape.setFillColor(sf::Color::Red);
-      shape.setOutlineColor(sf::Color::Red);
+      sf::Color color(211,  0, 54); // red
+      shape.setFillColor(color);
+      shape.setOutlineColor(color);
     } else if (m_home==3) {
-      shape.setFillColor(sf::Color::Magenta);
-      shape.setOutlineColor(sf::Color::Magenta);
+      sf::Color color(156,  0,223); // purple
+      shape.setFillColor(color);
+      shape.setOutlineColor(color);
     } else if (m_home==4) {
-      shape.setFillColor(sf::Color::Blue);
-      shape.setOutlineColor(sf::Color::Blue);
+      sf::Color color(  0,151,222); // blue
+      shape.setFillColor(color);
+      shape.setOutlineColor(color);
     }
     windowIn.draw(shape);
 
@@ -145,22 +151,36 @@ class Station {
       shape.setRotation(0);
       shape.setPosition(c(m_i)-r, c(m_j)-r);
     }
+    // wild
+    if (m_shape==1) {
+      r=2.0;
+      shape.setRadius(r);
+      shape.setPointCount(8);
+      shape.setRotation(45);
+      shape.setPosition(c(m_i), c(m_j)-1.4*r);
+    }
+
 
     shape.setOutlineThickness(4.0);
     if (!m_home) {
       shape.setFillColor(sf::Color::White);
       shape.setOutlineColor(sf::Color::Black);
     } else if (m_home==1) {
-      shape.setFillColor(sf::Color::Green);
+      // set color to a private variable!
+      sf::Color color(  0,193, 93); // dark green
+      shape.setFillColor(color);
       shape.setOutlineColor(sf::Color::White);
     } else if (m_home==2) {
-      shape.setFillColor(sf::Color::Red);
+      sf::Color color(211,  0, 54); // red
+      shape.setFillColor(color);
       shape.setOutlineColor(sf::Color::White);
     } else if (m_home==3) {
-      shape.setFillColor(sf::Color::Magenta);
+      sf::Color color(156,  0,223); // purple
+      shape.setFillColor(color);
       shape.setOutlineColor(sf::Color::White);
     } else if (m_home==4) {
-      shape.setFillColor(sf::Color::Blue);
+      sf::Color color(  0,151,222); // blue
+      shape.setFillColor(color);
       shape.setOutlineColor(sf::Color::White);
     }
     windowIn.draw(shape);
@@ -201,6 +221,7 @@ class Station {
     int m_shape {-1};
     bool m_tourist {false};
     int m_home {0};
+    //sf::Color color;
 };
 
 
@@ -220,10 +241,10 @@ void VLine(float xIn, sf::RenderWindow &windowIn, sf::Color colorIn) {
 void Line(float x1, float y1, float x2, float y2, float PW,
   sf::RenderWindow &windowIn, sf::Color colorIn) {
     sf::VertexArray lines(sf::LinesStrip, 4);
-    lines[0].position = sf::Vector2f(c(x1-1)-PW, c(y1-1)-PW);
-    lines[1].position = sf::Vector2f(c(x1-1)-PW, c(y2-1)+PW);
-    lines[2].position = sf::Vector2f(c(x2-1)+PW, c(y2-1)+PW);
-    lines[3].position = sf::Vector2f(c(x2-1)+PW, c(y1-1)-PW);
+    lines[0].position = sf::Vector2f(c(x1-1), c(y1-1));
+    lines[1].position = sf::Vector2f(c(x1-1), c(y2-1));
+    lines[2].position = sf::Vector2f(c(x2-1), c(y2-1));
+    lines[3].position = sf::Vector2f(c(x2-1), c(y1-1));
     lines[0].color  = colorIn;
     lines[1].color  = colorIn;
     lines[2].color  = colorIn;
@@ -235,8 +256,6 @@ void Line(float x1, float y1, float x2, float y2, float PW,
 int main()
 {
     std::cout << c(2) << std::endl;
-    sf::RenderWindow window(sf::VideoMode(XMax, XMax), "SFML Application");
-    window.setPosition(sf::Vector2i(10, 10));
 
     int stationDefs[100][4] {
        {  0, 0, 5, 0 }, 
@@ -261,7 +280,7 @@ int main()
        {  0, 3, 4,-1 }, 
        {  2, 3, 5, 0 }, 
        {  4, 3, 3, 0 }, 
-       {  5, 3, 0,-1 }, 
+       {  5, 3, 1,-1 }, 
        {  6, 3, 0, 0 }, 
        {  7, 3, 0, 2 }, 
        {  9, 3, 4, 0 },
@@ -269,7 +288,7 @@ int main()
        {  1, 4, 3, 0 }, 
        {  2, 4, 4, 0 }, 
        {  4, 4, 5, 0 }, 
-       {  5, 4, 4,-1 }, 
+       {  5, 4, 4, 0 }, 
        {  8, 4, 5, 0 }, 
 
        {  0, 5, 5, 0 }, 
@@ -359,10 +378,12 @@ int main()
       }
 
     }
-    for (int k=0; k<nTracks; k++) {
-      Tracks[k].info();
-    }
+    //for (int k=0; k<nTracks; k++) {
+    //  Tracks[k].info();
+    //}
 
+    sf::RenderWindow window(sf::VideoMode(XMax, XMax), "SFML Application");
+    window.setPosition(sf::Vector2i(10, 10));
     while (window.isOpen())
     {
     sf::Event event;
@@ -373,18 +394,19 @@ int main()
     }
     window.clear(sf::Color::White);
 
-    Line( 3.5, 0.0, 3.5, 10.5, 1, window, sf::Color::Yellow);
-    Line( 7.5, 0.0, 7.5, 10.5, 1, window, sf::Color::Yellow);
-    Line(  0., 3.5, 10.5, 3.5, 1, window, sf::Color::Yellow);
-    Line(  0., 7.5, 10.5, 7.5, 1, window, sf::Color::Yellow);
-    Line( 0.5, 1.5, 1.5, 1.5, 1, window, sf::Color::Yellow);
-    Line( 1.5, 0.5, 1.5, 1.5, 1, window, sf::Color::Yellow);
-    Line( 9.5, 1.5,10.5, 1.5, 1, window, sf::Color::Yellow);
-    Line( 9.5, 0.5, 9.5, 1.5, 1, window, sf::Color::Yellow);
-    Line( 0.5, 9.5, 1.5, 9.5, 1, window, sf::Color::Yellow);
-    Line( 1.5, 9.5, 1.5,10.5, 1, window, sf::Color::Yellow);
-    Line( 9.5, 9.5,10.5, 9.5, 1, window, sf::Color::Yellow);
-    Line( 9.5, 9.5, 9.5,10.5, 1, window, sf::Color::Yellow);
+    sf::Color DarkYellow(253,200,23);
+    Line( 3.5, 0.0, 3.5, 10.5, 1, window, DarkYellow);
+    Line( 7.5, 0.0, 7.5, 10.5, 1, window, DarkYellow);
+    Line(  0., 3.5, 10.5, 3.5, 1, window, DarkYellow);
+    Line(  0., 7.5, 10.5, 7.5, 1, window, DarkYellow);
+    Line( 0.5, 1.5,  1.5, 1.5, 1, window, DarkYellow);
+    Line( 1.5, 0.5,  1.5, 1.5, 1, window, DarkYellow);
+    Line( 9.5, 1.5, 10.5, 1.5, 1, window, DarkYellow);
+    Line( 9.5, 0.5,  9.5, 1.5, 1, window, DarkYellow);
+    Line( 0.5, 9.5,  1.5, 9.5, 1, window, DarkYellow);
+    Line( 1.5, 9.5,  1.5,10.5, 1, window, DarkYellow);
+    Line( 9.5, 9.5, 10.5, 9.5, 1, window, DarkYellow);
+    Line( 9.5, 9.5,  9.5,10.5, 1, window, DarkYellow);
 
     for (int k=0; k<nTracks; k++) {
       Tracks[k].viz(window);
