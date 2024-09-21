@@ -447,6 +447,14 @@ int main()
     window.clear(sf::Color::White);
 
     DrawBackground(window);
+   // Create a text
+sf::Text text("hello");
+text.setCharacterSize(30);
+text.setPosition (20,20)
+text.setStyle(sf::Text::Bold);
+text.setFillColor(sf::Color::Red);
+// Draw it
+window.draw(text); 
 
     for (int k=0; k<nTracks; k++) {
       Tracks[k].viz(window);
