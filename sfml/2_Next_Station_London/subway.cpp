@@ -9,11 +9,13 @@ int iLen = 10;
 int jLen = 10;
 
 int c(float i) {
+  // convert index to x-coordinate
   int x = (i+0.5)*XMax/10.0;
   return x;
 }
 
 int ind(float x) {
+  // convert x-coordinate to index
   int i = x*10.0/XMax;
   return i;
 }
@@ -413,6 +415,19 @@ int main()
     Line( 1.5, 9.5,  1.5,10.5, 1, window, DarkYellow);
     Line( 9.5, 9.5, 10.5, 9.5, 1, window, DarkYellow);
     Line( 9.5, 9.5,  9.5,10.5, 1, window, DarkYellow);
+
+    // draw the river
+    sf::VertexArray river(sf::LinesStrip, 6);
+    river[0].position = sf::Vector2f(c(-0.5), c(3.5));
+    river[1].position = sf::Vector2f(c( 2.2), c(3.5));
+    river[2].position = sf::Vector2f(c( 3.8), c(5.4));
+    river[3].position = sf::Vector2f(c( 5.2), c(5.4));
+    river[4].position = sf::Vector2f(c( 6.2), c(4.4));
+    river[5].position = sf::Vector2f(c( 9.0), c(4.4));
+    for (int k=0; k<6; k++) {
+      river[k].color  = sf::Color::Blue;
+    }
+    window.draw(river);
 
     for (int k=0; k<nTracks; k++) {
       Tracks[k].viz(window);
