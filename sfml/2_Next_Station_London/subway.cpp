@@ -260,6 +260,37 @@ void Line(float x1, float y1, float x2, float y2, float PW,
     windowIn.draw(lines);
 }
 
+void DrawBackground(sf::RenderWindow &window) {
+
+// Draw regions
+    sf::Color DarkYellow(253,200,23);
+    Line( 3.5, 0.0, 3.5, 10.5, 1, window, DarkYellow);
+    Line( 7.5, 0.0, 7.5, 10.5, 1, window, DarkYellow);
+    Line(  0., 3.5, 10.5, 3.5, 1, window, DarkYellow);
+    Line(  0., 7.5, 10.5, 7.5, 1, window, DarkYellow);
+    Line( 0.5, 1.5,  1.5, 1.5, 1, window, DarkYellow);
+    Line( 1.5, 0.5,  1.5, 1.5, 1, window, DarkYellow);
+    Line( 9.5, 1.5, 10.5, 1.5, 1, window, DarkYellow);
+    Line( 9.5, 0.5,  9.5, 1.5, 1, window, DarkYellow);
+    Line( 0.5, 9.5,  1.5, 9.5, 1, window, DarkYellow);
+    Line( 1.5, 9.5,  1.5,10.5, 1, window, DarkYellow);
+    Line( 9.5, 9.5, 10.5, 9.5, 1, window, DarkYellow);
+    Line( 9.5, 9.5,  9.5,10.5, 1, window, DarkYellow);
+
+    // draw the river
+    sf::VertexArray river(sf::LinesStrip, 6);
+    river[0].position = sf::Vector2f(c(-0.5), c(3.5));
+    river[1].position = sf::Vector2f(c( 2.2), c(3.5));
+    river[2].position = sf::Vector2f(c( 3.8), c(5.4));
+    river[3].position = sf::Vector2f(c( 5.2), c(5.4));
+    river[4].position = sf::Vector2f(c( 6.2), c(4.4));
+    river[5].position = sf::Vector2f(c( 9.0), c(4.4));
+    for (int k=0; k<6; k++) {
+      river[k].color  = sf::Color::Blue;
+    }
+    window.draw(river);
+}
+
 
 int main()
 {
@@ -402,33 +433,7 @@ int main()
     }
     window.clear(sf::Color::White);
 
-    sf::Color DarkYellow(253,200,23);
-    Line( 3.5, 0.0, 3.5, 10.5, 1, window, DarkYellow);
-    Line( 7.5, 0.0, 7.5, 10.5, 1, window, DarkYellow);
-    Line(  0., 3.5, 10.5, 3.5, 1, window, DarkYellow);
-    Line(  0., 7.5, 10.5, 7.5, 1, window, DarkYellow);
-    Line( 0.5, 1.5,  1.5, 1.5, 1, window, DarkYellow);
-    Line( 1.5, 0.5,  1.5, 1.5, 1, window, DarkYellow);
-    Line( 9.5, 1.5, 10.5, 1.5, 1, window, DarkYellow);
-    Line( 9.5, 0.5,  9.5, 1.5, 1, window, DarkYellow);
-    Line( 0.5, 9.5,  1.5, 9.5, 1, window, DarkYellow);
-    Line( 1.5, 9.5,  1.5,10.5, 1, window, DarkYellow);
-    Line( 9.5, 9.5, 10.5, 9.5, 1, window, DarkYellow);
-    Line( 9.5, 9.5,  9.5,10.5, 1, window, DarkYellow);
-
-    // draw the river
-    sf::VertexArray river(sf::LinesStrip, 6);
-    river[0].position = sf::Vector2f(c(-0.5), c(3.5));
-    river[1].position = sf::Vector2f(c( 2.2), c(3.5));
-    river[2].position = sf::Vector2f(c( 3.8), c(5.4));
-    river[3].position = sf::Vector2f(c( 5.2), c(5.4));
-    river[4].position = sf::Vector2f(c( 6.2), c(4.4));
-    river[5].position = sf::Vector2f(c( 9.0), c(4.4));
-    for (int k=0; k<6; k++) {
-      river[k].color  = sf::Color::Blue;
-    }
-    window.draw(river);
-
+    DrawBackground(window);
     for (int k=0; k<nTracks; k++) {
       Tracks[k].viz(window);
     }
