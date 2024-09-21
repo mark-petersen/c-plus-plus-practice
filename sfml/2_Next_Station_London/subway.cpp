@@ -4,9 +4,12 @@
 #include <SFML/Window/Mouse.hpp>
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
-int XMax = 800;
+int XMax = 700;
+int windowWidth = 1000;
+int windowHeight=  950;
 int iLen = 10;
 int jLen = 10;
+float stretch = XMax/10.0;
 
 int c(float i) {
   // convert index to x-coordinate
@@ -87,12 +90,8 @@ class Station {
       windowIn.draw(shape);
       r=18;
       shape.setRadius(r);
-      shape.setPointCount(3);
-      shape.setRotation(180);
-      shape.setPosition(c(m_i+2*r), c(m_j));
-      shape.setOutlineThickness(4.0);
-      shape.setFillColor(sf::Color::White);
-      shape.setOutlineColor(sf::Color::Black);
+      shape.setRotation(60);
+      shape.setPosition(c(m_i)+0.4*r, c(m_j)-1.4*r);
       windowIn.draw(shape);
     }
     r = 16.0;
@@ -284,11 +283,28 @@ void DrawBackground(sf::RenderWindow &window) {
     river[2].position = sf::Vector2f(c( 3.8), c(5.4));
     river[3].position = sf::Vector2f(c( 5.2), c(5.4));
     river[4].position = sf::Vector2f(c( 6.2), c(4.4));
-    river[5].position = sf::Vector2f(c( 9.0), c(4.4));
+    river[5].position = sf::Vector2f(c( 9.5), c(4.4));
     for (int k=0; k<6; k++) {
       river[k].color  = sf::Color::Blue;
     }
     window.draw(river);
+
+    // card area
+    sf::RectangleShape rectangle;
+    rectangle.setSize(sf::Vector2f(windowWidth-XMax, XMax));
+    sf::Color RightBlue(175,238,238);
+    rectangle.setFillColor(RightBlue);
+    rectangle.setOutlineThickness(0);
+    rectangle.setPosition(XMax, 0);
+    window.draw(rectangle);
+
+    // scoring area
+    rectangle.setSize(sf::Vector2f(windowWidth, windowHeight-XMax));
+    sf::Color BottomYellow(255,232,128);
+    rectangle.setFillColor(BottomYellow);
+    rectangle.setOutlineThickness(0);
+    rectangle.setPosition(0,XMax);
+    window.draw(rectangle);
 }
 
 
@@ -417,11 +433,8 @@ int main()
       }
 
     }
-    //for (int k=0; k<nTracks; k++) {
-    //  Tracks[k].info();
-    //}
 
-    sf::RenderWindow window(sf::VideoMode(XMax, XMax), "SFML Application");
+    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
     while (window.isOpen())
     {
@@ -434,6 +447,7 @@ int main()
     window.clear(sf::Color::White);
 
     DrawBackground(window);
+
     for (int k=0; k<nTracks; k++) {
       Tracks[k].viz(window);
     }
