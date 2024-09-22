@@ -2,10 +2,11 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <SFML/Graphics/Text.hpp>
 // g++ subway.cpp -I/usr/local/Cellar/sfml/2.6.1/include -o a.out -L/usr/local/Cellar/sfml/2.6.1/lib -lsfml-window -lsfml-system -lsfml-graphics -std=c++20
 
 int XMax = 700;
-int windowWidth = 1000;
+int windowWidth = 1030;
 int windowHeight=  950;
 int iLen = 10;
 int jLen = 10;
@@ -292,7 +293,7 @@ void DrawBackground(sf::RenderWindow &window) {
     // card area
     sf::RectangleShape rectangle;
     rectangle.setSize(sf::Vector2f(windowWidth-XMax, XMax));
-    sf::Color RightBlue(175,238,238);
+    sf::Color RightBlue(224, 247, 250);
     rectangle.setFillColor(RightBlue);
     rectangle.setOutlineThickness(0);
     rectangle.setPosition(XMax, 0);
@@ -310,7 +311,8 @@ void DrawBackground(sf::RenderWindow &window) {
 
 int main()
 {
-    std::cout << c(2) << std::endl;
+   sf::Font ArialFont;
+   ArialFont.loadFromFile("arial.ttf");
 
     int stationDefs[100][4] {
        {  0, 0, 5, 0 }, 
@@ -448,14 +450,31 @@ int main()
 
     DrawBackground(window);
    // Create a text
-sf::Text text("hello");
-text.setCharacterSize(30);
-text.setPosition (20,20)
-text.setStyle(sf::Text::Bold);
-text.setFillColor(sf::Color::Red);
-// Draw it
-window.draw(text); 
 
+   sf::Text text;
+   text.setFont(ArialFont);
+   // Declare and load a font
+   text.setCharacterSize(30);
+   text.setPosition (XMax+20,20);
+   text.setStyle(sf::Text::Bold);
+   text.setFillColor(sf::Color::Blue);
+   text.setString("Next Station London");
+   window.draw(text); 
+
+   text.setCharacterSize(24);
+   text.setPosition (XMax+20,60);
+   text.setStyle(sf::Text::Regular);
+   text.setFillColor(sf::Color::Black);
+   text.setString("Line color:");
+   window.draw(text); 
+
+   text.setCharacterSize(24);
+   text.setPosition (XMax+140,60);
+   text.setStyle(sf::Text::Bold);
+   sf::Color DarkGreen(  0,193, 93); // dark green
+   text.setFillColor(DarkGreen);
+   text.setString("GREEN");
+   window.draw(text); 
     for (int k=0; k<nTracks; k++) {
       Tracks[k].viz(window);
     }
