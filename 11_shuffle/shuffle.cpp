@@ -5,10 +5,11 @@
 #include <iostream>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <vector>
 
-auto shuffle(int n) {
+std::vector<int> shuffle(int n) {
   int r[n];// old fashioned vector. Could change to vector container later.
-  int a[n];
+  std::vector<int> a(n);
   for (int j=0; j<n; j++) {
     int rNew = std::rand();
     //std::cout << "rNew " << rNew << std:: endl;
@@ -26,19 +27,19 @@ auto shuffle(int n) {
     }
 
   }
-  /* std::cout << "r         a " << std:: endl;
+  std::cout << "r         a " << std:: endl;
   for (int j=0; j<n; j++) {
     std::cout << r[j] <<"  " << a[j] << std:: endl;
   }
-  */
   return a; // need to return the random vector
 }
 
 int main() {
   /* initialize random seed: */
   srand (time(NULL));
-  int n=52;
-  auto a = shuffle(n);
+  int n=12;
+  std::vector<int> a;
+  a = shuffle(n);
   std::cout << " a " << std:: endl;
   for (int j=0; j<n; j++) {
     std::cout << a[j] << std:: endl;
