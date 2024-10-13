@@ -26,6 +26,8 @@ int shuffle(int n) {
     }
 
   }
+  std::cout << "r " << r << std:: endl;
+  std::cout << "a " << a << std:: endl;
   return n; // need to return the random vector
 }
 
