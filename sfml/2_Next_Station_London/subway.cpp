@@ -1,5 +1,9 @@
 #include <iostream>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+#include <vector>
 #include <array>
+#include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -10,9 +14,9 @@ int windowWidth = 1030;
 int windowHeight=  950;
 int iLen = 10;
 int jLen = 10;
-float stretch = XMax/10.0;
+float s = XMax/10.0; // stretch factor
 
-int c(float i) {
+float c(float i) {
   // convert index to x-coordinate
   int x = (i+0.5)*XMax/10.0;
   return x;
@@ -24,6 +28,88 @@ int ind(float x) {
   return i;
 }
 
+class Card {
+  public:
+    //Constructor
+    Card() = default;
+    Card(int index, int playnumber) :
+      m_index(index), m_playnumber(playnumber)
+    {
+      m_type = 0; // change later
+      m_shape = m_index % 5;
+    }
+    void info() {
+      //std::cout << "track: ("<<m_i1<<", "<<m_j1<<") to ( "<<m_i2<<", "<<m_j2<<")"<<std::endl;
+    }
+    void viz(int yn, sf::RenderWindow &windowIn) {
+      sf::VertexArray m_line(sf::LineStrip, 2);
+
+    float r;
+    sf::CircleShape shape;
+
+    if (m_type==0) {
+      sf::RectangleShape rectangle;
+      rectangle.setSize(sf::Vector2f(3*s, 1*s));
+      rectangle.setFillColor(sf::Color::Black);
+      rectangle.setFillColor(sf::Color::Blue);
+      rectangle.setOutlineThickness(3);
+      rectangle.setPosition(c(11),c(3+m_playnumber));
+      windowIn.draw(rectangle);
+    }
+
+    shape.setPosition(c(12), c(3+m_playnumber));
+    // circle
+    if (m_shape==0) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(30);
+      shape.setRotation(45);
+    }
+
+    // triangle
+    if (m_shape==3) {
+      r=7.0;
+      shape.setRadius(r);
+      shape.setPointCount(3);
+      shape.setRotation(0);
+    }
+
+    // square
+    if (m_shape==4) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(4);
+      shape.setRotation(45);
+    }
+
+    // pentagon
+    if (m_shape==5) {
+      r=8.0;
+      shape.setRadius(r);
+      shape.setPointCount(5);
+      shape.setRotation(0);
+    }
+    // wild
+    if (m_shape==1) {
+      r=2.0;
+      shape.setRadius(r);
+      shape.setPointCount(8);
+      shape.setRotation(45);
+    }
+
+      sf::Color color(  0,151,222); // blue
+      shape.setFillColor(color);
+      shape.setOutlineColor(sf::Color::White);
+    windowIn.draw(shape);
+    }
+
+  private:
+    int m_index{-1};
+    int m_playnumber{-1};
+    int m_type{-1};
+    int m_shape{-1};
+};
+
 class Track {
   public:
     //Constructor
@@ -31,8 +117,8 @@ class Track {
     Track(int i1,int j1,int i2,int j2) :
       m_i1(i1), m_j1(j1), m_i2(i2), m_j2(j2)
     {
-      //m_line[0].position = sf::Vector2f(c(i1), c(j1));
-      //m_line[1].position = sf::Vector2f(c(i2), c(j2));
+      //m_line[0].position = sf::Vector2f(i1), c(j1));
+      //m_line[1].position = sf::Vector2f(i2), c(j2));
       //m_line[0].color  = sf::Color::Black;
       //m_line[1].color  = sf::Color::Black;
     }
@@ -232,6 +318,32 @@ class Station {
     //sf::Color color;
 };
 
+std::vector<int> shuffle(int n) {
+  int r[n];// old fashioned vector.
+  std::vector<int> a(n);
+  for (int j=0; j<n; j++) {
+    int rNew = std::rand();
+    //std::cout << "rNew " << rNew << std:: endl;
+    r[j] = rNew;
+    a[j] = j;
+    for (int i=j; i>0; i--) {
+      if (rNew < r[i-1]) {
+        r[i] = r[i-1];
+        a[i] = a[i-1];
+        r[i-1] = rNew;
+        a[i-1] = j;
+      } else {
+        break;
+      }
+    }
+
+  }
+  /*std::cout << "r         a " << std:: endl;
+  for (int j=0; j<n; j++) {
+    std::cout << r[j] <<"  " << a[j] << std:: endl;
+  } */
+  return a; // return the random vector
+}
 
 void VLine(float xIn, sf::RenderWindow &windowIn, sf::Color colorIn) {
     sf::VertexArray lines(sf::LinesStrip, 4);
@@ -313,6 +425,7 @@ int main()
 {
    sf::Font ArialFont;
    ArialFont.loadFromFile("arial.ttf");
+  srand (time(NULL));
 
     int stationDefs[100][4] {
        {  0, 0, 5, 0 }, 
@@ -436,6 +549,16 @@ int main()
 
     }
 
+  int nCards=12;
+  std::vector<std::string> cardShape(nCards);
+
+  std::vector<Card> Cards;
+
+  std::vector<int> CardOrder;
+  CardOrder = shuffle(nCards);
+  for (int j=0; j<nCards; j++) {
+    Cards.push_back(j, CardOrder[j]);
+  }
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
     while (window.isOpen())
@@ -489,7 +612,7 @@ int main()
       // get global mouse position
     sf::Vector2i position = sf::Mouse::getPosition(  window	);
     //std::cout<< "mouse click!" << std::endl;
-    std::cout<< "mouse location: "<<ind(position.x) << ", "<< ind(position.y) <<std::endl;
+    //std::cout<< "mouse location: "<<ind(position.x) << ", "<< ind(position.y) <<std::endl;
       
       // set mouse position relative to a window
       //sf::Mouse::setPosition(sf::Vector2i(100, 200), window);
