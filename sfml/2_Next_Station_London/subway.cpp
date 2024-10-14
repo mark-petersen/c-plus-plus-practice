@@ -32,38 +32,50 @@ class Card {
   public:
     //Constructor
     Card() = default;
-    Card(int index, int playnumber) :
-      m_index(index), m_playnumber(playnumber)
+    Card(int playnumber, int index) :
+      m_playnumber(playnumber), m_index(index)
     {
-      m_type = 0; // change later
+      m_type = int(m_index / 5); // change later
       m_shape = m_index % 5;
     }
     void info() {
       //std::cout << "track: ("<<m_i1<<", "<<m_j1<<") to ( "<<m_i2<<", "<<m_j2<<")"<<std::endl;
     }
-    void viz(int yn, sf::RenderWindow &windowIn) {
-      sf::VertexArray m_line(sf::LineStrip, 2);
+    void viz(sf::RenderWindow &windowIn) {
 
     float r;
     sf::CircleShape shape;
 
-    if (m_type==0) {
-      sf::RectangleShape rectangle;
-      rectangle.setSize(sf::Vector2f(3*s, 1*s));
-      rectangle.setFillColor(sf::Color::Black);
+   sf::RectangleShape rectangle;
+   rectangle.setSize(sf::Vector2f(4*s, 0.6*s));
+   rectangle.setOutlineColor(sf::Color::Black);
+   rectangle.setOutlineThickness(3);
+   rectangle.setPosition(c(10),c(1+0.8*m_playnumber));
+   if (m_type==0) {
       rectangle.setFillColor(sf::Color::Blue);
-      rectangle.setOutlineThickness(3);
-      rectangle.setPosition(c(11),c(3+m_playnumber));
-      windowIn.draw(rectangle);
+    } else if (m_type==1) {
+      rectangle.setFillColor(sf::Color::Red);
     }
 
-    shape.setPosition(c(12), c(3+m_playnumber));
+   windowIn.draw(rectangle);
+
+    r = 16.0;
+    shape.setPosition(c(10.5)-r, c(1+0.3+0.8*m_playnumber)-r);
+    shape.setRadius(r);
+    shape.setPointCount(30);
+    shape.setRotation(0);
+    shape.setFillColor(sf::Color::White);
+    shape.setOutlineColor(sf::Color::Black);
+    shape.setOutlineThickness(2.0);
+    windowIn.draw(shape);
+
     // circle
     if (m_shape==0) {
       r=8.0;
       shape.setRadius(r);
       shape.setPointCount(30);
       shape.setRotation(45);
+      shape.setPosition(c(10.5), c(1+0.3+0.8*m_playnumber)-1.4*r);
     }
 
     // triangle
@@ -72,6 +84,7 @@ class Card {
       shape.setRadius(r);
       shape.setPointCount(3);
       shape.setRotation(0);
+      shape.setPosition(c(10.5)-r, c(1+0.3+0.8*m_playnumber)-r);
     }
 
     // square
@@ -80,6 +93,7 @@ class Card {
       shape.setRadius(r);
       shape.setPointCount(4);
       shape.setRotation(45);
+      shape.setPosition(c(10.5), c(1+0.3+0.8*m_playnumber)-1.4*r);
     }
 
     // pentagon
@@ -88,6 +102,7 @@ class Card {
       shape.setRadius(r);
       shape.setPointCount(5);
       shape.setRotation(0);
+      shape.setPosition(c(10.5)-r, c(1+0.3+0.8*m_playnumber)-r);
     }
     // wild
     if (m_shape==1) {
@@ -95,11 +110,12 @@ class Card {
       shape.setRadius(r);
       shape.setPointCount(8);
       shape.setRotation(45);
+      shape.setPosition(c(10.5), c(1+0.3+0.8*m_playnumber)-1.4*r);
     }
 
-      sf::Color color(  0,151,222); // blue
-      shape.setFillColor(color);
-      shape.setOutlineColor(sf::Color::White);
+    shape.setOutlineThickness(4.0);
+    shape.setFillColor(sf::Color::White);
+    shape.setOutlineColor(sf::Color::Black);
     windowIn.draw(shape);
     }
 
@@ -549,7 +565,7 @@ int main()
 
     }
 
-  int nCards=12;
+  int nCards=11;
   std::vector<std::string> cardShape(nCards);
 
   std::vector<Card> Cards;
@@ -557,8 +573,9 @@ int main()
   std::vector<int> CardOrder;
   CardOrder = shuffle(nCards);
   for (int j=0; j<nCards; j++) {
-    Cards.push_back(j, CardOrder[j]);
+    Cards.push_back(Card(j, CardOrder[j]));
   }
+
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
     while (window.isOpen())
@@ -604,6 +621,10 @@ int main()
 
     for (int n=0; n<100; n++) {
       Stations[n].viz(window);
+    }
+
+    for (int j=0; j<nCards; j++) {
+      Cards[j].viz(window);
     }
 
     window.display();
