@@ -15,6 +15,12 @@ int windowHeight=  950;
 int iLen = 10;
 int jLen = 10;
 float s = XMax/10.0; // stretch factor
+int CIRCLE=0;
+int TRIANGLE=1;
+int SQUARE=2;
+int PENTAGON=3;
+int WILD=4;
+int FORK=5;
 
 float c(float i) {
   // convert index to x-coordinate
@@ -37,9 +43,12 @@ class Card {
     {
       m_type = int(m_index / 5); // change later
       m_shape = m_index % 5;
+      if (m_type==2) {
+        m_shape=FORK;
+      }
     }
     void info() {
-      //std::cout << "track: ("<<m_i1<<", "<<m_j1<<") to ( "<<m_i2<<", "<<m_j2<<")"<<std::endl;
+      std::cout << "card, playnumber: "<<m_playnumber<<", index: "<<m_index<<", type: "<<m_type<<" shape: "<<m_shape<<std::endl;
     }
     void viz(sf::RenderWindow &windowIn) {
 
@@ -51,16 +60,25 @@ class Card {
    rectangle.setOutlineColor(sf::Color::Black);
    rectangle.setOutlineThickness(3);
    rectangle.setPosition(c(10),c(1+0.8*m_playnumber));
-   if (m_type==0) {
-      rectangle.setFillColor(sf::Color::Blue);
-    } else if (m_type==1) {
-      rectangle.setFillColor(sf::Color::Red);
-    }
-
+   rectangle.setFillColor(sf::Color::Blue);
    windowIn.draw(rectangle);
+   if (m_type>0) { // card with stripe
+      rectangle.setSize(sf::Vector2f(4*s, 0.2*s));
+      rectangle.setOutlineThickness(0);
+      rectangle.setPosition(c(10),c(1.2+0.8*m_playnumber));
+      if (m_type==1) {
+        sf::Color Stripe(106, 13, 173); // purple
+        rectangle.setFillColor(Stripe);
+      } else if (m_type==2) {
+        sf::Color Stripe(130, 0, 0); // maroon
+        rectangle.setFillColor(Stripe);
+      }
+      windowIn.draw(rectangle);
+   }
 
+    float xLoc = c(10.5 + 1.5*m_type);
     r = 16.0;
-    shape.setPosition(c(10.5)-r, c(1+0.3+0.8*m_playnumber)-r);
+    shape.setPosition(xLoc-r, c(1+0.3+0.8*m_playnumber)-r);
     shape.setRadius(r);
     shape.setPointCount(30);
     shape.setRotation(0);
@@ -69,55 +87,55 @@ class Card {
     shape.setOutlineThickness(2.0);
     windowIn.draw(shape);
 
-    // circle
-    if (m_shape==0) {
+    if (m_shape==CIRCLE) {
       r=8.0;
       shape.setRadius(r);
       shape.setPointCount(30);
       shape.setRotation(45);
-      shape.setPosition(c(10.5), c(1+0.3+0.8*m_playnumber)-1.4*r);
-    }
-
-    // triangle
-    if (m_shape==3) {
+      shape.setPosition(xLoc, c(1+0.3+0.8*m_playnumber)-1.4*r);
+    } else if (m_shape==TRIANGLE) {
       r=7.0;
       shape.setRadius(r);
       shape.setPointCount(3);
       shape.setRotation(0);
-      shape.setPosition(c(10.5)-r, c(1+0.3+0.8*m_playnumber)-r);
-    }
-
-    // square
-    if (m_shape==4) {
+      shape.setPosition(xLoc-r, c(1+0.3+0.8*m_playnumber)-r);
+    } else if (m_shape==SQUARE) {
       r=8.0;
       shape.setRadius(r);
       shape.setPointCount(4);
       shape.setRotation(45);
-      shape.setPosition(c(10.5), c(1+0.3+0.8*m_playnumber)-1.4*r);
-    }
-
-    // pentagon
-    if (m_shape==5) {
+      shape.setPosition(xLoc, c(1+0.3+0.8*m_playnumber)-1.4*r);
+    } else if (m_shape==PENTAGON) {
       r=8.0;
       shape.setRadius(r);
       shape.setPointCount(5);
       shape.setRotation(0);
-      shape.setPosition(c(10.5)-r, c(1+0.3+0.8*m_playnumber)-r);
-    }
-    // wild
-    if (m_shape==1) {
-      r=2.0;
-      shape.setRadius(r);
-      shape.setPointCount(8);
-      shape.setRotation(45);
-      shape.setPosition(c(10.5), c(1+0.3+0.8*m_playnumber)-1.4*r);
+      shape.setPosition(xLoc-r, c(1+0.3+0.8*m_playnumber)-r);
+    } else if (m_shape>PENTAGON) {
+      // move this later to avoid file load
+      sf::Font ArialFont;
+      ArialFont.loadFromFile("arial.ttf");
+      sf::Text text;
+      text.setFont(ArialFont);
+      text.setCharacterSize(20);
+      text.setPosition(xLoc-0.6*r, c(1+0.4+0.8*m_playnumber)-1.2*r);
+      text.setStyle(sf::Text::Bold);
+      text.setFillColor(sf::Color::Black);
+      if (m_shape==WILD) {
+        text.setString("W");
+      } else if (m_shape==FORK) {
+        text.setString("F");
+      }
+      windowIn.draw(text); 
     }
 
-    shape.setOutlineThickness(4.0);
-    shape.setFillColor(sf::Color::White);
-    shape.setOutlineColor(sf::Color::Black);
-    windowIn.draw(shape);
+    if (m_shape<WILD) {
+       shape.setOutlineThickness(4.0);
+       shape.setFillColor(sf::Color::White);
+       shape.setOutlineColor(sf::Color::Black);
+       windowIn.draw(shape);
     }
+  }
 
   private:
     int m_index{-1};
@@ -352,12 +370,11 @@ std::vector<int> shuffle(int n) {
         break;
       }
     }
-
   }
-  /*std::cout << "r         a " << std:: endl;
+  std::cout << "r         a " << std:: endl;
   for (int j=0; j<n; j++) {
     std::cout << r[j] <<"  " << a[j] << std:: endl;
-  } */
+  }
   return a; // return the random vector
 }
 
@@ -439,8 +456,8 @@ void DrawBackground(sf::RenderWindow &window) {
 
 int main()
 {
-   sf::Font ArialFont;
-   ArialFont.loadFromFile("arial.ttf");
+  sf::Font ArialFont;
+  ArialFont.loadFromFile("arial.ttf");
   srand (time(NULL));
 
     int stationDefs[100][4] {
@@ -575,6 +592,9 @@ int main()
   for (int j=0; j<nCards; j++) {
     Cards.push_back(Card(j, CardOrder[j]));
   }
+    for (int j=0; j<nCards; j++) {
+      Cards[j].info();
+    }
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "SFML Application");
     window.setPosition(sf::Vector2i(10, 10));
